@@ -1,0 +1,802 @@
+body {
+    background-color: #FFE9E7;
+}
+
+.header {
+
+    background-color: #FFE9E7;
+    background: -webkit-linear-gradient(rgba(255, 233, 231, 1), rgba(255, 233, 231, 1), rgba(255, 233, 231, 0));
+    /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(255, 233, 231, 1), rgba(255, 233, 231, 1), rgba(255, 233, 231, 0));
+    /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(255, 233, 231, 1), rgba(255, 233, 231, 1), rgba(255, 233, 231, 0));
+    /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(255, 233, 231, 1), rgba(255, 233, 231, 1), rgba(255, 233, 231, 0));
+    /* Standard syntax */
+}
+
+.col-left {
+    width: 40%;
+}
+
+.col-right {
+    width: 60%;
+    /*right: 0;*/
+    /*top: 0;*/
+    /*position: absolute;*/
+}
+
+.button-1.active {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.button-1.active:hover {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.5);
+   /* border: 1px solid white;*/
+}
+
+form {
+
+    display: inline-block;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    width: 100%;
+    text-align: center;
+    margin: 2% auto;
+
+    pointer-events: auto;
+
+
+    -webkit-transition: background-color 0.5s ease-out;
+    -webkit-transition: border 0.2s ease-out;
+    border-radius: 6px;
+}
+
+.form-board{
+        color: black;
+        background-color: white;
+      border: 1px solid #D0D0D0;
+      box-shadow: inset 0px 0px 1px 0px #ABABAB;
+      padding:5%;
+      width: 80%;
+
+}
+
+
+/*Drop Down*/
+.st-dropdown{
+    border: 1px solid #D0D0D0;
+    border-radius: 6px;
+    background-color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    height: 34px;
+    width: 100%;
+
+    padding-left: 1em;
+
+}
+
+/*select{
+    -moz-appearance: none; 
+    -webkit-appearance: none; 
+    appearance: none;
+}*/
+
+select:focus{
+    outline: none; 
+}
+
+.st-slider{
+    width: 100%;
+    color: #fff;
+    outline: none;
+    margin: 0 auto;
+    text-align: center;
+
+}
+
+
+
+/*Slider*/
+input[type=range] {
+  height: 24px;
+  -webkit-appearance: none;
+  margin: 10px 0;
+ /* width: 50%;*/
+  background: transparent;
+  display: inline-block;
+  vertical-align: middle;
+
+ /* overflow: hidden;*/
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 0px 0px 0px #000000;
+  background: #ffffff;
+  border-radius: 1px;
+  border: 0px solid #000000;
+}
+
+
+.giant-slider input[type=range]::-webkit-slider-thumb{
+/*box-shadow: 0px 0px 5px #D0D0D0;*/
+    border: 1px solid white;
+  height: 18px;
+  width: 18px;
+  border-radius: 25px;
+  background: #46C8B2;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px;
+}
+
+.giant-slider input[type=range]{
+    display: block;
+}
+
+
+input[type=range].blueSlider::-webkit-slider-thumb {
+
+/*  border: 0px solid #64BDFF;
+  background: #F5D800;
+  box-shadow: 0px 0px 5px #F5D800;*/
+
+  height: 18px;
+  width: 18px;
+  border-radius: 25px;
+
+  /* box-shadow: -80px 0 0 80px #43e5f7;*/
+
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px;
+}
+
+input[type=range].greenSlider::-webkit-slider-thumb {
+
+ /* box-shadow: 0px 0px 5px #D0D0D0;
+    border: 0px solid #46C8B2;
+  background: #46C8B2;*/
+  
+  height: 18px;
+  width: 18px;
+  border-radius: 25px;
+
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #ffffff;
+}
+
+input[type=range]:focus::-ms-fill-lower {
+  background: #ffffff;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #ffffff;
+}
+
+.giant-slider{
+    background-color: rgba(0,0,0,0.2);
+    border: 1px solid white;
+    border-radius: 6px;
+    text-align: center;
+    padding: 8% 0;
+    margin: 5% 0;
+}
+
+.giant-slider input[type=range]{
+    width: 90%;
+    margin: 0 auto;
+
+}
+
+.st-slider p{
+    display: inline-block;
+    color: black;
+    vertical-align: middle;
+    padding-right: 5%;
+}
+
+
+.radio-inline {
+    display: inline-block;
+    position: relative;
+    padding-left: 2em;
+    padding-right: 2em;
+   /* padding: 2em;*/
+    margin-bottom: 12px;
+    margin-top: 12px;
+    
+
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: center;
+}
+
+/* Hide the browser's default radio button */
+.radio-inline input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color:rgba(255,255,255,0.8);
+    border-radius: 50%;
+    border: 1px solid #d0d0d0;
+}
+
+/* On mouse-over, add a grey background color */
+.radio-inline:hover input ~ .checkmark {
+   /* border: 1px solid #ccc;*/
+}
+
+/* When the radio button is checked, add a blue background */
+.radio-inline input:checked ~ .checkmark {
+    background-color: #fff;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-inline input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio-inline .checkmark:after {
+    top: 6px;
+    left:6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #64bdff;
+}
+
+
+            /*Check box*/
+
+/* The container */
+.form-check {
+   
+    position: relative;
+    padding-left: 2em;
+    padding-right: 0.5em;
+   /* margin-bottom: 20px;
+    margin-top:20px;*/
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.form-check input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkbox-mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: rgba(255,255,255,0.8);
+    border: 1px solid #D0D0D0;
+    border-radius: 10%;
+}
+
+/* On mouse-over, add a grey background color */
+/*.form-check:hover input ~ .checkbox-mark{
+    background-color: #ccc;
+}
+*/
+/* When the checkbox is checked, add a blue background */
+/*.form-check input:checked ~ .checkbox-mark{
+    background-color: white;
+}*/
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkbox-mark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.form-check input:checked ~ .checkbox-mark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.form-check .checkbox-mark:after {
+    left: 6px;
+    top: 2.5px;
+    width: 5px;
+    height: 10px;
+    border: solid #64bdff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+
+
+    /*input number*/
+    input[type=number]{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 1em;
+    height: 2em;
+    width: 8em;
+    border: 1px solid #D0D0D0;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 6px;
+    display: block;
+    font-family: 'Assistant',sans-serif;
+
+}
+
+
+input[type=number]::-webkit-inner-spin-button { 
+    -webkit-appearance: none;
+    cursor:pointer;
+    display:block;
+    width:8px;
+    color: #333;
+    text-align:center;
+    position:relative;
+}
+
+input[type=number]:hover::-webkit-inner-spin-button { 
+    background: transparent url(../img/button/range-number-arrow.svg) no-repeat 50% 50%;  
+    width: 14px;
+    height: 14px;
+    padding: 4px;
+    position: relative;
+    right: 4px;
+    border-radius: 6px;
+}
+
+
+
+
+
+
+
+
+
+#text-bold {
+    font-weight: 600;
+}
+
+#text-italic {
+    font-style: italic;
+    font-family: 'Merriweather';
+}
+
+#text-hightlight {
+    background-color: rgba(0, 156, 222, 0.3);
+}
+
+table {
+    border-collapse: collapse;
+   width: 100%;
+
+}
+
+
+table, th, td {
+    border: 1px solid #CDCDCD;
+    background-color: rgba(255,255,255,0.4);
+
+       
+}
+
+th, td{
+   /* padding: 2%;*/
+    text-align: center;
+}
+
+
+.erf-center
+{
+  height: 100vh;
+  position: relative;
+}
+
+.erf-center .col-left {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -50%);
+}
+.erf-center .col-right {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(0%, -50%);
+}
+
+/*buttons*/
+#coinWrapper
+{
+    width: 100%;
+    text-align: center;
+}
+
+@media screen and (min-width: 680px) {
+    #coinButtons
+    {
+        width: 60%;
+    }
+}
+@media screen and (max-width: 680px) {
+    #coinButtons
+    {
+        width: 100%;
+    }
+}
+
+.button-1 {
+    border: 1px solid #D0D0D0;
+    display: inline-block;
+    padding: 0.6em 1em;
+    margin: 2% 1%;
+    color: black;
+    background-color: white;
+    pointer-events: auto;
+
+    -webkit-transition: background-color 0.5s ease-out;
+    -webkit-transition: border 0.2s ease-out;
+    border-radius: 6px;
+
+  /*  font-size: 0.8em;*/
+    /*white-space:nowrap;*/
+}
+
+
+.button-1-s {
+    border: 1px solid #D0D0D0;
+    display: inline-block;
+    padding: 0.6em 1em;
+    margin: 2% auto;
+
+    color: black;
+    background-color: white;
+    pointer-events: auto;
+
+    -webkit-transition: background-color 0.5s ease-out;
+    -webkit-transition: border 0.2s ease-out;
+    border-radius: 6px;
+
+    font-size: 0.8em;
+}
+
+.button-1:hover, .button-1-s:hover{
+    color: gray;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+
+
+.text-box{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 2em;
+    border: 1px solid #D0D0D0;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 6px;
+}
+
+
+.button-1.active {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.button-1.active:hover {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.5);
+   /* border: 1px solid white;*/
+}
+
+.col-left {
+
+    background-color: #FFE9E7;
+}
+
+.action-buttons ul a li:hover {
+    color: #FF5757;
+}
+
+#next-chapter-color:hover {
+    background-color: #D90677;
+}
+
+
+.action-buttons ul {
+
+    border-top: 1px solid rgba(255, 70, 47, 0.2);
+}
+
+.button-1.active,
+.button-1:hover {
+    border: 1px solid #FF5757;
+    background-color: #FF5757;
+    color: white;
+}
+
+input[type=range].blueSlider::-webkit-slider-thumb {
+
+    background: #FEACA2;
+}
+
+input[type=range].greenSlider::-webkit-slider-thumb {
+
+
+    background: #F184CF;
+}
+
+
+
+@media screen and (min-width: 750px) {
+    #bi {
+        display: block;
+    }
+
+    #cp,
+    #ra,
+    #pd,
+    #fi,
+    #bp {
+        display: none;
+    }
+}
+
+.progress-bar-color {
+    background-color: #FF5757;
+}
+
+
+
+/*VISUALIZATIONS*/
+
+
+/* Bayes */
+
+.bar line {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.bar text {
+    fill: black;
+    text-anchor: middle;
+}
+
+.disease {
+    fill: #FF8686;
+    stroke-width: 0;
+    stroke: #FF8686;
+}
+
+.healthy {
+    fill: #84DEFF;
+    stroke-width: 0;
+    stroke: #84DEFF;
+}
+
+.slider {
+    cursor: pointer;
+    stroke-width: 3;
+    stroke: white;
+}
+
+table td:hover {
+    background-color: #FEACA2;
+}
+
+
+/* Prior */
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    /*font-family: "Helvetica Neue";*/
+    font-size: 11px;
+    fill: black;
+}
+
+.blur-out {
+    -webkit-filter: blur(8px);
+    opacity: 0.1;
+    -webkit-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+}
+
+
+
+/*responsive*/
+
+@media screen and (max-width: 680px) {
+    #coinWrapper {
+        display: block;
+    }
+
+
+    #mathjax-5-2{
+        font-size: 14px;
+        text-align: center !important;
+    }
+
+    #mathjax-5-1{
+        font-size: 0.5em;
+    }
+}
+
+@media screen and (min-width: 680px) {
+    #coinWrapper {
+        display: inline-flex;
+    }
+
+     .MathJax_Display {
+       /* font-size: 12px;*/
+        text-align: center !important;
+    }
+
+    #mathjax-5-1{
+        font-size: 0.8em;
+    }
+}
+
+
+@media screen and (min-width: 1080px) {
+    #mathjax-5-1{
+        font-size: 1em;
+    }
+}
+
+#coinWrapper2 {
+    text-align: center;
+}
+
+#coinWrapper2 img {
+    width: 60px;
+    height: 60px;
+}
+
+.coin-img,
+.coin-text {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 2% 2%;
+}
+
+@media screen and (min-width: 680px) {
+    #coin {
+        width: 100px;
+        height: 100px;
+    }
+}
+@media screen and (max-width: 680px) {
+    #coin {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+#coin {
+
+    background-image: url(./img/head.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: inline-block;
+}
+
+#coinButtons {
+    display: inline-flex;
+    flex-direction: column;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#coinButtons .btn {
+    margin: 5px 0px;
+}
+
+.beta {
+    stroke: #FF988B;
+    fill: none;
+}
+
+.true {
+    stroke: #F184CF;
+    stroke-width: 2;
+    stroke-dasharray: 2;
+}
+
+
+
+/* Likelihood */
+
+.sample {
+    fill: #FEACA2;
+}
+
+.sample-line {
+    stroke: #F184CF;
+    stroke-width: 3;
+    stroke-dasharray: 2;
+}
+
+.likelihood-line {
+    stroke: #F184CF;
+    stroke-width: 3;
+    stroke-dasharray: 2;
+}
+
+.sampling {
+    fill: #FEACA2;
+    fill-opacity: 0.5;
+    stroke: #FEACA2;
+    stroke-width: 5;
+}
+
+.density {
+    fill: none;
+    stroke: #FEACA2;
+    stroke-width: 2;
+}
+
+.likelihood {
+    fill: none;
+    stroke: #F184CF;
+    stroke-width: 5;
+}
+
+.ticks {
+    display: none;
+}
+
+.handle {
+    fill: #F184CF;
+}

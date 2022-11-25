@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Being Frequentist? A Friendship Case</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/themes/css/main.css" />
+</head>
+<body>
+
+    <div class="navigation pure-menu pure-menu-horizontal">
+        <a href="/" class="pure-menu-heading  pure-menu-link">Erfan Loghmani - Homepage</a>
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item"></li>
+
+            <li class="pure-menu-item"><a href="/category/academia.html" class="pure-menu-link">Academia</a></li>
+            <li class="pure-menu-item pure-menu-selected"><a href="/category/blog.html" class="pure-menu-link">Blog</a></li>
+            <li class="pure-menu-item">
+                <a href="http://ce.sharif.edu/~loghmani/themes/CV.pdf" target="_blank" class="pure-menu-link">CV</a>
+            </li>
+        </ul>
+    </div>
+
+
+<div class="page-container">
+    <div class="entry-content">
+        <div class="post-meta pure-g">
+<div class="pure-u-3-4 meta-data">
+    <a href="/category/blog.html" class="category">Blog</a><br />
+
+    <a class="author" href="/author/erfan-loghmani.html">Erfan Loghmani</a>
+    &mdash; <abbr title="2020-11-02T23:12:00-08:00">Mon 02 November 2020</abbr>
+</div>        </div>
+    </div>
+
+    <div class="article-header-container">
+        <div class="background-image-container">
+
+            <div class="background-image-small">
+                <div class="title-container">
+                    <h1>Being Frequentist? A Friendship Case</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-content">
+        <p>You text a friend that you haven't seen for a long time. She/He replies, but not in a friendly manner, maybe just replying short answers like "I'm fine," "It's OK,"... After a week, you try again with the hope that you could schedule a phone/video call. She/He says it's a good idea and will inform you whenever she/he had time. Days pass, and nothing happens. I've recently been in these situations a few times, and maybe sometimes I was on the other side of the table. The question that comes up is how much you should continue this process, and when you should lose your hope. Or on the other side, how much should you expect your friends to give you time.</p>
+<p>You may have been in these situations as well and may have solutions and techniques for yourself. When I was thinking about this problem weeks ago, I reminded two statistical inference approaches and tried to formalize the problem with that insight. Let's first take a look at the concepts.</p>
+<h2>Frequentist vs Bayesian</h2>
+<p>There are two main approaches in statistical inference, frequentist and bayesian. I will consider the parameter estimation task in this article and compare these two approaches in this task. The parameter estimation task rises in situations like estimating the average height of men in society or estimating the probability of getting heads when flipping a strange coin.</p>
+<p>The frequentist approach only uses data and happenings of the past for its estimation. For instance, if the frequentist approach wants to estimate the probability of heads for a coin, it will use the previous results and counts the number of heads divided by the total number of trials. On the other hand, the Bayesian approach starts with an initial belief and updates it based on observations. To better explain these two, we will see the mathematics behind them for the coin flip problem.</p>
+<h2>Maths for coin flip problem</h2>
+<h3>Frequentist's view</h3>
+<p>Consider we have a coin and have flipped it three times. The first two outcomes were heads, and the last one was tails. The frequentist approach starts without anything in mind because we don't have any prior experiences with the coin. After the first toss, as the outcome is heads, it estimates the probability to be \( \frac{1}{1} \). By the next two tosses, it will update the estimates to \( \frac{2}{2} \) and \( \frac{2}{3} \) consequently.</p>
+<h3>Bayesian's view</h3>
+<p>Analyzing the Bayesian approach is not that straightforward. First, we have to set the initial belief. For simplicity, I will consider the initial belief to have equal weights for these five potential values: \( \{0, \frac{1}{4}, \frac{2}{4}, \frac{3}{4}, 1\} \). We will consider the continuous initial belief in advance. The initial belief will be like:</p>
+<p><img alt="Initial belief" src="/images/being-freq/dist-1.png"></p>
+<p>The Bayesian approach uses the Bayes formula to update its beliefs after each observation. That is</p>
+<p><img alt="Bayes Theorem" src="/images/being-freq/1-bayes.png"></p>
+<p>In this example, \( \theta \) is any of the five potential probability values, and \( D \) is the observations. Let's compute the denominator for the first trial</p>
+<p><img alt="Probability of getting heads on first trial" src="/images/being-freq/2-d1-head.png"></p>
+<p>This means before the first toss; we expect the outcome's probability of being heads to be \( \frac{1}{2} \).
+Now let's compute the new probabilities of parameters after the first toss.</p>
+<p><img alt="Updated probabilities after first trial" src="/images/being-freq/3-update-after-d1.png"></p>
+<p>We see that after the first observation, the Bayesian approach stops putting any weight on the \( \theta = 0 \) condition, as it has seen one head so far. But unlike the frequentist approach, it doesn't immediately says that the probability of getting heads is one and still puts some weights on other possibilities. The calculation continues as</p>
+<p><img alt="Probability of getting heads on second trial" src="/images/being-freq/4-d2-head.png"></p>
+<p><img alt="Updated probabilities after second trial" src="/images/being-freq/5-update-after-d2.png"></p>
+<p>And finally</p>
+<p><img alt="Probability of getting tails on third trial" src="/images/being-freq/6-d3-tail.png"></p>
+<p><img alt="Updated probabilities after third trial" src="/images/being-freq/7-update-after-d3.png"></p>
+<p>The Bayesian approach started with a uniform belief and updated it to give more weights on probabilities near one after seeing the first two heads. Following the third observation, it also removes the weight from \( \theta = 1 \) and skews the probabilities toward lower values.</p>
+<h3>Comparison</h3>
+<p>The frequentist approach gives a unique value for the estimated probability, while the Bayesian approach holds a probability distribution over the values. To reach one estimation value for the Bayesian method, we could take the expectation of the distribution. This way, the estimated probability of getting head in these two approaches will be:</p>
+<p><img alt="Estimated probabilities for each approach" src="/images/being-freq/8-table.png"></p>
+<h3>Continuous version</h3>
+<p>While I had simplified the above example to a discrete version, you can play with the continuous version of the bayesian approach starting from uniform distribution in the section below.</p>
+<iframe id="prior" width="100%" height="480" src="bayesian-inference/index.html"></iframe>
+
+<p>I have taken the codes for this part from the <a href="https://seeing-theory.brown.edu/bayesian-inference/index.html">Seeing Theory</a> website. You can check it out and find other exciting visualizations for probability and statistics concepts.</p>
+<p>In the continuous version, <a href="http://www.cs.tau.ac.il/~mansour/ml-course-12/Scribe2_Bayes.pdf">it is shown that</a> the expectation of the Bayesian estimate is \( \frac{H + 1}{N + 2} \), where \( H \) is the number of heads and \( N \) is the total number of trials. On the other hand, the frequentist approach estimates the parameter to be \( \frac{H}{N} \). It is somehow like that the Bayesian method adds one head and one tail to the beginning of the sequence.</p>
+<h2>Back to the friendship case</h2>
+<p>The friendship scenarios are related to the coin flip example as I always have to estimate my friend's probability of responding appropriately. Then, maybe if I see the estimated probability is less than a threshold, I will lose my hope and don't text her/him the next time.</p>
+<p>Let's define an optimistic line that indicates how hopeful you are about your friend's next behavior.</p>
+<p><img alt="Optimistic line" src="/images/being-freq/9-opt-line.png"></p>
+<p><span style="font-size:0.9em;"><strong>Notice:</strong> The faces are designed by Bonita90 from <a href="https://99designs.co.uk/buttons-icons/contests/button-icon-cancerlife-105934">99design</a></span></p>
+<p>We want to see where each statistical approach will stand on this line in different situations.</p>
+<p>First, consider a situation where you had two unsuccessful attempts in connecting with your friend. The frequentist approach estimates the probability as \( \frac{0}{2} \) while the Bayesian approach's average estimate will be \( \frac{1}{4} \). So the line will be</p>
+<p><img alt="Optimistic line after two bad happenings" src="/images/being-freq/10-opt-line-bad.png"></p>
+<p>Oppositely, consider a situation where both of your first attempts were successful. Now the frequentist approach will estimate \( \frac{2}{2} \), and the Bayesian approach will estimate \( \frac{3}{4} \) on average. And we get</p>
+<p><img alt="Optimistic line after two good happenings" src="/images/being-freq/11-opt-line-good.png"></p>
+<p>What about you? Where do you stand on the optimistic line in each of these scenarios? Of course, the answer may differ based on other factors, the details of what has happened between you, or maybe your personality and how much you like that friend. When I discussed this issue with some of my friends, some of them told me they are more optimistic in most cases because they know that everyone could face hard times and we have to be more patient in friendships.</p>
+<p>While you are free to decide where you want to stand, personally, I think the frequentist approach is not a good option. I have some problems with this approach in both examples. It seems to me that the frequentist approach makes a harsh decision too early that may have harmful consequences. In the first example, it may lose hope early, causing a valuable friendship to die. On the other side, being optimistic based on a few good experiences may higher the expectations, and future bad outcomes may hurt you more. Overall, I think taking a moment before each decision and seeing it from this perspective is helpful. We could check how much evidence we have for our decisions and how confident we should be based on them.</p>
+<p><strong>Let me know your thoughts on this issue. Also, it will be great if you mention what other things we should consider in our modeling.</strong></p>
+<h2>Thanks</h2>
+<p>Thank you, Matin Ansaripour, Bahar Salamatian, and Atia Hamidizadeh, for providing your time to discuss this topic, which helped me see the subject from new perspectives and organize this blog post. Additionally, Sina Rismanchian, Tannaz Azari, and again Bahar Salamatian to proofread the article and providing their opinions and excellent suggestions.</p>
+    </div>
+
+    <footer>
+        <div class="tags">
+            <a href="/tag/life.html">Life</a>
+            <a href="/tag/blog.html">Blog</a>
+        </div>
+        <div class="pure-g post-footer">
+            <div class="pure-u-1 pure-u-md-1-2">
+                <div class="pure-g poster-info">
+                    <div class="pure-u">
+                        <a href="/author/erfan-loghmani.html"><img src="themes/me.jpg" alt=""></a>
+                    </div>
+                    <div class="pure-u-3-4">
+                        <h3 class="author-name"><a href="/author/erfan-loghmani.html">Erfan Loghmani</a></h3>
+                        <p class="author-description">
+                          
+            I am a Quanttative Marketing Ph.D. student at Foster Business School (University of Washington).
+        
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </footer>
+
+
+</div>
+
+
+
+    <footer class="index-footer">
+
+        <a href="/" title="Erfan Loghmani - Homepage">Erfan Loghmani - Homepage</a>
+        <a href="/category/academia.html">Academia</a>
+        <a href="/category/blog.html">Blog</a>
+
+    </footer>
+
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+</body>
+</html>
