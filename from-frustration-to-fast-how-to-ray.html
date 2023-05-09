@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>From Frustration to Fast: Using Ray for Parallel Computing on a Single Machine or a Cluster</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/themes/css/main.css" />
+
+<meta property="og:image" content="/social-cards/from-frustration-to-fast-how-to-ray.png" />
+<meta property="og:title" content="From Frustration to Fast: Using Ray for Parallel Computing on a Single Machine or a Cluster" />
+<meta property="og:description" content="If you're someone who works with data and runs computationally-intensive tasks, you know that multiprocessing can be a game changer. It can speed up your work significantly and save you precious time. I previously used the multiprocessing Python package for running my jobs concurrently, but that didn’t always go …" />
+</head>
+
+<body>
+
+    <div class="navigation pure-menu pure-menu-horizontal">
+        <a href="/" class="pure-menu-heading  pure-menu-link">Erfan Loghmani - Homepage</a>
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item"></li>
+
+            <li class="pure-menu-item"><a
+                    href="/category/academia.html" class="pure-menu-link">Academia</a></li>
+            <li class="pure-menu-item pure-menu-selected"><a
+                    href="/category/blog.html" class="pure-menu-link">Blog</a></li>
+            <li class="pure-menu-item">
+                <a href="https://erfanloghmani.github.io/themes/CV.pdf" target="_blank" class="pure-menu-link">CV</a>
+            </li>
+        </ul>
+    </div>
+
+
+<div class="page-container">
+    <div class="entry-content">
+        <div class="post-meta pure-g">
+<div class="pure-u-3-4 meta-data">
+    <a href="/category/blog.html" class="category">Blog</a><br />
+
+    <a class="author" href="/author/erfan-loghmani.html">Erfan Loghmani</a>
+    &mdash; <abbr title="2023-05-09T12:42:00-07:00">Tue 09 May 2023</abbr>
+</div>        </div>
+    </div>
+
+    <div class="article-header-container">
+        <div class="background-image-container">
+
+            <div class="background-image-small">
+                <div class="title-container">
+                    <h1>From Frustration to Fast: Using Ray for Parallel Computing on a Single Machine or a Cluster</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="entry-content">
+        <p>If you're someone who works with data and runs computationally-intensive tasks, you know that multiprocessing can be a game changer. It can speed up your work significantly and save you precious time. I previously used the <code>multiprocessing</code> Python package for running my jobs concurrently, but that didn’t always go straightforward. I often had challenges when using multiprocessing in jupyter, and it also didn’t deal with errors well. Sometimes I experienced that the jobs would get stuck if the code raised an error without logging the error appropriately.</p>
+<p>That's where Ray comes in. <a href="https://www.ray.io/">Ray</a> is a Python library that has been a real lifesaver for me. It's not only lightning-fast and user-friendly, but it also allows you to distribute your tasks across multiple machines for even faster computation. Additionally, it offers built-in integrations for machine learning and data streaming.</p>
+<p>While there are good resources available online for using Ray on a single machine (like <a href="https://rise.cs.berkeley.edu/blog/ray-tips-for-first-time-users/">this one</a>), there's limited information on how to use it to distribute tasks across multiple machines and manually set up a cluster. As someone who has recently explored this feature of Ray, I want to share my experience with you in this blog post. If you're interested in speeding up your computations and making the most of Ray's capabilities, keep reading!</p>
+<p>I'll first walk you through a simple simulation of SGD (stochastic gradient descent) and how to parallelize it for faster computation. We'll start by parallelizing the simulation on a single machine using Ray, and then we'll take things up a notch by distributing the task across multiple machines.</p>
+<h2>SGD on OLS</h2>
+<p>In this section, I'll provide some background on the simple SGD job that we'll be parallelizing using Ray. Let's consider the ordinary least squares (OLS) setting, where we have n observations of covariates x and independent variables y, and they have a linear relationship in the form of y = x^T beta + epsilon, where beta is the unknown vector of coefficients and epsilon is the error term. Our goal is to obtain an estimate of beta using the SGD algorithm. Of course, you can simply use the OLS close-formed solution. :)</p>
+<p>The SGD algorithm is an iterative optimization technique that randomly selects a data point and updates the estimates of the coefficients based on the error between the predicted and actual values. In each iteration, the algorithm updates the estimate of beta using the gradient of the loss function with respect to beta.</p>
+<p>For this problem, our data-generating process looks like this</p>
+<div class="highlight"><pre><span></span><code><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">eps</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">beta</span> <span class="o">+</span> <span class="n">eps</span>
+</code></pre></div>
+
+<p>Where X is the pooled matrix with each row containing one of the covariate observations, and y is the stacked version of the independent variable.</p>
+<p>The SGD method takes one of the data points at random and updates the estimate using the gradient of the estimation loss.</p>
+<div class="highlight"><pre><span></span><code><span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">x_step</span><span class="p">,</span> <span class="n">y_step</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">Y</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+<span class="n">grad_step</span> <span class="o">=</span> <span class="n">gradient_step</span><span class="p">(</span><span class="n">x_step</span><span class="p">,</span> <span class="n">y_step</span><span class="p">,</span> <span class="n">beta_hat</span><span class="p">)</span>
+<span class="n">beta_hat</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_step</span>
+</code></pre></div>
+
+<p>The complete function looks like this, where I also store the series of step losses and a log of estimates and distances to the true parameter.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">gradient_step</span><span class="p">(</span><span class="n">x_step</span><span class="p">,</span> <span class="n">y_step</span><span class="p">,</span> <span class="n">beta_hat</span><span class="p">):</span>
+   <span class="k">return</span> <span class="o">-</span><span class="n">x_step</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">y_step</span> <span class="o">-</span> <span class="n">x_step</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">beta_hat</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">sgd_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+   <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+   <span class="n">beta_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+   <span class="n">loss_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+   <span class="n">dist_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+   <span class="n">estimate_log_every</span> <span class="o">=</span> <span class="mi">100</span>
+   <span class="n">estimate_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span> <span class="o">//</span> <span class="n">estimate_log_every</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+   <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+       <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+       <span class="n">x_step</span><span class="p">,</span> <span class="n">y_step</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">Y</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+       <span class="n">grad_step</span> <span class="o">=</span> <span class="n">gradient_step</span><span class="p">(</span><span class="n">x_step</span><span class="p">,</span> <span class="n">y_step</span><span class="p">,</span> <span class="n">beta_hat</span><span class="p">)</span>
+       <span class="n">beta_hat</span> <span class="o">-=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_step</span>
+       <span class="n">step_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_step</span> <span class="o">-</span> <span class="n">x_step</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">beta_hat</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+       <span class="n">loss_array</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_loss</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+       <span class="n">dist_array</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">beta_hat</span> <span class="o">-</span> <span class="n">beta</span><span class="p">)</span>
+       <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">estimate_log_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+           <span class="n">estimate_array</span><span class="p">[(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">estimate_log_every</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">beta_hat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">loss_array</span><span class="p">,</span> <span class="n">dist_array</span><span class="p">,</span> <span class="n">estimate_array</span>
+</code></pre></div>
+
+<p>Running this function for <code>T = 60000</code> and 100 repetitions without multiprocessing takes 2 min and 15s for me.</p>
+<div class="highlight"><pre><span></span><code><span class="n">T</span> <span class="o">=</span> <span class="mi">60000</span>
+<span class="n">rounds</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">estimate_log_every</span> <span class="o">=</span> <span class="mi">100</span>
+
+
+<span class="n">all_results_single</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="n">rounds</span><span class="p">):</span>
+   <span class="n">result</span> <span class="o">=</span> <span class="n">sgd_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">estimate_log_every</span><span class="o">=</span><span class="n">estimate_log_every</span><span class="p">)</span>
+   <span class="n">all_results_single</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runs using single process took </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2>Multiprocessing on a Single Machine</h2>
+<p>The process starts with installing ray. You could simply do</p>
+<div class="highlight"><pre><span></span><code>pip install ray
+</code></pre></div>
+
+<p>or </p>
+<div class="highlight"><pre><span></span><code>pip install -U <span class="s2">&quot;ray[default]&quot;</span>
+</code></pre></div>
+
+<p>if you want to have the ray dashboard, a web application that shows how the runs are going, you can access the logs for each run.</p>
+<p>Then you only need to do these steps
+1. <code>import ray</code>
+2. Add <code>@ray.remote</code> annotator to your function. Let's say the function has the name <code>my_func</code>
+3. Call <code>ray.init()</code>
+4. Run the function concurrently using <code>ray.get([my_func.remote() for r in range(rounds)])</code></p>
+<p>In my code, because I wanted both single-process and multiprocess versions of the function, I created a new function for the remote case that just calls the SGD function.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
+<span class="k">def</span> <span class="nf">sgd_loss_remote</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">estimate_log_every</span><span class="p">):</span>
+   <span class="k">return</span> <span class="n">sgd_loss</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">estimate_log_every</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Running the processes then looks like:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">all_results_remote</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+   <span class="p">[</span>
+       <span class="n">sgd_loss_remote</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
+           <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">estimate_log_every</span><span class="o">=</span><span class="n">estimate_log_every</span>
+       <span class="p">)</span>
+       <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rounds</span><span class="p">)</span>
+   <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runs using multiple processes took </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>This way, it only takes 12 seconds to finish! I got a significant win on time by using all of the CPU cores just after adding a few lines.</p>
+<p><img alt="Result of htop command showing all of the CPU cores are used" src="/images/from-frustration-to-fast-how-to-ray/htop-result.png"></p>
+<h2>Manually Run a ray cluster</h2>
+<p>To start this, you need at least two machines in a network setting that can access each other. You also should ensure that both Python environments have ray and other packages required by your code. One of the machines will serve as the master (head), and other machines (workers) will connect to it.</p>
+<p>First, you need to run ray on the head node using </p>
+<div class="highlight"><pre><span></span><code>​​ray start --head
+</code></pre></div>
+
+<p>You may face a question asking whether you want to share usage statistics that you can answer yes or no.</p>
+<p>The response should look like this:</p>
+<div class="highlight"><pre><span></span><code>--------------------
+Ray runtime started.
+--------------------
+
+Next steps
+  To connect to this Ray runtime from another node, run
+    ray start --address<span class="o">=</span><span class="s1">&#39;192.168.1.2:6379&#39;</span>
+
+  Alternatively, use the following Python code:
+    import ray
+    ray.init<span class="o">(</span><span class="nv">address</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="o">)</span>
+
+  To connect to this Ray runtime from outside of the cluster, <span class="k">for</span> example to
+  connect to a remote cluster from your laptop directly, use the following
+  Python code:
+    import ray
+    ray.init<span class="o">(</span><span class="nv">address</span><span class="o">=</span><span class="s1">&#39;ray://&lt;head_node_ip_address&gt;:10001&#39;</span><span class="o">)</span>
+
+  If connection fails, check your firewall settings and network configuration.
+
+  To terminate the Ray runtime, run
+    ray stop
+</code></pre></div>
+
+<p>As the output suggests, you now need to connect workers to the head using</p>
+<div class="highlight"><pre><span></span><code>ray start --address<span class="o">=</span><span class="s1">&#39;{HEAD_NODE_IP}:6379&#39;</span>
+</code></pre></div>
+
+<p>Remember to change the IP address with the IP of the head node.</p>
+<p>The response will be like:</p>
+<div class="highlight"><pre><span></span><code>--------------------
+Ray runtime started.
+--------------------
+To terminate the Ray runtime, run
+  ray stop
+</code></pre></div>
+
+<p>Now, to run your Python code, you need to do</p>
+<div class="highlight"><pre><span></span><code>ray job submit --address<span class="o">=</span><span class="s1">&#39;{HEAD_NODE_IP}:6379&#39;</span> --working-dir . -- python main.py
+</code></pre></div>
+
+<p>The working dir line is critical, specifically if your code uses other local files and packages.
+The output would be like this:</p>
+<div class="highlight"><pre><span></span><code>Job submission server address: http://127.0.0.1:8265
+<span class="m">2023</span>-05-09 <span class="m">19</span>:13:16,062 INFO dashboard_sdk.py:360 -- Package gcs://_ray_pkg_6c68afec082a1408.zip already exists, skipping upload.
+-------------------------------------------------------
+Job <span class="s1">&#39;raysubmit_BAUvdD7m5EWcYXix&#39;</span> submitted successfully
+-------------------------------------------------------
+Next steps
+  Query the logs of the job:
+    ray job logs raysubmit_BAUvdD7m5EWcYXix
+  Query the status of the job:
+    ray job status raysubmit_BAUvdD7m5EWcYXix
+  Request the job to be stopped:
+    ray job stop raysubmit_BAUvdD7m5EWcYXix
+Tailing logs <span class="k">until</span> the job exits <span class="o">(</span>disable with --no-wait<span class="o">)</span>:
+<span class="m">2023</span>-05-09 <span class="m">19</span>:13:18,128 INFO worker.py:1230 -- Using address <span class="m">10</span>.155.105.194:6379 <span class="nb">set</span> <span class="k">in</span> the environment variable RAY_ADDRESS
+<span class="m">2023</span>-05-09 <span class="m">19</span>:13:18,128 INFO worker.py:1342 -- Connecting to existing Ray cluster at address: <span class="m">192</span>.168.1.2:6379...
+<span class="m">2023</span>-05-09 <span class="m">19</span>:13:18,136 INFO worker.py:1519 -- Connected to Ray cluster. View the dashboard at <span class="m">127</span>.0.0.1:8265 
+Runs using multiple processes took <span class="m">9</span>.233 seconds
+------------------------------------------
+Job <span class="s1">&#39;raysubmit_BAUvdD7m5EWcYXix&#39;</span> succeeded
+------------------------------------------
+</code></pre></div>
+
+<p>It now takes only 9 seconds, and I’m running on 74 CPU cores.</p>
+<p>If you have installed the ray with the default option, you can see the dashboard at the head ip address on port <code>8265</code>.</p>
+<p><img alt="Ray Dashboard" src="/images/from-frustration-to-fast-how-to-ray/ray-dashboard.png"></p>
+<p>As suggested in the output of the submit command, you can see the logs and status of the job using its Submission_ID. You can also stop the job. The commands are</p>
+<p>Wow, that was a lot of stuff to cover! In this post, we've explored how to distribute computation jobs using Ray for faster and more efficient computation. Looking at an example of SGD, we’ve seen how we can significantly reduce the running time of our computations by at least a factor of 10 (this can vary depending on the computation resources you have and your tasks).</p>
+<p>Before we go, I want to share some additional tips and insights I've gained through my experience with Ray. I'll also provide some visualizations of the SGD experiment that you might find interesting.</p>
+<h2>Additional tips</h2>
+<h3>Port is not available</h3>
+<p>If you are getting this message</p>
+<div class="highlight"><pre><span></span><code>ConnectionError: Ray is trying to start at <span class="m">192</span>.168.1.2:6379, but is already running at <span class="m">192</span>.168.1.2:6379
+</code></pre></div>
+
+<p>when running <code>ray start --head</code>, this could be because the port is unavailable or another user is running a ray cluster. You can simply specify another port using</p>
+<div class="highlight"><pre><span></span><code>ray start --head --port <span class="o">{</span>PORT_NUMBER<span class="o">}</span>
+</code></pre></div>
+
+<h3>PermissionError: [Errno 13]</h3>
+<p>You may also get</p>
+<div class="highlight"><pre><span></span><code>Permission denied: <span class="s1">&#39;/tmp/ray/ray_current_cluster&#39;</span>
+</code></pre></div>
+
+<p>when running the <code>start</code> command. This error is probably because another user is running a cluster, and Ray wants to use the same temp directory but does not have the write access. To fix this, you can create another temp directory and give the address using</p>
+<div class="highlight"><pre><span></span><code>ray start –head --temp-dir <span class="o">{</span>PATH_TO_DIR<span class="o">}</span>
+</code></pre></div>
+
+<h3>File outputs</h3>
+<p>By default, if you use a relative path for your file outputs, Ray would write them in the tmp directory created for the run on each machine. If you want to save files, the best way is to mount shared cloud storage to both machines, but if you are not comfortable with that, you can just use absolute paths and collect the files from each machine.</p>
+<h3>Dashboard behind firewall</h3>
+<p>Sometimes server machines don’t expose all the ports to the outside world – where your computer may be. If you have ssh access, you can simply do a port forwarding using the <code>-L</code> option</p>
+<div class="highlight"><pre><span></span><code>ssh -L <span class="m">8265</span>:localhost:8265 user@server.domain.com
+</code></pre></div>
+
+<p>Now you can access the dashboard from your browser at 
+<a href="http://localhost:8265">localhost:8265</a></p>
+    </div>
+
+    <footer>
+        <div class="tags">
+            <a href="/tag/coding.html">Coding</a>
+            <a href="/tag/academia.html">Academia</a>
+            <a href="/tag/blog.html">Blog</a>
+        </div>
+        <div class="pure-g post-footer">
+            <div class="pure-u-1 pure-u-md-1-2">
+                <div class="pure-g poster-info">
+                    <div class="pure-u">
+                        <a href="/author/erfan-loghmani.html"><img
+                                src="themes/me.jpg" alt=""></a>
+                    </div>
+                    <div class="pure-u-3-4">
+                        <h3 class="author-name"><a href="/author/erfan-loghmani.html">Erfan Loghmani</a></h3>
+                        <p class="author-description">
+                            
+            I am a Quantitative Marketing Ph.D. student at Foster Business School (University of Washington).
+        
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </footer>
+
+    <div class="entry-content">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            var disqus_shortname = 'ce-sharif-edu-loghmani';
+            (function () {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript"
+                rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div>
+
+</div>
+
+
+
+    <footer class="index-footer">
+
+        <a href="/" title="Erfan Loghmani - Homepage">Erfan Loghmani - Homepage</a>
+        <a href="/category/academia.html">Academia</a>
+        <a href="/category/blog.html">Blog</a>
+
+    </footer>
+
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+</body>
+
+</html>
