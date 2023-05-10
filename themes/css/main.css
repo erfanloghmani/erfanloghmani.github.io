@@ -317,7 +317,7 @@ div.article-header-container div.background-image-container div.background-image
   margin: 20px 0 40px 0;
 }
 div.article-header-container div.background-image-container div.background-image div.title {
-  color: white;
+  color: rgb(255, 255, 255);
   margin: 0;
   position: absolute;
   top: 50%;
@@ -383,7 +383,8 @@ div.article-header-container div.background-image-container div.background-image
 }
 @media screen and (min-width: 48em) {
   div.article-header-container div.background-image-container div.background-image-small div.title-container {
-    width: 700px;
+    width: 85%;
+    text-align: left;
     margin: 0 auto;
   }
 }
@@ -704,6 +705,9 @@ pre {
   border: 1px solid #E6E6E6;
   border-radius: 4px;
   padding: 6px 9.5px;
+}
+pre code {
+  border: none;
 }
 
 code {

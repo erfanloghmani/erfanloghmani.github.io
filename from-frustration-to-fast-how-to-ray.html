@@ -132,11 +132,21 @@
 </code></pre></div>
 
 <p>if you want to have the ray dashboard, a web application that shows how the runs are going, you can access the logs for each run.</p>
-<p>Then you only need to do these steps
-1. <code>import ray</code>
-2. Add <code>@ray.remote</code> annotator to your function. Let's say the function has the name <code>my_func</code>
-3. Call <code>ray.init()</code>
-4. Run the function concurrently using <code>ray.get([my_func.remote() for r in range(rounds)])</code></p>
+<p>Then you only need to do these steps</p>
+<ol>
+<li>
+<p><code>import ray</code></p>
+</li>
+<li>
+<p>Add <code>@ray.remote</code> annotator to your function. Let's say the function has the name <code>my_func</code></p>
+</li>
+<li>
+<p>Call <code>ray.init()</code></p>
+</li>
+<li>
+<p>Run the function concurrently using <code>ray.get([my_func.remote() for r in range(rounds)])</code></p>
+</li>
+</ol>
 <p>In my code, because I wanted both single-process and multiprocess versions of the function, I created a new function for the remote case that just calls the SGD function.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
 <span class="k">def</span> <span class="nf">sgd_loss_remote</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">estimate_log_every</span><span class="p">):</span>
