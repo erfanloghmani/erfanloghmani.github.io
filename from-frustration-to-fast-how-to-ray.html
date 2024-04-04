@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/themes/css/main.css" />
+    <link rel="stylesheet" href="./themes/css/main.css" />
+    <link href="https://erfanloghmani.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+        title="Erfan Loghmani - Homepage Full Atom Feed" />
 
 <meta property="og:image" content="/social-cards/from-frustration-to-fast-how-to-ray.png" />
 <meta property="og:title" content="From Frustration to Fast: Using Ray for Parallel Computing on a Single Machine or a Cluster" />
@@ -19,14 +21,14 @@
 <body>
 
     <div class="navigation pure-menu pure-menu-horizontal">
-        <a href="/" class="pure-menu-heading  pure-menu-link">Erfan Loghmani - Homepage</a>
+        <a href="./" class="pure-menu-heading  pure-menu-link">Erfan Loghmani - Homepage</a>
         <ul class="pure-menu-list">
             <li class="pure-menu-item"></li>
 
             <li class="pure-menu-item"><a
-                    href="/category/academia.html" class="pure-menu-link">Academia</a></li>
+                    href="./category/academia.html" class="pure-menu-link">Academia</a></li>
             <li class="pure-menu-item pure-menu-selected"><a
-                    href="/category/blog.html" class="pure-menu-link">Blog</a></li>
+                    href="./category/blog.html" class="pure-menu-link">Blog</a></li>
             <li class="pure-menu-item">
                 <a href="https://erfanloghmani.github.io/themes/CV.pdf" target="_blank" class="pure-menu-link">CV</a>
             </li>
@@ -38,9 +40,9 @@
     <div class="entry-content">
         <div class="post-meta pure-g">
 <div class="pure-u-3-4 meta-data">
-    <a href="/category/blog.html" class="category">Blog</a><br />
+    <a href="./category/blog.html" class="category">Blog</a><br />
 
-    <a class="author" href="/author/erfan-loghmani.html">Erfan Loghmani</a>
+    <a class="author" href="./author/erfan-loghmani.html">Erfan Loghmani</a>
     &mdash; <abbr title="2023-05-09T12:42:00-07:00">Tue 09 May 2023</abbr>
 </div>        </div>
     </div>
@@ -58,7 +60,7 @@
 
     <div class="entry-content">
         <p>If you're someone who works with data and runs computationally-intensive tasks, you know that multiprocessing can be a game changer. It can speed up your work significantly and save you precious time. I previously used the <code>multiprocessing</code> Python package for running my jobs concurrently, but that didn’t always go straightforward. I often had challenges when using multiprocessing in jupyter, and it also didn’t deal with errors well. Sometimes I experienced that the jobs would get stuck if the code raised an error without logging the error appropriately.</p>
-<p><img alt="A generated image of a person working with an old computer, Image credit: Microsoft/Bing" src="/images/from-frustration-to-fast-how-to-ray/waiting-person.jpeg"></p>
+<p><img alt="A generated image of a person working with an old computer, Image credit: Microsoft/Bing" src="./images/from-frustration-to-fast-how-to-ray/waiting-person.jpeg"></p>
 <p>That's where Ray comes in. <a href="https://www.ray.io/">Ray</a> is a Python library that has been a real lifesaver for me. It's not only lightning-fast and user-friendly, but it also allows you to distribute your tasks across multiple machines for even faster computation. Additionally, it offers built-in integrations for machine learning and data streaming.</p>
 <p>While there are good resources available online for using Ray on a single machine (like <a href="https://rise.cs.berkeley.edu/blog/ray-tips-for-first-time-users/">this one</a>), there's limited information on how to use it to distribute tasks across multiple machines and manually set up a cluster. As someone who has recently explored this feature of Ray, I want to share my experience with you in this blog post. If you're interested in speeding up your computations and making the most of Ray's capabilities, keep reading!</p>
 <p>I'll first walk you through a simple simulation of SGD (stochastic gradient descent) and how to parallelize it for faster computation. We'll start by parallelizing the simulation on a single machine using Ray, and then we'll take things up a notch by distributing the task across multiple machines.</p>
@@ -170,7 +172,7 @@
 </code></pre></div>
 
 <p>This way, it only takes 16 seconds to finish! I got a significant win on time by using all of the CPU cores just after adding a few lines.</p>
-<p><img alt="Result of htop command showing all of the CPU cores are used" src="/images/from-frustration-to-fast-how-to-ray/htop-result.png"></p>
+<p><img alt="Result of htop command showing all of the CPU cores are used" src="./images/from-frustration-to-fast-how-to-ray/htop-result.png"></p>
 <h2>Run a ray cluster manually</h2>
 <p>Ray offers <a href="https://docs.ray.io/en/latest/cluster/getting-started.html">documentation</a> for setting up Ray clusters on AWS or GCP servers, as well as utilizing Kubernetes. If these options align better with your requirements, I recommend referring to the documentation for detailed instructions. However, keep reading the post if you want to avoid the initial steps of setting up Kubernetes or wish to use Ray on your machines. In this section, I will focus on the scenario where you prefer to run a Ray cluster on multiple machines manually.</p>
 <p>To start this, you need at least two machines in a network setting that can access each other. You also should ensure that both Python environments have ray and other packages required by your code. One of the machines will serve as the master (head), and other machines (workers) will connect to it.</p>
@@ -247,7 +249,7 @@ Job <span class="s1">&#39;raysubmit_BAUvdD7m5EWcYXix&#39;</span> succeeded
 
 <p>It now takes only 11 seconds, and I’m running on 76 CPU cores.</p>
 <p>If you have installed the ray with the default option, you can see the dashboard at the head ip address on port <code>8265</code>.</p>
-<p><img alt="Ray Dashboard" src="/images/from-frustration-to-fast-how-to-ray/ray-dashboard.png"></p>
+<p><img alt="Ray Dashboard" src="./images/from-frustration-to-fast-how-to-ray/ray-dashboard.png"></p>
 <p>As suggested in the output of the submit command, you can see the logs and status of the job using its Submission_ID. You can also stop the job. The commands are</p>
 <div class="highlight"><pre><span></span><code>ray job logs <span class="o">{</span>SUBMISSION_ID<span class="o">}</span>
 ray job status <span class="o">{</span>SUBMISSION_ID<span class="o">}</span>
@@ -256,7 +258,7 @@ ray job stop <span class="o">{</span>SUBMISSION_ID<span class="o">}</span>
 
 <hr>
 <p>Wow, that was a lot of stuff to cover! In this post, we've explored how to distribute computation jobs using Ray for faster and more efficient computation. Looking at an example of SGD, we’ve seen how we can significantly reduce the running time of our computations by at least a factor of 10 (this can vary depending on the computation resources you have and your tasks).</p>
-<p><img alt="A generated image of a person working with a new and fast computer, Image credit: Microsoft/Bing" src="/images/from-frustration-to-fast-how-to-ray/person-working-with-fast-computer.jpeg"></p>
+<p><img alt="A generated image of a person working with a new and fast computer, Image credit: Microsoft/Bing" src="./images/from-frustration-to-fast-how-to-ray/person-working-with-fast-computer.jpeg"></p>
 <p>Before we go, I want to share some additional tips and insights I've gained through my experience with Ray. I'll also provide some visualizations of the SGD experiment that you might find interesting.</p>
 <h2>Additional tips</h2>
 <h3>Port is not available</h3>
@@ -288,29 +290,29 @@ ray job stop <span class="o">{</span>SUBMISSION_ID<span class="o">}</span>
 <a href="http://localhost:8265">localhost:8265</a></p>
 <h2>SGD Results</h2>
 <p>Finally, let's look at some of the results obtained from the SGD algorithm. The figure below provides insights into the learning procedure over time. On the left plot, we observe the squared loss at each step, representing the square of the distance between the true y value and the prediction. The right plot illustrates the \( l_2 \) distance between the estimated and true beta values. Notably, both plots exhibit a rapid initial decay, aligning with the expected \( O(1/t) + O(lr) \) convergence rates.</p>
-<p><img alt="Step loss and estimation error over time plots" src="/images/from-frustration-to-fast-how-to-ray/estimation-plots.png"></p>
+<p><img alt="Step loss and estimation error over time plots" src="./images/from-frustration-to-fast-how-to-ray/estimation-plots.png"></p>
 <p>Moving on, the following figure showcases an animation presenting the histogram of the estimated betas along different repetitions of the algorithm through time. At each time step, the points collectively form a distribution resembling a normal distribution, gradually converging towards the true estimate by the end of the process. These visual representations provide valuable insights into the behavior and convergence of the SGD algorithm and demonstrate its effectiveness in approximating the true values.</p>
-<p><img alt="Animation of histogram of estimation points throught time" src="/images/from-frustration-to-fast-how-to-ray/histogram.gif"></p>
+<p><img alt="Animation of histogram of estimation points throught time" src="./images/from-frustration-to-fast-how-to-ray/histogram.gif"></p>
     </div>
 
     <footer>
         <div class="tags">
-            <a href="/tag/coding.html">Coding</a>
-            <a href="/tag/academia.html">Academia</a>
-            <a href="/tag/blog.html">Blog</a>
+            <a href="./tag/coding.html">Coding</a>
+            <a href="./tag/academia.html">Academia</a>
+            <a href="./tag/blog.html">Blog</a>
         </div>
         <div class="pure-g post-footer">
             <div class="pure-u-1 pure-u-md-1-2">
                 <div class="pure-g poster-info">
                     <div class="pure-u">
-                        <a href="/author/erfan-loghmani.html"><img
+                        <a href="./author/erfan-loghmani.html"><img
                                 src="themes/me.jpg" alt=""></a>
                     </div>
                     <div class="pure-u-3-4">
-                        <h3 class="author-name"><a href="/author/erfan-loghmani.html">Erfan Loghmani</a></h3>
+                        <h3 class="author-name"><a href="./author/erfan-loghmani.html">Erfan Loghmani</a></h3>
                         <p class="author-description">
                             
-            I am a Quantitative Marketing Ph.D. student at Foster Business School (University of Washington).
+            I'm a third-year Quantitative Marketing Ph.D. student at the University of Washington Foster School of Business. My research interests lie in understanding the effects of interventions and marketing activities with applications in online platforms and the healthcare domain. My aim is to provide policymakers and platform designers with actionable insights and tools to implement impactful and efficient interventions, leveraging methodologies from econometrics and computer science.
         
                         </p>
                     </div>
@@ -344,9 +346,9 @@ ray job stop <span class="o">{</span>SUBMISSION_ID<span class="o">}</span>
 
     <footer class="index-footer">
 
-        <a href="/" title="Erfan Loghmani - Homepage">Erfan Loghmani - Homepage</a>
-        <a href="/category/academia.html">Academia</a>
-        <a href="/category/blog.html">Blog</a>
+        <a href="./" title="Erfan Loghmani - Homepage">Erfan Loghmani - Homepage</a>
+        <a href="./category/academia.html">Academia</a>
+        <a href="./category/blog.html">Blog</a>
 
     </footer>
 
