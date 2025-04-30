@@ -384,7 +384,7 @@ div.article-header-container div.background-image-container div.background-image
 @media screen and (min-width: 48em) {
   div.article-header-container div.background-image-container div.background-image-small div.title-container {
     width: 85%;
-    text-align: left;
+    text-align: center;
     margin: 0 auto;
   }
 }
