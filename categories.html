@@ -2,28 +2,26 @@
 <html lang="en">
 
 <head>
-    <title>Erfan Loghmani - Homepage</title>
+    <title>Erfan Loghmani</title>
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="./themes/css/main.css" />
-    <link href="https://erfanloghmani.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-        title="Erfan Loghmani - Homepage Full Atom Feed" />
+    <link rel="stylesheet" href="/themes/css/main.css" />
 </head>
 
 <body>
 
     <div class="navigation pure-menu pure-menu-horizontal">
-        <a href="./" class="pure-menu-heading  pure-menu-link">Erfan Loghmani - Homepage</a>
+        <a href="/" class="pure-menu-heading  pure-menu-link">Erfan Loghmani</a>
         <ul class="pure-menu-list">
             <li class="pure-menu-item"></li>
+            <li class="pure-menu-item"><a href="/research.html" class="pure-menu-link">Research</a></li>
+            <li class="pure-menu-item"><a href="/#cv" class="pure-menu-link">CV</a></li>
+            <li class="pure-menu-item"><a href="/blog.html" class="pure-menu-link">Blog</a></li>
 
-            <li class="pure-menu-item">
-                <a href="https://erfanloghmani.github.io/themes/CV.pdf" target="_blank" class="pure-menu-link">CV</a>
-            </li>
         </ul>
     </div>
 
@@ -32,11 +30,11 @@
 
     <div class="entry-content">
 
-        <h1>Categories for Erfan Loghmani - Homepage</h1>
+        <h1>Categories for Erfan Loghmani</h1>
 
         <ul>
-            <li><a href="./category/academia.html">Academia</a></li>
-            <li><a href="./category/blog.html">Blog</a></li>
+            <li><a href="/category/academia.html">Academia</a></li>
+            <li><a href="/category/blog.html">Blog</a></li>
         </ul>
 
     </div>
@@ -46,20 +44,55 @@
 
     <footer class="index-footer">
 
-        <a href="./" title="Erfan Loghmani - Homepage">Erfan Loghmani - Homepage</a>
+        <a href="/" title="Erfan Loghmani">Erfan Loghmani</a>
+        <a href="/research.html">Research</a>
+        <a href="/#cv">CV</a>
+        <a href="/blog.html">Blog</a>
 
     </footer>
 
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3QZ3Q24MV9"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-3QZ3Q24MV9');
+    <script type="text/javascript">
+    (function () {
+        var sections = document.querySelectorAll('.cv-block .academic-section');
+        if (!sections.length) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            sections.forEach(function (section) { section.classList.add('is-visible'); });
+            return;
+        }
+        if (!('IntersectionObserver' in window)) {
+            sections.forEach(function (section) { section.classList.add('is-visible'); });
+            return;
+        }
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
+        sections.forEach(function (section) { observer.observe(section); });
+    })();
+    </script>
+    <script type="text/javascript">
+    (function () {
+        var toggles = document.querySelectorAll('[data-photo-toggle]');
+        toggles.forEach(function (wrap) {
+            var btn = wrap.querySelector('.academic-avatar-btn');
+            var img = wrap.querySelector('.academic-avatar-img');
+            if (!btn || !img) return;
+            var currentSrc = wrap.getAttribute('data-current-src');
+            var oldSrc = wrap.getAttribute('data-old-src');
+            var showingOld = false;
+            btn.addEventListener('click', function () {
+                showingOld = !showingOld;
+                wrap.classList.toggle('is-oldlook', showingOld);
+                img.src = showingOld ? oldSrc : currentSrc;
+            });
+        });
+    })();
     </script>
 </body>
 
