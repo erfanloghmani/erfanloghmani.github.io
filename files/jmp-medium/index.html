@@ -1,0 +1,2915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reward Modeling for Business Objectives: Navigating the Bias-Variance Tradeoff between Observational and Experimental Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+<style>
+:root{
+  --uw-purple:#4b2e83;
+  --uw-purple-deep:#32215c;
+  --uw-gold:#b7a57a;
+  --uw-gold-deep:#85754d;
+  --paper:#f7f5f2;
+  --ink:#241d33;
+  --muted:#6b6478;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:#1a1226;
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--ink);
+  overflow:hidden;
+}
+
+/* Base slide chrome — must NOT depend on body.audience so HTMLpresenter
+   thumbnail iframes (and other single-slide previews) get correct colors. */
+section.slide{
+  flex-direction:column;
+  background:var(--paper);
+  box-sizing:border-box;
+  color:var(--ink);
+}
+section.slide.layout-title{
+  background:var(--uw-purple);
+  padding:0;
+}
+section.slide.layout-section{
+  background:var(--uw-purple-deep);
+  padding:0;
+}
+
+/* Audience deck: one full-screen slide at a time */
+body.audience > section.slide{
+  position:fixed;inset:0;
+  display:none;
+  padding:5.5vh 6vw 0;
+  width:100vw;height:100vh;
+}
+body.audience > section.slide.active{display:flex;}
+body.audience > section.slide.layout-title,
+body.audience > section.slide.layout-section{
+  padding:0;
+}
+
+/* Lone slide in a preview iframe (HTMLpresenter current/next thumbs) */
+body > section.slide:only-child{
+  display:flex !important;
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  height:100% !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+body > section.slide:only-child.layout-content,
+body > section.slide:only-child.layout-split,
+body > section.slide:only-child.layout-vstack{
+  padding:5.5vh 6vw 0;
+}
+/* Keep figures visible and proportional inside HTMLpresenter 1280×720 thumbs */
+body > section.slide:only-child .fig{
+  max-height:none;
+}
+body > section.slide:only-child .fig img{
+  max-height:min(420px,52vh);
+  max-width:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+}
+body > section.slide:only-child .split-media{
+  max-height:none;
+  height:100%;
+  min-height:0;
+}
+body > section.slide:only-child .split{
+  min-height:0;
+  align-items:center;
+}
+/* Preview iframe page chrome should match the slide, not the dark deck shell */
+html:has(> body > section.slide:only-child) body{
+  background:var(--paper);
+}
+html:has(> body > section.slide.layout-title:only-child) body{
+  background:var(--uw-purple);
+}
+html:has(> body > section.slide.layout-section:only-child) body{
+  background:var(--uw-purple-deep);
+}
+
+.slide-inner{flex:1;display:flex;flex-direction:column;min-height:0;width:100%;}
+
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--uw-gold);z-index:50;transition:width .25s ease;}
+
+.slide-head{margin-bottom:2.4vh;border-left:6px solid var(--uw-gold);padding-left:22px;}
+.slide-title{
+  font-family:'Spectral',Georgia,serif;
+  font-weight:600;font-size:clamp(28px,3.6vw,50px);
+  color:var(--uw-purple);line-height:1.05;letter-spacing:-.01em;
+}
+.slide-sub{margin-top:8px;font-size:clamp(15px,1.5vw,21px);color:var(--muted);font-weight:500;}
+
+.content-body{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:2.2vh;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+.split-text{
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  align-self:stretch;
+  padding-right:2px;
+}
+.vstack-text{
+  flex:0 0 auto;
+  min-height:0;
+  max-height:42%;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.content-body:has(> .table-wrap){
+  justify-content:center;
+}
+.content-body:has(> .fig):not(:has(.bullets)){
+  justify-content:center;
+  gap:1.2vh;
+}
+.content-body > .table-wrap{
+  width:100%;
+  max-width:1100px;
+  align-self:center;
+}
+.content-body:has(> .fig):not(:has(.bullets)) > .fig{
+  width:100%;
+  max-width:1200px;
+  margin-top:0;
+  flex:0 1 auto;
+  min-height:0;
+}
+.content-body:has(> .fig):not(:has(.bullets)) > .fig img{
+  max-height:68vh;
+}
+/* Two stacked plots on one slide */
+.content-body:has(> .fig + .fig):not(:has(.bullets)) > .fig img{
+  max-height:38vh;
+}
+.content-body:has(> .fig + .fig):not(:has(.bullets)) > .fig{
+  max-height:42vh;
+}
+.callout{
+  margin-top:0.6vh;
+  padding:1.6vh 1.4vw;
+  border-radius:12px;
+  background:rgba(75,46,131,.08);
+  border:1.5px solid rgba(75,46,131,.28);
+  border-left:5px solid var(--uw-purple);
+}
+.callout-label{
+  font-size:clamp(11px,1vw,13px);
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--uw-purple);
+  margin-bottom:.5vh;
+}
+.callout-body{
+  font-size:clamp(15px,1.45vw,21px);
+  font-weight:550;
+  line-height:1.35;
+  color:var(--ink);
+}
+.callout-intro{margin-bottom:0.7vh;}
+.callout-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:0.45vh;
+  margin:0;
+  padding:0;
+}
+.callout-list>li{
+  position:relative;
+  padding-left:1.1em;
+  font-size:clamp(14px,1.3vw,19px);
+  font-weight:500;
+  line-height:1.3;
+}
+.callout-list>li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0.45em;
+  width:7px;
+  height:7px;
+  background:var(--uw-purple);
+  border-radius:1px;
+  transform:rotate(45deg);
+}
+.fragment{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .28s ease, visibility .28s ease;
+}
+.fragment.visible{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:1.6vh;}
+.bullets>li{
+  position:relative;padding-left:34px;
+  font-size:clamp(16px,1.9vw,26px);line-height:1.4;color:var(--ink);
+}
+.bullets>li::before{
+  content:"";position:absolute;left:4px;top:.62em;
+  width:12px;height:12px;background:var(--uw-purple);
+  transform:rotate(45deg);border-radius:2px;
+}
+.bullets>li.spacer{
+  padding-left:0;
+  min-height:1.2vh;
+  list-style:none;
+}
+.bullets>li.spacer::before{content:none;display:none;}
+.agenda-body{justify-content:center;max-width:52rem;margin:0 auto;width:100%;}
+.agenda{list-style:none;display:flex;flex-direction:column;gap:1.4vh;width:100%;}
+.agenda-item{
+  display:grid;
+  grid-template-columns:3.2rem 1fr auto;
+  align-items:center;
+  gap:1.2rem;
+  padding:1.1vh 1.4rem;
+  border-radius:10px;
+  font-size:clamp(20px,2.15vw,30px);
+  font-weight:500;
+  line-height:1.25;
+  border:1px solid transparent;
+}
+.agenda-num{
+  font-variant-numeric:tabular-nums;
+  font-weight:700;
+  font-size:.9em;
+  color:var(--uw-gold-deep);
+}
+.agenda-tag{
+  font-size:.55em;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  min-width:3.5rem;
+  text-align:right;
+}
+.agenda-item.done{
+  opacity:.42;
+  color:var(--ink);
+  background:transparent;
+}
+.agenda-item.done .agenda-num{color:var(--uw-gold-deep);}
+.agenda-item.done .agenda-tag{display:none;}
+.agenda-item.next{
+  color:var(--uw-purple);
+  background:rgba(75,46,131,.08);
+  border-color:rgba(75,46,131,.22);
+  font-weight:650;
+  box-shadow:0 0 0 1px rgba(75,46,131,.06);
+}
+.agenda-item.next .agenda-num{color:var(--uw-purple);}
+.agenda-item.next .agenda-tag{color:var(--uw-purple);}
+.agenda-item.upcoming{color:var(--ink);}
+.agenda-item.upcoming .agenda-tag{color:transparent;}
+.agenda-item.agenda-link{cursor:pointer;}
+.agenda-item.agenda-link:hover{
+  border-color:rgba(51,0,111,.22);
+  background:rgba(51,0,111,.04);
+}
+.agenda-item.agenda-link:focus-visible{
+  outline:2px solid var(--uw-purple);
+  outline-offset:2px;
+}
+.compare-body{justify-content:center;min-height:0;}
+.compare{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));
+  gap:1.4vw;
+  width:100%;
+  min-height:0;
+  flex:1;
+  align-items:stretch;
+}
+.panel{
+  display:flex;
+  flex-direction:column;
+  gap:1.0vh;
+  min-width:0;
+  min-height:0;
+  padding:1.2vh 1.0vw 1.4vh;
+  border:1px solid rgba(75,46,131,.14);
+  border-radius:14px;
+  background:rgba(255,255,255,.55);
+}
+.panel-title{
+  font-size:clamp(16px,1.5vw,22px);
+  font-weight:700;
+  color:var(--uw-purple);
+  line-height:1.2;
+}
+.panel .fig{width:100%;margin:0;}
+.panel .fig img{width:100%;max-height:28vh;object-fit:contain;}
+.panel .bullets{gap:0.85vh;flex:1;}
+.panel .bullets>li{font-size:clamp(12px,1.15vw,16px);padding-left:26px;}
+.panel .bullets>li::before{width:8px;height:8px;left:2px;top:.7em;}
+.panel .example{
+  flex:1;
+  font-size:clamp(10px,0.95vw,13px);
+  line-height:1.32;
+  color:var(--ink);
+  background:rgba(75,46,131,.04);
+  border-radius:8px;
+  padding:0.9vh 0.7vw;
+  overflow:auto;
+  max-height:48vh;
+  white-space:pre-wrap;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.compare-body .callout{
+  margin-top:0;
+  margin-bottom:0.4vh;
+  max-height:18vh;
+  overflow:auto;
+}
+.compare-body .callout-body{
+  font-size:clamp(11px,1.0vw,14px);
+  font-weight:500;
+  white-space:pre-wrap;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.panel .takeaway{
+  font-size:clamp(12px,1.15vw,15px);
+  color:var(--uw-purple);
+  font-weight:600;
+  line-height:1.3;
+}
+.bullets .sub{
+  list-style:none;
+  margin:.8vh 0 .2vh;
+  padding-left:32px;
+  display:flex;
+  flex-direction:column;
+  gap:.7vh;
+}
+.bullets .sub>li{
+  position:relative;padding-left:28px;
+  font-size:clamp(14px,1.45vw,20px);color:var(--muted);line-height:1.35;
+}
+.bullets .sub>li::before{
+  content:"";position:absolute;left:4px;top:.62em;
+  width:7px;height:7px;border:2px solid var(--uw-gold-deep);border-radius:50%;
+}
+strong{color:var(--uw-purple);font-weight:700;}
+em{color:var(--uw-gold-deep);font-style:italic;}
+
+/* KaTeX */
+.katex{font-size:1.08em;}
+.katex-display{margin:0.55em 0;overflow-x:auto;overflow-y:hidden;}
+.slide .katex-display>.katex{text-align:left;}
+.bullets .katex-display{margin:0.35em 0;}
+
+.split{flex:1;display:grid;grid-template-columns:1.05fr 1fr;gap:4vw;align-items:stretch;min-height:0;}
+.split-text .bullets{gap:1.5vh;}
+.split-media{display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;height:100%;min-width:0;min-height:0;overflow:hidden;}
+.split-media .table-wrap{width:100%;}
+.split-media .result-table{font-size:clamp(10px,0.92vw,13px);}
+.split-media .result-table th,.split-media .result-table td{padding:0.45em 0.35em;}
+.split-media .result-table th{white-space:normal;}
+.split-media .table-wrap figcaption{text-align:left;}
+
+.vstack{flex:1;display:flex;flex-direction:column;gap:1.6vh;min-height:0;}
+.vstack-text .bullets{gap:1.1vh;}
+.vstack-text .bullets>li{font-size:clamp(15px,1.6vw,22px);}
+.vstack-media{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0;}
+.vstack-media .fig{max-height:100%;height:100%;justify-content:center;}
+.vstack-media .fig img{max-height:100%;height:auto;width:auto;max-width:100%;}
+
+.fig{width:100%;max-height:70vh;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.fig img{max-width:100%;max-height:60vh;object-fit:contain;border-radius:10px;
+  box-shadow:0 12px 40px rgba(75,46,131,.18);border:1px solid rgba(75,46,131,.08);}
+.fig-fallback{display:none;}
+.fig.missing img{display:none;}
+.fig.missing .fig-fallback{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  width:100%;min-height:34vh;border:2px dashed var(--uw-gold);border-radius:12px;
+  color:var(--uw-gold-deep);font-size:15px;font-weight:600;background:rgba(183,165,122,.08);
+  padding:20px;
+}
+figcaption{font-size:14px;color:var(--muted);font-style:italic;text-align:center;}
+.content-body .fig{align-self:center;margin-top:1vh;}
+
+.slide-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:2vh 0 2.4vh;margin-top:auto;
+  font-size:13px;color:var(--muted);
+  border-top:1px solid rgba(75,46,131,.12);
+}
+.slide-foot .brand{font-weight:600;letter-spacing:.02em;}
+.slide-foot .pageno{font-variant-numeric:tabular-nums;}
+.slide-foot .pageno-jump{
+  cursor:text;
+  border-radius:6px;
+  padding:0.15em 0.35em;
+  margin:-0.15em -0.35em;
+  transition:background .15s ease,color .15s ease;
+}
+.slide-foot .pageno-jump:hover{
+  background:rgba(75,46,131,.08);
+}
+.slide-foot .pageno-jump.is-empty{
+  min-width:3.5rem;
+  min-height:1.2em;
+  display:inline-block;
+  cursor:pointer;
+}
+.slide-foot .pageno-jump.is-editing{
+  background:rgba(75,46,131,.1);
+  color:var(--uw-purple);
+}
+.slide-foot .pageno-input{
+  width:3.2em;
+  max-width:5em;
+  font:inherit;
+  font-variant-numeric:tabular-nums;
+  color:inherit;
+  background:transparent;
+  border:none;
+  border-bottom:1.5px solid var(--uw-purple);
+  outline:none;
+  text-align:right;
+  padding:0 0.1em;
+}
+.slide-foot .pageno-jump.is-invalid,
+.slide-foot .pageno-jump.is-invalid .pageno-input{
+  color:#c0392b;
+  border-bottom-color:#c0392b;
+}
+.slide-foot .pageno-jump.is-invalid{
+  animation:pageno-shake .42s ease;
+}
+@keyframes pageno-shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-5px);}
+  40%{transform:translateX(5px);}
+  60%{transform:translateX(-3px);}
+  80%{transform:translateX(3px);}
+}
+
+.layout-title .slide-inner{align-items:center;justify-content:center;}
+.title-slide{max-width:min(1000px,90vw);text-align:center;padding:0 6vw;}
+.title-slide.long-title{max-width:min(1600px,96vw);padding:0 2.5vw;}
+.big-title{
+  font-family:'Spectral',Georgia,serif;font-weight:600;
+  font-size:clamp(34px,5.4vw,74px);color:#fff;line-height:1.04;letter-spacing:-.015em;
+}
+.title-slide.long-title .big-title{
+  font-size:clamp(30px,4vw,50px);line-height:1.16;
+  max-width:100%;
+  text-wrap:pretty;
+}
+.big-sub{margin-top:22px;font-size:clamp(15px,1.6vw,21px);color:var(--uw-gold);font-weight:500;letter-spacing:.01em;}
+.gold-rule{width:120px;height:5px;background:var(--uw-gold);margin:34px auto 0;border-radius:3px;}
+.layout-title .logos{margin-bottom:38px;}
+.logos{display:flex;gap:34px;align-items:center;justify-content:center;flex-wrap:wrap;}
+.logo{max-height:72px;max-width:230px;object-fit:contain;}
+.layout-title .slide-foot,.layout-section .slide-foot{display:none;}
+
+.layout-section .slide-inner{align-items:flex-start;justify-content:center;padding:0 9vw;}
+.section-slide{max-width:1000px;}
+.eyebrow{font-size:clamp(16px,1.6vw,20px);color:var(--uw-gold);font-weight:700;letter-spacing:.18em;}
+.section-title{
+  font-family:'Spectral',Georgia,serif;font-weight:600;
+  font-size:clamp(38px,5.6vw,78px);color:#fff;margin-top:14px;line-height:1.02;letter-spacing:-.015em;
+}
+.section-title::after{content:"";display:block;width:90px;height:5px;background:var(--uw-gold);margin-top:26px;border-radius:3px;}
+.section-sub{margin-top:26px;font-size:clamp(16px,1.8vw,24px);color:#cdbfe6;font-weight:400;}
+
+/* References slides */
+.ref-list{
+  flex:1;overflow:hidden;display:flex;flex-direction:column;gap:1.0vh;
+  padding-right:8px;
+}
+.ref-item{
+  font-size:clamp(13px,1.2vw,17px);line-height:1.35;color:var(--ink);
+  padding-left:1.15em;text-indent:-1.15em;
+}
+.layout-refs .slide-head{margin-bottom:1.2vh;}
+
+/* Appendix links */
+.appendix-badge{
+  display:inline-block;
+  margin-left:.6em;
+  padding:.15em .55em;
+  border-radius:999px;
+  font-size:.45em;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  vertical-align:middle;
+  color:var(--uw-purple);
+  background:rgba(75,46,131,.1);
+  border:1px solid rgba(75,46,131,.22);
+}
+.slide-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.7rem;
+  margin-top:auto;
+  margin-bottom:3px;
+  padding-top:1.4vh;
+}
+.slide-link{
+  appearance:none;
+  border:1.5px solid rgba(75,46,131,.28);
+  background:#fff;
+  color:var(--uw-purple);
+  border-radius:999px;
+  padding:0.55em 1em;
+  font:inherit;
+  font-size:clamp(13px,1.15vw,16px);
+  font-weight:600;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:0.55em;
+  max-width:100%;
+  text-align:left;
+  line-height:1.25;
+  transition:background .15s ease, border-color .15s ease, transform .15s ease;
+}
+.slide-link:hover{
+  background:rgba(75,46,131,.08);
+  border-color:rgba(75,46,131,.5);
+}
+.slide-link:active{transform:scale(.98);}
+.slide-link-kind{
+  font-size:.72em;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--uw-gold-deep);
+  flex:none;
+}
+.back-btn .slide-link-kind{color:var(--uw-purple);}
+section.slide.is-appendix{
+  box-shadow:inset 0 0 0 3px rgba(75,46,131,.12);
+}
+
+/* Media + table layout */
+.media-table{
+  flex:1;display:grid;grid-template-columns:0.85fr 1.35fr;gap:2.4vw;
+  align-items:center;min-height:0;
+}
+.media-table-fig,.media-table-data{
+  min-width:0;min-height:0;height:100%;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.media-table-fig .fig{width:100%;margin:0;}
+.media-table-fig .fig img{width:100%;max-height:58vh;object-fit:contain;}
+.table-wrap{width:100%;margin:0;}
+.table-scroll{width:100%;overflow:auto;}
+.result-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:clamp(12px,1.15vw,16px);
+  line-height:1.3;
+}
+.result-table th,.result-table td{
+  padding:0.7em 0.65em;
+  text-align:left;
+  border-bottom:1px solid rgba(75,46,131,.12);
+  vertical-align:middle;
+}
+.result-table th{
+  color:var(--uw-purple);
+  font-weight:700;
+  font-size:0.92em;
+  border-bottom:2px solid rgba(75,46,131,.28);
+  white-space:nowrap;
+}
+.result-table th.group-head{
+  text-align:center;
+  border-bottom:1px solid rgba(75,46,131,.18);
+  background:rgba(75,46,131,.06);
+  white-space:normal;
+}
+.result-table td{color:var(--ink);font-variant-numeric:tabular-nums;}
+.result-table tbody tr:last-child td{border-bottom:none;}
+.result-table tbody tr:hover td{background:rgba(75,46,131,.04);}
+.table-wrap figcaption{
+  margin-top:1.1vh;
+  font-size:clamp(12px,1.05vw,15px);
+  color:var(--muted);
+  line-height:1.35;
+}
+
+/* Citation hover tooltips */
+.cite{
+  cursor:help;
+  border-bottom:1px dotted rgba(75,46,131,.55);
+  position:relative;
+  white-space:nowrap;
+}
+.layout-title .cite,
+.layout-section .cite{
+  border-bottom-color:rgba(183,165,122,.7);
+}
+.cite-tip{
+  display:none;
+  position:absolute;
+  z-index:200;
+  left:50%;
+  bottom:calc(100% + 10px);
+  transform:translateX(-50%);
+  width:min(460px,72vw);
+  padding:10px 12px;
+  background:#241d33;
+  color:#f3eefc;
+  font-size:13px;
+  font-weight:400;
+  line-height:1.4;
+  letter-spacing:0;
+  border-radius:8px;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+  border:1px solid rgba(183,165,122,.35);
+  white-space:normal;
+  text-align:left;
+  pointer-events:none;
+}
+.cite-tip::after{
+  content:"";
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%);
+  border:6px solid transparent;
+  border-top-color:#241d33;
+}
+.cite:hover .cite-tip,
+.cite:focus .cite-tip{
+  display:block;
+}
+
+/* Notes never appear on the audience screen */
+body.audience aside.notes{display:none !important;}
+
+.hint{
+  position:fixed;right:16px;bottom:14px;z-index:45;
+  font-size:12px;color:rgba(255,255,255,.55);
+  background:rgba(26,18,38,.55);padding:6px 12px;border-radius:20px;
+  pointer-events:none;transition:opacity .4s ease;
+}
+.hint.fade{opacity:0;}
+
+/* Built-in speaker view (?speaker=1) */
+body.speaker{
+  background:#16111f;
+  color:#f3eefc;
+  overflow:auto;
+}
+body.speaker > section.slide,
+body.speaker > .progress,
+body.speaker > .hint{display:none !important;}
+.speaker-app{
+  min-height:100vh;display:flex;flex-direction:column;gap:18px;
+  padding:22px 28px 28px;max-width:1100px;margin:0 auto;
+}
+.speaker-top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.speaker-brand{font-weight:700;letter-spacing:.04em;color:var(--uw-gold);}
+.speaker-meta{display:flex;gap:18px;align-items:center;font-variant-numeric:tabular-nums;}
+.speaker-timer{font-size:28px;font-weight:600;}
+.speaker-count{font-size:18px;color:#cbbfe0;}
+.speaker-title{
+  font-family:'Spectral',Georgia,serif;font-size:clamp(26px,3vw,40px);
+  color:#fff;line-height:1.15;
+}
+.speaker-next{color:#a99bc0;font-size:15px;}
+.speaker-notes{
+  flex:1;background:#221a30;border:1px solid rgba(183,165,122,.28);
+  border-radius:16px;padding:28px 30px;font-size:clamp(20px,2.2vw,28px);
+  line-height:1.55;white-space:pre-wrap;
+}
+.speaker-notes:empty::before{content:"No notes for this slide.";color:#8b809c;}
+.speaker-help{color:#8b809c;font-size:13px;}
+.speaker-thumbs{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.speaker-thumb{
+  background:#221a30;border:1px solid rgba(183,165,122,.28);
+  border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+}
+.speaker-thumb-label{
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--uw-gold);padding:10px 12px 6px;font-weight:700;
+}
+.speaker-thumb-frame{
+  position:relative;width:100%;aspect-ratio:16/9;background:#0f0b16;overflow:hidden;
+}
+.speaker-thumb-frame .thumb-scale{
+  position:absolute;top:0;left:0;
+  width:1280px;height:720px;
+  transform-origin:top left;
+  pointer-events:none;
+}
+.speaker-thumb-frame .thumb-scale > .slide{
+  display:flex !important;
+  position:relative !important;
+  inset:auto !important;
+  width:1280px !important;
+  height:720px !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+.speaker-thumb-empty{
+  display:flex;align-items:center;justify-content:center;
+  height:100%;color:#8b809c;font-size:15px;
+}
+
+@media (max-width:820px){
+  .split{grid-template-columns:1fr;gap:2vh;}
+  .compare{grid-template-columns:1fr;gap:1.5vh;}
+  .media-table{grid-template-columns:1fr;gap:1.5vh;}
+  .media-table-fig .fig img{max-height:28vh;}
+  .panel .fig img{max-height:22vh;}
+  .split-media{max-height:32vh;}
+  .fig img{max-height:30vh;}
+  .vstack-text{max-height:36%;}
+}
+
+/* Short laptop screens: shrink type/spacing; text panes already scroll */
+@media (max-height:820px){
+  body.audience > section.slide,
+  body > section.slide:only-child{
+    padding:3.8vh 4.5vw 0;
+  }
+  .slide-head{margin-bottom:1.4vh;padding-left:16px;border-left-width:5px;}
+  .slide-title{font-size:clamp(22px,3.2vw,40px);}
+  .slide-sub{margin-top:4px;font-size:clamp(13px,1.35vw,18px);}
+  .bullets{gap:1.05vh;}
+  .bullets>li{font-size:clamp(14px,1.65vw,22px);line-height:1.32;padding-left:28px;}
+  .bullets>li::before{width:9px;height:9px;top:.55em;}
+  .bullets .sub{margin:.45vh 0 .1vh;gap:.45vh;padding-left:22px;}
+  .bullets .sub>li{font-size:clamp(12px,1.25vw,17px);padding-left:22px;line-height:1.3;}
+  .split{gap:2.4vw;align-items:stretch;}
+  .split-text .bullets{gap:1.0vh;}
+  .split-media{gap:10px;}
+  .fig img{max-height:52vh;}
+  .content-body:has(> .fig):not(:has(.bullets)) > .fig img{max-height:60vh;}
+  .content-body:has(> .fig + .fig):not(:has(.bullets)) > .fig img{max-height:32vh;}
+  .agenda{gap:0.9vh;}
+  .agenda-item{padding:0.7vh 1rem;font-size:clamp(16px,1.9vw,24px);gap:0.85rem;}
+  .panel{padding:0.8vh 0.8vw 1.0vh;gap:0.7vh;}
+  .panel-title{font-size:clamp(14px,1.35vw,18px);}
+  .panel .bullets>li{font-size:clamp(11px,1.05vw,15px);}
+  .panel .fig img{max-height:22vh;}
+  .result-table{font-size:clamp(11px,1.05vw,14px);}
+  .result-table th,.result-table td{padding:0.4em 0.45em;}
+  .slide-foot{padding:1.2vh 0 1.6vh;font-size:12px;}
+  .katex{font-size:1.0em;}
+  .katex-display{margin:0.35em 0;}
+  .callout{padding:1.1vh 1.1vw;}
+  .callout-body{font-size:clamp(13px,1.25vw,18px);}
+  .big-title{font-size:clamp(28px,4.6vw,60px);}
+  .section-title{font-size:clamp(30px,4.8vw,64px);}
+}
+
+@media (max-height:700px){
+  body.audience > section.slide,
+  body > section.slide:only-child{
+    padding:2.8vh 3.8vw 0;
+  }
+  .slide-head{margin-bottom:1.0vh;}
+  .slide-title{font-size:clamp(20px,2.9vw,34px);}
+  .slide-sub{font-size:clamp(12px,1.2vw,16px);}
+  .bullets{gap:0.75vh;}
+  .bullets>li{font-size:clamp(13px,1.45vw,18px);line-height:1.28;padding-left:24px;}
+  .bullets>li::before{width:8px;height:8px;}
+  .bullets .sub>li{font-size:clamp(11px,1.1vw,15px);}
+  .split{gap:1.8vw;}
+  .fig img{max-height:46vh;}
+  .content-body:has(> .fig):not(:has(.bullets)) > .fig img{max-height:54vh;}
+  .agenda-item{padding:0.5vh 0.85rem;font-size:clamp(14px,1.7vw,20px);}
+  .panel .fig img{max-height:18vh;}
+  .slide-foot{padding:0.9vh 0 1.2vh;font-size:11px;}
+  .result-table{font-size:clamp(10px,0.95vw,13px);}
+  .vstack-text{max-height:38%;}
+  .vstack-text .bullets>li{font-size:clamp(12px,1.35vw,17px);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .progress{transition:none;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="bar" data-main-deck="34"></div>
+
+<section class="slide layout-title" data-index="1" data-title="Reward Modeling for Business Objectives: Navigating the Bias-Variance Tradeoff between Observational and Experimental Data" data-slide-id="reward-modeling-for-business-objectives-navigating-the-bias-variance-tradeoff-between-observational-and-experimental-data">
+  <div class="slide-inner">
+    
+        <div class="title-slide long-title">
+          <div class='logos'><img src='images/w-purple-logo.webp' alt='' class='logo' onerror="this.style.display='none';"></div>
+          <h1 class="big-title">Reward Modeling for Business Objectives: Navigating the Bias-Variance Tradeoff between Observational and Experimental Data</h1>
+          <p class="big-sub">Erfan Loghmani · Job Market Presentation · University of Washington</p>
+          <div class="gold-rule"></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="1" data-page-total="34" title="Click to go to a page">1 / 34</span>
+  </div>
+  <aside class='notes'>Thank you for having me. Today I&#x27;ll walk you through my job market paper,<br>my broader research agenda, and my teaching. My job market paper asks how<br>firms should optimize generative models when the thing being optimized is<br>unstructured — text, images, headlines, messages.</aside>
+</section>
+
+<section class="slide layout-split" data-index="2" data-title="Motivation" data-slide-id="motivation">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Motivation</h2>
+          <p class="slide-sub">When the &quot;treatment&quot; is text, images, or other unstructured content</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Unstructured data, such as headline text and ad copy, shapes consumer decisions in modern marketing.
+<ul class='sub'>
+<li>Text: headlines, emails, ads</li>
+<li>Images: product images, social media posts, ad images</li>
+<li>Videos: product videos, social media posts, video ads</li>
+</ul>
+</li>
+<li>Generative models offer a scalable way to produce unstructured content
+</li>
+<li>But pre-trained models are not optimized for business objectives (<span class="cite" tabindex="0">Goli and Singh, 2024<span class="cite-tip">Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</span></span>; <span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng, 2025<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span>)
+</li>
+<li>Specializing generative models for business objectives requires <em>high-quality outcome data</em>.
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-screenshot.avif' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-screenshot.avif</div><figcaption>A screenshot from Upworthy&#x27;s launch page. Photograph: Guardian</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="2" data-page-total="34" title="Click to go to a page">2 / 34</span>
+  </div>
+  <aside class='notes'>Firms are everywhere using generative models to write headlines, emails, and ads.<br>But a pre-trained model isn&#x27;t optimized for what the business actually cares about.<br>To align it, you need data connecting the content it generates to real outcomes.</aside>
+</section>
+
+<section class="slide layout-split" data-index="3" data-title="Motivation (cont.)" data-slide-id="motivation-cont">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Motivation (cont.)</h2>
+          <p class="slide-sub">Where can the firms get the high-quality outcome data?</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Firms can have an abundance of historical data from ongoing data collection
+<ul class='sub'>
+<li>Amount of clicks on each news headline</li>
+<li>Click-through rate of each ad</li>
+</ul>
+</li>
+<li>But there could be <em>spurious correlations</em> in the observational historical data.
+</li>
+<li>To avoid bias, firms can run experiments.
+</li>
+<li>Experiments, however, are <em>costly</em> and <em>noisy</em> in small sample sizes.
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/data-sources.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>data-sources.svg</div><figcaption>Observational vs. experimental outcome data</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="3" data-page-total="34" title="Click to go to a page">3 / 34</span>
+  </div>
+  <aside class='notes'>Firms often already have abundant historical outcome data, but it can be biased<br>by spurious correlations. Experiments remove that bias, yet they are costly and<br>noisy when samples are small — so both sources matter.</aside>
+</section>
+
+<section class="slide layout-content" data-index="4" data-title="Paper overview and research questions" data-slide-id="paper-overview">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Paper overview and research questions</h2>
+          
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li>First Observation: Monday Experiment
+<ul class='sub'>
+<li>Using <em>only</em> observational data for language model alignment can cause the model to <em>internalize the bias</em> in historical outcomes.</li>
+</ul>
+</li>
+<li class="spacer" aria-hidden="true"></li>
+<li>Research Questions:
+<ul class='sub'>
+<li><strong>1 — Value.</strong> What is the value of experimental variation over observational data alone, and what drives that value?</li>
+<li><strong>2 — Size.</strong> How much does <em>more</em> observational vs. experimental data actually help?</li>
+<li><strong>3 — Combine.</strong> If we have both, what is the best way to combine them?</li>
+<li><strong>4 — Experimentation Strategy.</strong> In a more realistic setting when we have some historical data and for upcoming content we can sequentially decide to test or not, which experimentation strategy is best?</li>
+</ul>
+</li>
+</ul>
+          
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="4" data-page-total="34" title="Click to go to a page">4 / 34</span>
+  </div>
+  <aside class='notes'>Before the main questions, I show a preview result: if we align a language model<br>using only observational data, it can internalize the bias in historical outcomes.<br>I then ask four questions. First, what&#x27;s the value of experimental variation, and<br>what causes it. Second, how data size matters. Third, the best way to combine both<br>sources. And fourth, a realistic sequential setting where the firm decides, over<br>time, when to test.</aside>
+</section>
+
+<section class="slide layout-agenda" data-index="5" data-title="Talk agenda" data-slide-id="talk-agenda">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Talk agenda</h2>
+          
+        </div>
+        <div class="content-body agenda-body">
+          <ol class='agenda'><li class="agenda-item done agenda-link" data-goto="1" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item done agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Paper overview</span><span class="agenda-tag"></span></li><li class="agenda-item next agenda-link" data-goto="5" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag">Next</span></li><li class="agenda-item upcoming agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Monday experiment</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="12" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="16" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Methodology and results</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="32" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li></ol>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="5" data-page-total="34" title="Click to go to a page">5 / 34</span>
+  </div>
+  <aside class='notes'>We&#x27;ve covered the motivation and the overview of the paper. Next I&#x27;ll situate the<br>work in the background and related literature, then walk through the Monday<br>Experiment, the data, the main results, and the conclusions.</aside>
+</section>
+
+<section class="slide layout-compare" data-index="6" data-title="Background: Generative model alignment" data-slide-id="background">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Background: Generative model alignment</h2>
+          <p class="slide-sub">Two common ways to specialize a pretrained model toward preferred outcomes</p>
+        </div>
+        <div class="content-body compare-body">
+          
+          <div class='compare'><div class='panel'><h3 class='panel-title'>RL-based alignment</h3><figure class="fig"><img src='images/alignment-rlhf.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>alignment-rlhf.svg</div></figure><ul class='bullets'>
+<li><strong>1. SFT</strong> — supervised fine-tuning on demonstrations
+</li>
+<li><strong>2. Reward modeling</strong> — learn a reward from preference pairs / outcome data
+</li>
+<li><strong>3. RL</strong> — optimize the policy against that reward (e.g. PPO, GRPO)
+</li>
+<li>Pipelines: (<span class="cite" tabindex="0">Christiano et al., 2017<span class="cite-tip">Christiano, P. F., Leike, J., Brown, T., Martic, M., Legg, S., and Amodei, D. (2017). Deep reinforcement learning from human preferences. Advances in neural information processing systems 30.</span></span>; <span class="cite" tabindex="0">Ouyang et al., 2022<span class="cite-tip">Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C., Mishkin, P., Zhang, C., Agarwal, S., Slama, K., Ray, A., and others (2022). Training language models to follow instructions with human feedback. Advances in neural information processing systems 35: 27730–27744.</span></span>; <span class="cite" tabindex="0">Zheng et al., 2023<span class="cite-tip">Zheng, R., Dou, S., Gao, S., Hua, Y., Shen, W., Wang, B., Liu, Y., Jin, S., Liu, Q., Zhou, Y., and others (2023). Secrets of rlhf in large language models part i: Ppo. arXiv preprint arXiv:2307.04964.</span></span>; <span class="cite" tabindex="0">Shao et al., 2024<span class="cite-tip">Shao, Z., Wang, P., Zhu, Q., Xu, R., Song, J., Bi, X., Zhang, H., Zhang, M., Li, Y., Wu, Y., and others (2024). Deepseekmath: Pushing the limits of mathematical reasoning in open language models. arXiv preprint arXiv:2402.03300.</span></span>)
+</li>
+</ul></div><div class='panel'><h3 class='panel-title'>Direct alignment</h3><figure class="fig"><img src='images/alignment-direct.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>alignment-direct.svg</div></figure><ul class='bullets'>
+<li>Skip a separate reward model and RL loop
+</li>
+<li>Update the policy <strong>directly from preference pairs</strong> (chosen vs rejected)
+</li>
+<li>Canonical method: <strong>DPO</strong> (<span class="cite" tabindex="0">Rafailov et al., 2024<span class="cite-tip">Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., and Finn, C. (2024). Direct preference optimization: Your language model is secretly a reward model. Advances in Neural Information Processing Systems 36.</span></span>)
+</li>
+<li>Still inherits the quality of the pairwise signal
+</li>
+</ul></div></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="6" data-page-total="34" title="Click to go to a page">6 / 34</span>
+  </div>
+  <aside class='notes'>Alignment specializes a pretrained model toward preferred outcomes. The classic<br>approach has three stages: supervised fine-tuning, reward modeling from preference<br>pairs, then reinforcement learning against that reward — the InstructGPT pipeline.<br>Direct methods such as DPO skip the explicit reward and RL loop and train from<br>pairs alone. In either case, the model is only as good as the outcome signal you<br>feed it — which is the hinge for the rest of the talk.</aside>
+</section>
+
+<section class="slide layout-content" data-index="7" data-title="Related work — Unstructured content &amp; generative models" data-slide-id="related-work-unstructured-content-generative-models">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Related work — Unstructured content &amp; generative models</h2>
+          <p class="slide-sub">Marketing literature on measuring, predicting, and producing content</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li class="fragment" data-step="0">Unstructured content is economically important
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Banerjee and Urminsky (2025)<span class="cite-tip">Banerjee, A. and Urminsky, O. (2025). The language that drives engagement: A systematic large-scale analysis of headline experiments. Marketing Science 44 (3): 566–592.</span></span>; <span class="cite" tabindex="0">Thomas (2026)<span class="cite-tip">Thomas, M. (2026). Does Puffery Sell? Evidence from Airbnb. SSRN Electronic Journal.</span></span></li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Unstructured content and embeddings can predict outcomes
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Tang, Yang, and Song (2024)<span class="cite-tip">Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</span></span>; <span class="cite" tabindex="0">Compiani, Morozov, and Seiler (2025)<span class="cite-tip">Compiani, G., Morozov, I., and Seiler, S. (2025). Demand estimation with text and image data. The RAND Journal of Economics.</span></span>; <span class="cite" tabindex="0">Singh and Zheng (2023)<span class="cite-tip">Singh, A. and Zheng, B. (2023). Causal Regressions For Unstructured Data. In Causal Representation Learning Workshop at NeurIPS 2023.</span></span>; <span class="cite" tabindex="0">Lee (2024)<span class="cite-tip">Lee, K. (2024). Generative Brand Choice.</span></span>; <span class="cite" tabindex="0">Ellickson et al. (2024)<span class="cite-tip">Ellickson, P. B., Kar, W., Reeder III, J. C., and Zeng, G. (2024). Using contextual embeddings to predict the effectiveness of novel heterogeneous treatments. Available at SSRN 4845956.</span></span></li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Generative models for producing marketing content
+<ul class='sub'>
+<li>Uses: creative ideas, preference elicitation, deployable models (<span class="cite" tabindex="0">Castelo et al., 2024<span class="cite-tip">Castelo, N., Katona, Z., Li, P., and Sarvary, M. (2024). How AI outperforms humans at creative idea generation. Available at SSRN 4751779.</span></span>; <span class="cite" tabindex="0">Arora, Chakraborty, and Nishimura, 2025<span class="cite-tip">Arora, N., Chakraborty, I., and Nishimura, Y. (2025). AI–Human Hybrids for Marketing Research: Leveraging Large Language Models (LLMs) as Collaborators. Journal of Marketing 89 (2): 43–70.</span></span>; <span class="cite" tabindex="0">Wang, Sudhir, and Hong, 2024<span class="cite-tip">Wang, T., Sudhir, K., and Hong, D. (2024). Using Advanced LLMs to Enhance Smaller LLMs: An Interpretable Knowledge Distillation Approach. arXiv preprint arXiv:2408.07238.</span></span>)</li>
+<li>Limitations: pretrained models are not optimized for firm objectives (<span class="cite" tabindex="0">Goli and Singh, 2024<span class="cite-tip">Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</span></span>; <span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng, 2025<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span>)</li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Alignment using experiments
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng (2025)<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span>; <span class="cite" tabindex="0">Angelopoulos, Lee, and Misra (2024)<span class="cite-tip">Angelopoulos, P., Lee, K., and Misra, S. (2024). Causal Alignment: Augmenting Language Models with A/B Tests. Available at SSRN.</span></span></li>
+</ul>
+</li>
+</ul>
+          
+          
+          <aside class="callout fragment" data-step="1"><div class='callout-label'>Our paper</div><div class='callout-body'><div class='callout-intro'>Our work studies how a firm can use <em>both</em> observational and experimental data. And what the trade-offs and value are in combining them.</div></div></aside>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="7" data-page-total="34" title="Click to go to a page">7 / 34</span>
+  </div>
+  <aside class='notes'>A large marketing literature shows that unstructured content matters and that<br>embeddings help predict outcomes. Generative models can produce that content at<br>scale, but pretrained models are not tuned to business objectives. The cleanest<br>fix for alignment comes from experiments. We ask a complementary question:<br>given abundant but biased history and costly experiments, how should a firm use<br>both — and what is the value of each?</aside>
+</section>
+
+<section class="slide layout-content" data-index="8" data-title="Related work — Aligning language models from outcome data" data-slide-id="related-work-aligning-language-models-from-outcome-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Related work — Aligning language models from outcome data</h2>
+          <p class="slide-sub">Preference learning, reward misspecification, and causal rewards</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li class="fragment" data-step="0">Alignment methods from preference / outcome signals
+<ul class='sub'>
+<li>RLHF: reward modeling + RL (<span class="cite" tabindex="0">Christiano et al., 2017<span class="cite-tip">Christiano, P. F., Leike, J., Brown, T., Martic, M., Legg, S., and Amodei, D. (2017). Deep reinforcement learning from human preferences. Advances in neural information processing systems 30.</span></span>; <span class="cite" tabindex="0">Ziegler et al., 2019<span class="cite-tip">Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei, D., Christiano, P., and Irving, G. (2019). Fine-tuning language models from human preferences. arXiv preprint arXiv:1909.08593.</span></span>; <span class="cite" tabindex="0">Ouyang et al., 2022<span class="cite-tip">Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C., Mishkin, P., Zhang, C., Agarwal, S., Slama, K., Ray, A., and others (2022). Training language models to follow instructions with human feedback. Advances in neural information processing systems 35: 27730–27744.</span></span>)</li>
+<li>Direct preference optimization (DPO) (<span class="cite" tabindex="0">Rafailov et al., 2024<span class="cite-tip">Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., and Finn, C. (2024). Direct preference optimization: Your language model is secretly a reward model. Advances in Neural Information Processing Systems 36.</span></span>)</li>
+<li>Influential observational fine-tuning template: <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span></li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Reward misspecification: models exploit proxy signals (e.g. length, sycophancy)
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Gao, Schulman, and Hilton (2023)<span class="cite-tip">Gao, L., Schulman, J., and Hilton, J. (2023). Scaling laws for reward model overoptimization. In International Conference on Machine Learning, 10835–10866.</span></span>; <span class="cite" tabindex="0">Tien et al. (2022)<span class="cite-tip">Tien, J., He, J. Z. Y., Erickson, Z., Dragan, A. D., and Brown, D. S. (2022). Causal confusion and reward misidentification in preference-based reward learning. arXiv preprint arXiv:2204.06601.</span></span>; <span class="cite" tabindex="0">Chen, Toyer, and Shkurti (2024)<span class="cite-tip">Chen, X., Toyer, S., and Shkurti, F. (2024). Exploring and Addressing Reward Confusion in Offline Preference Learning. arXiv preprint arXiv:2407.16025.</span></span>; <span class="cite" tabindex="0">Denison et al. (2024)<span class="cite-tip">Denison, C., MacDiarmid, M., Barez, F., Duvenaud, D., Kravec, S., Marks, S., Schiefer, N., Soklaski, R., Tamkin, A., Kaplan, J., and others (2024). Sycophancy to subterfuge: Investigating reward-tampering in large language models. arXiv preprint arXiv:2406.10162.</span></span>; <span class="cite" tabindex="0">Ntoutsi et al. (2020)<span class="cite-tip">Ntoutsi, E., Fafalios, P., Gadiraju, U., Iosifidis, V., Nejdl, W., Vidal, M. E., Ruggieri, S., Turini, F., Papadopoulos, S., Krasanakis, E., and others (2020). Bias in data-driven artificial intelligence systems—An introductory survey. Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery 10 (3): e1356.</span></span>; <span class="cite" tabindex="0">Liu (2023)<span class="cite-tip">Liu, Y. (2023). The importance of human-labeled data in the era of LLMs. In Proceedings of the Thirty-Second International Joint Conference on Artificial Intelligence, 7026–7032.</span></span>; <span class="cite" tabindex="0">Fang et al. (2024)<span class="cite-tip">Fang, X., Che, S., Mao, M., Zhang, H., Zhao, M., and Zhao, X. (2024). Bias of AI-generated content: an examination of news produced by large language models. Scientific Reports 14 (1): 5224.</span></span>; <span class="cite" tabindex="0">Yeh et al. (2024)<span class="cite-tip">Yeh, M. H., Tao, L., Wang, J., Du, X., and Li, Y. (2024). How Reliable Is Human Feedback For Aligning Large Language Models? arXiv preprint arXiv:2410.01957.</span></span></li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Causal reward modeling: remove confounders or enforce counterfactual invariance
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Chen et al. (2024)<span class="cite-tip">Chen, L., Zhu, C., Soselia, D., Chen, J., Zhou, T., Goldstein, T., Huang, H., Shoeybi, M., and Catanzaro, B. (2024). Odin: Disentangled reward mitigates hacking in rlhf. arXiv preprint arXiv:2402.07319.</span></span>; <span class="cite" tabindex="0">Srivastava et al. (2025)<span class="cite-tip">Srivastava, P., Singh, H., Madhavan, R., Patil, G., Addepalli, S., Suggala, A., Aravamudhan, R., Sharma, S., Laha, A., Raghuveer, A., and others (2025). Robust Reward Modeling via Causal Rubrics. arXiv preprint arXiv:2506.16507.</span></span>; <span class="cite" tabindex="0">Wang et al. (2025)<span class="cite-tip">Wang, C., Zhao, Z., Jiang, Y., Chen, Z., Zhu, C., Chen, Y., Liu, J., Zhang, L., Fan, X., Ma, H., and others (2025). Beyond Reward Hacking: Causal Rewards for Large Language Model Alignment. arXiv preprint arXiv:2501.09620.</span></span>; <span class="cite" tabindex="0">Loghmani (2025)<span class="cite-tip">Loghmani, E. (2025). Aligning Language Models with Observational Data: Opportunities and Risks from a Causal Perspective. In NeurIPS 2025 Workshop on CauScien: Uncovering Causality in Science.</span></span></li>
+</ul>
+</li>
+</ul>
+          
+          
+          <aside class="callout fragment" data-step="1"><div class='callout-label'>Our paper</div><div class='callout-body'><div class='callout-intro'>Given that observational signals are <em>biased but informative</em>, we ask: what is the value of experimental data, and how should the firm use <em>both</em> sources?</div></div></aside>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="8" data-page-total="34" title="Click to go to a page">8 / 34</span>
+  </div>
+  <aside class='notes'>Standard alignment — RLHF or DPO — inherits the quality of the outcome signal.<br>When that signal is observational, models can latch onto artifacts like length or<br>sycophancy. Causal reward methods try to strip or remain invariant to known<br>confounders, but often need those confounders to be identified. We take a<br>different route: treat observational data as biased but useful, and ask how<br>experiments should be valued and combined with it.</aside>
+</section>
+
+<section class="slide layout-content" data-index="9" data-title="Related work — Causal inference, experimentation &amp; data combination" data-slide-id="related-work-causal-inference-experimentation-data-combination">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Related work — Causal inference, experimentation &amp; data combination</h2>
+          <p class="slide-sub">From scalar treatments to high-dimensional content decisions</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li class="fragment" data-step="0">Causal ML toolkit
+<ul class='sub'>
+<li>Double / debiased ML (<span class="cite" tabindex="0">Chernozhukov et al., 2018<span class="cite-tip">Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., and Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. The Econometrics Journal 21 (1): C1–C68.</span></span>); deep semiparametric estimation (<span class="cite" tabindex="0">Farrell, Liang, and Misra, 2021<span class="cite-tip">Farrell, M. H., Liang, T., and Misra, S. (2021). Deep neural networks for estimation and inference. Econometrica 89 (1): 181–213.</span></span>)</li>
+<li>IV / conditional-moment methods; high-dimensional endogeneity (<span class="cite" tabindex="0">Bennett, Kallus, and Schnabel, 2019<span class="cite-tip">Bennett, A., Kallus, N., and Schnabel, T. (2019). Deep generalized method of moments for instrumental variable analysis. Advances in neural information processing systems 32.</span></span>; <span class="cite" tabindex="0">Dikkala et al., 2020<span class="cite-tip">Dikkala, N., Lewis, G., Mackey, L., and Syrgkanis, V. (2020). Minimax estimation of conditional moment models. Advances in Neural Information Processing Systems 33: 12248–12262.</span></span>; <span class="cite" tabindex="0">Zou and Zhang, 2009<span class="cite-tip">Zou, H. and Zhang, H. H. (2009). On the adaptive elastic-net with a diverging number of parameters. Annals of statistics 37 (4): 1733.</span></span>; <span class="cite" tabindex="0">Fan and Liao, 2014<span class="cite-tip">Fan, J. and Liao, Y. (2014). Endogeneity in high dimensions. Annals of statistics 42 (3): 872.</span></span>)</li>
+<li>Causal inference with unstructured content as controls (<span class="cite" tabindex="0">Singh and Zheng, 2023<span class="cite-tip">Singh, A. and Zheng, B. (2023). Causal Regressions For Unstructured Data. In Causal Representation Learning Workshop at NeurIPS 2023.</span></span>; <span class="cite" tabindex="0">Wu et al., 2024<span class="cite-tip">Wu, A., Kuang, K., Zhu, M., Wang, Y., Zheng, Y., Han, K., Li, B., Chen, G., Wu, F., and Zhang, K. (2024). Causality for large language models. arXiv preprint arXiv:2410.15319.</span></span>; <span class="cite" tabindex="0">Zhang, Wang, and Dhillon, 2024<span class="cite-tip">Zhang, B., Wang, Y., and Dhillon, P. S. (2024). Causal Inference for Human-Language Model Collaboration. arXiv preprint arXiv:2404.00207.</span></span>; <span class="cite" tabindex="0">Modarressi, Spiess, and Venugopal, 2025<span class="cite-tip">Modarressi, I., Spiess, J., and Venugopal, A. (2025). Causal Inference on Outcomes Learned from Text. arXiv preprint arXiv:2503.00725.</span></span>; <span class="cite" tabindex="0">Xu et al., 2025<span class="cite-tip">Xu, S., Jiang, Z., Qi, Z., and Zhang, D. (2025). A causal approach to representation learning for unstructured data. Available at SSRN.</span></span>; <span class="cite" tabindex="0">Ludwig, Mullainathan, and Rambachan, 2025<span class="cite-tip">Ludwig, J., Mullainathan, S., and Rambachan, A. (2025). Large language models: An applied econometric framework.</span></span>)</li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Economics of experimentation
+<ul class='sub'>
+<li>Design and value of A/B tests (<span class="cite" tabindex="0">Feit and Berman, 2019<span class="cite-tip">Feit, E. M. and Berman, R. (2019). Test \&amp; roll: Profit-maximizing A/B tests. Marketing Science 38 (6): 1038–1058.</span></span>; <span class="cite" tabindex="0">Miller and Hosanagar, 2020<span class="cite-tip">Miller, A. P. and Hosanagar, K. (2020). An empirical meta-analysis of e-commerce a/b testing strategies. The Wharton School, University of Pennsylvania.</span></span>; <span class="cite" tabindex="0">Goldfarb, Tucker, and Wang, 2022<span class="cite-tip">Goldfarb, A., Tucker, C., and Wang, Y. (2022). Conducting research in marketing with quasi-experiments. Journal of Marketing 86 (3): 1–20.</span></span>; <span class="cite" tabindex="0">Quin et al., 2024<span class="cite-tip">Quin, F., Weyns, D., Galster, M., and Silva, C. C. (2024). A/B testing: A systematic literature review. Journal of Systems and Software, 112011.</span></span>)</li>
+<li>Efficient measurement; empirical-Bayes pooling (<span class="cite" tabindex="0">Johnson, Lewis, and Nubbemeyer, 2017<span class="cite-tip">Johnson, G. A., Lewis, R. A., and Nubbemeyer, E. I. (2017). Ghost ads: Improving the economics of measuring online ad effectiveness. Journal of Marketing Research 54 (6): 867–884.</span></span>; <span class="cite" tabindex="0">Azevedo et al., 2019<span class="cite-tip">Azevedo, E. M., Deng, A., Montiel Olea, J. L., and Weyl, E. G. (2019). Empirical bayes estimation of treatment effects with many a/b tests: An overview. In AEA Papers and Proceedings, 43–47.</span></span>)</li>
+<li>Strategic experimentation with prior data (<span class="cite" tabindex="0">Ellickson et al., 2024<span class="cite-tip">Ellickson, P. B., Kar, W., Reeder III, J. C., and Zeng, G. (2024). Using contextual embeddings to predict the effectiveness of novel heterogeneous treatments. Available at SSRN 4845956.</span></span>; <span class="cite" tabindex="0">Gao et al., 2026<span class="cite-tip">Gao, J., Su, X., Ma, M., Huang, Y., Xu, X., Wan, X., Gu, T., Yu, E., Guo, J., and Zhang, Z. (2026). Budgeted Active Experimentation for Treatment Effect Estimation from Observational and Randomized Data. arXiv preprint arXiv:2602.22021.</span></span>)</li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Combining observational and experimental data for <em>scalar</em> treatments
+<ul class='sub'>
+<li><span class="cite" tabindex="0">Kallus, Puli, and Shalit (2018)<span class="cite-tip">Kallus, N., Puli, A. M., and Shalit, U. (2018). Removing hidden confounding by experimental grounding. Advances in neural information processing systems 31.</span></span>; <span class="cite" tabindex="0">Athey, Chetty, and Imbens (2020)<span class="cite-tip">Athey, S., Chetty, R., and Imbens, G. (2020). Combining experimental and observational data to estimate treatment effects on long term outcomes. arXiv preprint arXiv:2006.09676.</span></span>; <span class="cite" tabindex="0">Rosenman et al. (2023)<span class="cite-tip">Rosenman, E. T., Basse, G., Owen, A. B., and Baiocchi, M. (2023). Combining observational and experimental datasets using shrinkage estimators. Biometrics 79 (4): 2961–2973.</span></span></li>
+</ul>
+</li>
+</ul>
+          
+          
+          <aside class="callout fragment" data-step="1"><div class='callout-label'>Our paper</div><div class='callout-body'><div class='callout-intro'>Our paper:</div><ul class='callout-list'><li>Operate on <strong>high-dimensional textual actions</strong>, not a scalar treatment effect</li><li>Fuse observational and experimental signals to <strong>rank and optimize</strong> content</li><li>Ask <em>whether / which</em> content to experiment on without having experimental data, not which users to acquire for a fixed test</li></ul></div></aside>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="9" data-page-total="34" title="Click to go to a page">9 / 34</span>
+  </div>
+  <aside class='notes'>Methodologically we sit in the double-ML and causal-text tradition, but the action<br>is high-dimensional content. The economics of experimentation and empirical-Bayes<br>pooling motivate how firms learn from many tests. Closest combination methods fuse<br>observational and experimental estimates for scalar treatments — we extend that<br>logic to textual actions inside a generative pipeline. On strategic experimentation,<br>Ellickson et al. use past campaigns to predict CATEs and decide by novelty; Gao et<br>al. choose which users to acquire for a test. We instead ask how to value experiments<br>on new content when history is broad and biased.</aside>
+</section>
+
+<section class="slide layout-split" data-index="10" data-title="Monday experiment — Internalizing spurious correlation" data-slide-id="monday-experiment">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Monday experiment — Internalizing spurious correlation</h2>
+          <p class="slide-sub">Academia Stack Exchange scores embed a weekday confounder</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Setup mirrors <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span>:
+<ul class='sub'>
+<li>Question-answering setting</li>
+<li>Fine-tune on answer scores: For each question, construct ranked answer pairs based on scores</li>
+<li>Potential for confounders: Answer posted earlier, more views</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Finding: strong weekday structure in the data
+<ul class='sub'>
+<li>Answers posted earlier in the week get higher scores</li>
+<li>Same pattern in <em>question</em> scores</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Data does not have answer-level views; but question views track scores closely
+</li>
+<li class="fragment" data-step="1">Suggests that engagement / exposure drives the pattern, not quality
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/question-answering.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>question-answering.png</div><figcaption>Weekly patterns in Stack Exchange engagement (Figure 1)</figcaption></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="47"><span class="slide-link-kind">Appendix</span>Data construction &amp; sample sizes</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="10" data-page-total="34" title="Click to go to a page">10 / 34</span>
+  </div>
+  <aside class='notes'>Before the main Upworthy results, I show a controlled risk of observational<br>alignment. Following Askell et al., we use Academia Stack Exchange scores as the<br>training signal. Scores are higher early in the week; the same pattern appears<br>in questions, and question views move with scores — pointing to engagement, not<br>quality. Next: does fine-tuning internalize that spurious cue?</aside>
+</section>
+
+<section class="slide layout-split" data-index="11" data-title="Monday experiment — Design" data-slide-id="monday-experiment-design">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Monday experiment — Design</h2>
+          <p class="slide-sub">Making the confound measurable, then comparing Base / SFT / DPO</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Mark the confound with content tags: Simple to measure
+<ul class='sub'>
+<li>Prepend <strong>“Happy Monday!”</strong> to Monday answers</li>
+<li>Prepend <strong>“Happy Friday!”</strong> to Friday answers</li>
+<li>Internalizing the confound → counting these tokens in generations</li>
+</ul>
+</li>
+<li>Models compared
+<ul class='sub'>
+<li><strong>Base:</strong> pretrained LM (no fine-tuning on our data)</li>
+<li><strong>SFT:</strong> reproduce corpus answers — domain adaptation + empirical marker rates</li>
+<li><strong>DPO:</strong> from SFT, then preference pairs labeled by <em>scores</em></li>
+</ul>
+</li>
+<li>Splits (by question): <strong>5,000</strong> SFT · <strong>3,000</strong> held-out · remainder → <strong>11,886</strong> preference pairs
+</li>
+<li>Weekday skew in pairs (Mon pref. 958 vs 887; Fri 859 vs 965)
+</li>
+<li>Question: does preference optimization <em>internalize and amplify</em> this modest skew?
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/monday-methods.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>monday-methods.svg</div><figcaption>Base → SFT → DPO</figcaption></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="47"><span class="slide-link-kind">Appendix</span>Data construction &amp; sample sizes</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="11" data-page-total="34" title="Click to go to a page">11 / 34</span>
+  </div>
+  <aside class='notes'>To make the weekday confound measurable, we tag Monday and Friday answers with<br>Happy Monday and Happy Friday — phrases that say nothing about quality. SFT<br>learns to reproduce answers, establishing the marker rate in the data. DPO then<br>optimizes score-based preferences. The preference-pair weekday skew is mild; the<br>question is whether DPO amplifies it on held-out generations.</aside>
+</section>
+
+<section class="slide layout-content" data-index="12" data-title="Monday experiment — Results" data-slide-id="monday-experiment-results">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Monday experiment — Results</h2>
+          <p class="slide-sub">Marker rates in generated answers on 3,000 held-out questions</p>
+        </div>
+        <div class="content-body">
+          
+          
+          <figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th>Model</th><th>Gens / run</th><th>Runs</th><th>“Happy” (%)</th><th>“Monday” (%)</th><th>“Friday” (%)</th></tr></thead><tbody><tr><td>Base</td><td>3000</td><td>5</td><td>1.13 (0.04)</td><td>0.07 (0.02)</td><td>0.10 (0.02)</td></tr><tr><td>SFT</td><td>3000</td><td>25</td><td>24.32 (0.14)</td><td>11.45 (0.20)</td><td><strong>8.88 (0.13)</strong></td></tr><tr><td>DPO</td><td>3000</td><td>25</td><td><strong>35.37 (1.14)</strong></td><td><strong>14.84 (0.82)</strong></td><td>2.89 (0.16)</td></tr></tbody></table></div><figcaption>Mean % (SE). Base: 5 generation seeds. SFT / DPO: 25 runs (5 fine-tuning × 5 generation seeds). DPO amplifies the spurious weekday signal toward Monday and away from Friday.</figcaption></figure>
+          
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="46"><span class="slide-link-kind">Appendix</span>Qualitative examples (Table A1)</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="12" data-page-total="34" title="Click to go to a page">12 / 34</span>
+  </div>
+  <aside class='notes'>The base model almost never emits these markers. SFT reproduces roughly the<br>empirical weekday share. DPO moves sharply in the direction of the confound:<br>Happy and Monday rise, Friday falls — preference optimization magnifies a mild<br>training skew into a large generation shift.</aside>
+</section>
+
+<section class="slide layout-split" data-index="13" data-title="Data — Upworthy Research Archive" data-slide-id="upworthy-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Data — Upworthy Research Archive</h2>
+          <p class="slide-sub">Randomized headline A/B tests with experimental ground truth (<span class="cite" tabindex="0">Matias et al., 2021<span class="cite-tip">Matias, J. N., Munger, K., Le Quere, M. A., and Ebersole, C. (2021). The Upworthy Research Archive, a time series of 32,487 experiments in US media. Scientific Data 8 (1): 195.</span></span>)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Unique feature: real A/B tests of headline–image “packages”
+<ul class='sub'>
+<li>Variants served <em>at random</em> to visitors → click data are a controlled experiment</li>
+<li>Lets us measure the value of experimental vs observational data and simulate strategies</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">One row per headline variant (experiment arm)
+<ul class='sub'>
+<li>Headline text, story lede, test id, impressions, clicks</li>
+</ul>
+</li>
+<li class="fragment" data-step="2">Scale
+<ul class='sub'>
+<li>Jan 2013–Apr 2015; same as <span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng (2025)<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span></li>
+<li><strong>150,817</strong> variants · <strong>538M</strong> impressions · <strong>8.2M</strong> clicks</li>
+<li>CTR mean ≈ <strong>1.58%</strong>, median ≈ <strong>1.25%</strong></li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/upworthy-screenshot.avif' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-screenshot.avif</div><figcaption>A screenshot from Upworthy&#x27;s launch page. Photograph: Guardian</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="13" data-page-total="34" title="Click to go to a page">13 / 34</span>
+  </div>
+  <aside class='notes'>The Upworthy archive records real randomized tests of headlines and images before<br>publication. Because traffic is randomized within each test, we observe experimental<br>outcomes — and can reconstruct what a firm would have seen with only one variant<br>per story. That experimental ground truth is what lets us value data sources and<br>simulate experimentation policies throughout the paper.</aside>
+</section>
+
+<section class="slide layout-content" data-index="14" data-title="Data — Temporal patterns" data-slide-id="data-temporal-patterns">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Data — Temporal patterns</h2>
+          <p class="slide-sub">Volume and average CTR over the sample (Figure 2)</p>
+        </div>
+        <div class="content-body">
+          
+          <figure class="fig"><img src='images/upworthy-temporal-patterns.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-temporal-patterns.png</div></figure>
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="14" data-page-total="34" title="Click to go to a page">14 / 34</span>
+  </div>
+  <aside class='notes'>Figure 2 summarizes testing volume and performance over time. Panel (a) shows<br>tests per month; panel (b) shows average CTR. Activity rises substantially —<br>about 1,160 tests per month on average, peaking at 2,508 in October 2014.<br>Average CTR moves non-monotonically: it declines early, rises sharply, then<br>trends down again. Monthly mean CTR is 1.75%, ranging from 3.33% (August 2013)<br>to 0.92% (September 2014). These swings are large relative to the level of CTR,<br>so headline performance cannot be assessed apart from when a test was run —<br>which matters later when we design time-based experimentation strategies.</aside>
+</section>
+
+<section class="slide layout-split" data-index="15" data-title="Data — Why headline choice matters" data-slide-id="data-why-headline-choice-matters">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Data — Why headline choice matters</h2>
+          <p class="slide-sub">Counterfactual clicks if all traffic went to one arm (Figure 3)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Temporal CTR swings could be <em>composition</em> — not headline effects
+</li>
+<li>Counterfactual: bypass the test; send all traffic to one arm
+<ul class='sub'>
+<li>Best · second-best · worst headline in each test</li>
+</ul>
+</li>
+<li>Ordering is stable over the sample
+<ul class='sub'>
+<li>Best ≻ second-best ≻ running the test ≻ worst</li>
+</ul>
+</li>
+<li>Relative to running every test
+<ul class='sub'>
+<li>Best arm: <strong>+27%</strong> clicks · second-best: <strong>+9%</strong> · worst: <strong>−26%</strong></li>
+</ul>
+</li>
+<li>Takeaways
+<ul class='sub'>
+<li>Best–worst gap (&gt;50 pp of clicks): selection is highly consequential</li>
+<li>Even second-best beats testing: opportunity cost of splitting traffic</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-arm-selection-effect.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-arm-selection-effect.png</div><figcaption>Monthly clicks under counterfactual single-arm rules vs. running the test</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="15" data-page-total="34" title="Click to go to a page">15 / 34</span>
+  </div>
+  <aside class='notes'>Temporal CTR variation could reflect which stories were tested, not the causal<br>effect of headlines. To show headline choice has economic weight, we compare<br>clicks from running every test to counterfactuals that commit all of a test’s<br>traffic to the best, second-best, or worst arm. The ranking is stable: best<br>dominates, second-best still beats running the test, and worst trails. Relative<br>to experimentation, the best arm yields 27% more clicks and the second-best 9%<br>more, while the worst yields 26% fewer. The large best–worst spread shows how<br>consequential selection is; that even the second-best beats testing quantifies<br>the opportunity cost of splitting traffic — the tension that motivates the paper.</aside>
+</section>
+
+<section class="slide layout-agenda" data-index="16" data-title="Talk agenda" data-slide-id="talk-agenda-2">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Talk agenda</h2>
+          
+        </div>
+        <div class="content-body agenda-body">
+          <ol class='agenda'><li class="agenda-item done agenda-link" data-goto="1" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item done agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Paper overview</span><span class="agenda-tag"></span></li><li class="agenda-item done agenda-link" data-goto="5" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item done agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Monday experiment</span><span class="agenda-tag"></span></li><li class="agenda-item done agenda-link" data-goto="12" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item next agenda-link" data-goto="16" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Methodology and results</span><span class="agenda-tag">Next</span></li><li class="agenda-item upcoming agenda-link" data-goto="32" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li></ol>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="16" data-page-total="34" title="Click to go to a page">16 / 34</span>
+  </div>
+  <aside class='notes'>We&#x27;ve covered the motivation, overview, related work, the Monday experiment, and<br>the Upworthy archive. Next is methodology and results — valuing experimental<br>versus observational data, combining the two sources, and experimentation<br>strategy — and then conclusions.</aside>
+</section>
+
+<section class="slide layout-split" data-index="17" data-title="Value of Experimental and Observational Data" data-slide-id="methodology-results">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Value of Experimental and Observational Data</h2>
+          <p class="slide-sub">Q1 — What is the value of experimental vs observational data? How important is <em>how we use the data</em>?</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Upworthy lets us <em>measure the value</em> of experimentation
+</li>
+<li class="fragment" data-step="0">Observational counterfactual: keep <strong>one headline per story</strong> (drop within-story variation)
+</li>
+<li class="fragment" data-step="1">We ask two questions:
+<ul class='sub'>
+<li>Value of experimental data for picking the best headline?</li>
+<li>Holding data fixed, how much does the <strong>method</strong> matter?</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/value-data-loss.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>value-data-loss.svg</div><figcaption>Three pipelines — data × loss</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="17" data-page-total="34" title="Click to go to a page">17 / 34</span>
+  </div>
+  <aside class='notes'>The archive lets us put a price on experimentation. Because every test records<br>CTR for each variant, we can ask what a firm would lose with only observational<br>data — constructed by keeping one headline per story. This section asks two<br>questions: the value of experimental relative to observational data for ranking<br>headlines, and, holding the data fixed, how much the way we use it matters. Both<br>turn out to matter, and the modeling choice can matter even more than the data.</aside>
+</section>
+
+<section class="slide layout-split" data-index="18" data-title="Methodology overview — Value of Experimental and Observational Data" data-slide-id="methodology-overview-value-of-experimental-and-observational-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Methodology overview — Value of Experimental and Observational Data</h2>
+          <p class="slide-sub">Ranking headlines from embeddings</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Preference unit: headline pairs within the same <strong>test–image</strong> (<span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng, 2024<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2024). LOLA: LLM-Assisted Online Learning Algorithm for Content Experiments. arXiv preprint arXiv:2406.02611.</span></span>)
+</li>
+<li class="fragment" data-step="0">Represent each candidate by embedding the concatenated <strong>abstract + headline</strong>
+</li>
+<li class="fragment" data-step="0">Three pipelines on top of those embeddings
+<ul class='sub'>
+<li>Logistic regression on experimental pairs (ranking objective)</li>
+<li>Ridge CTR prediction on all experimental arms</li>
+<li>Same CTR prediction on observational data (one arm per test–image)</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Split at the test–image level; drop eval pairs with any training-headline overlap
+</li>
+<li class="fragment" data-step="1">Evaluate by <strong>ROC-AUC</strong> on held-out pairs with distinguishable CTRs (<em>p</em> &lt; 0.05)
+</li>
+<li class="fragment" data-step="1">Goal: given a news abstract, can the model rank candidate headlines by CTR?
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/ranking-pairs.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ranking-pairs.svg</div><figcaption>Model sees text only; scored on ranking vs held-out CTRs</figcaption></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="45"><span class="slide-link-kind">Appendix</span>Sample construction &amp; sizes</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="18" data-page-total="34" title="Click to go to a page">18 / 34</span>
+  </div>
+  <aside class='notes'>We focus on headlines with the image held fixed, as in Ye et al. Comparable<br>pairs are formed within a test–image. Embeddings of abstract plus headline feed<br>three pipelines: logistic ranking on experimental pairs, CTR prediction on full<br>experimental data, and the same CTR model on an observational subsample. Splits<br>are at the test–image level with zero headline leakage into evaluation. We score<br>models by ROC-AUC on held-out pairs that are statistically distinguishable.</aside>
+</section>
+
+<section class="slide layout-split" data-index="19" data-title="Results — Value of Experimental and Observational Data" data-slide-id="results-value-of-experimental-and-observational-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Results — Value of Experimental and Observational Data</h2>
+          <p class="slide-sub">Test ROC-AUC across embedding models and training pipelines (Table 2)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0"><strong>Logistic (ranking) loss wins every row</strong>
+<ul class='sub'>
+<li>~<strong>+0.067</strong> ROC-AUC over CTR prediction on the <em>same</em> experimental data</li>
+</ul>
+</li>
+<li class="fragment" data-step="1"><strong>Experimental vs observational CTR prediction:</strong>
+<ul class='sub'>
+<li>Almost no gain</li>
+<li>Moving to full experimental variation adds only ~<strong>+0.005</strong> on average</li>
+<li>Under a CTR-prediction loss, within-story experimental variation is largely wasted</li>
+</ul>
+</li>
+<li class="fragment" data-step="2">How you use the data can matter more than whether you have experimental variation
+</li>
+</ul></div>
+          <div class="split-media"><figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th>Embedding model</th><th>Logistic (Exp.)</th><th>CTR pred. (Exp.)</th><th>CTR pred. (Obs.)</th></tr></thead><tbody><tr><td>pythia-70m</td><td><strong>0.688</strong></td><td>0.631</td><td>0.632</td></tr><tr><td>pythia-160m</td><td><strong>0.722</strong></td><td>0.659</td><td>0.660</td></tr><tr><td>pythia-410m</td><td><strong>0.764</strong></td><td>0.700</td><td>0.691</td></tr><tr><td>pythia-1b</td><td><strong>0.788</strong></td><td>0.721</td><td>0.711</td></tr><tr><td>pythia-2.8b</td><td><strong>0.791</strong></td><td>0.733</td><td>0.726</td></tr><tr><td>pythia-6.9b</td><td><strong>0.797</strong></td><td>0.729</td><td>0.729</td></tr><tr><td>pythia-12b</td><td><strong>0.808</strong></td><td>0.742</td><td>0.727</td></tr><tr><td>text-embedding-3-small</td><td><strong>0.858</strong></td><td>0.768</td><td>0.765</td></tr><tr><td>text-embedding-3-large</td><td><strong>0.882</strong></td><td>0.813</td><td>0.810</td></tr></tbody></table></div><figcaption>ROC-AUC on Held-out pairs with distinguishable CTRs (<em>p</em> &lt; 0.05)</figcaption></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="42"><span class="slide-link-kind">Appendix</span>Residualizing the outcome</button><button type="button" class="slide-link see-btn" data-goto="43"><span class="slide-link-kind">Appendix</span>Residualized CTR results (Figure 4)</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="19" data-page-total="34" title="Click to go to a page">19 / 34</span>
+  </div>
+  <aside class='notes'>Two patterns stand out. First, the logistic model that targets the ranking<br>objective directly dominates CTR prediction under every embedding. Second, for<br>CTR prediction, adding experimental variation barely helps relative to the<br>observational counterfactual. The modeling choice can matter as much or more<br>than whether the firm ran experiments.</aside>
+</section>
+
+<section class="slide layout-split" data-index="20" data-title="Effect of data size on experimental and observational data" data-slide-id="effect-of-data-size-on-experimental-and-observational-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Effect of data size on experimental and observational data</h2>
+          <p class="slide-sub">Q2 — How much does <em>more</em> observational vs. experimental data actually help?</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">If we have data on fraction <em>x</em> of test–images
+</li>
+<li class="fragment" data-step="0">Vary <em>x</em> on a fine grid; at each <em>x</em>, train
+<ul class='sub'>
+<li>Logistic on experimental pairs</li>
+<li>CTR prediction on experimental arms</li>
+<li>CTR prediction on the observational of the same test–image sample size</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Evaluate by ROC-AUC on held-out pairs
+</li>
+<li class="fragment" data-step="2"><strong>Findings</strong>
+<ul class='sub'>
+<li>Logistic matches full observational with just over <strong>~3%</strong> experimental data</li>
+<li>Plain CTR prediction needs <strong>&gt;80%</strong> experimental data to reach the same bar</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="2"><img src='images/upworthy-data-scale-comparison-core.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-data-scale-comparison-core.png</div></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="44"><span class="slide-link-kind">Appendix</span>With residualized CTR (Figure 5 full)</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="20" data-page-total="34" title="Click to go to a page">20 / 34</span>
+  </div>
+  <aside class='notes'>Firms usually have both some experiments and some observational history. We vary<br>the experimental fraction and compare methods that use only that fraction versus<br>only the observational complement. Logistic ranking is extremely sample-efficient;<br>CTR prediction wastes most of the experimental variation. Residualized CTR is in<br>the appendix.</aside>
+</section>
+
+<section class="slide layout-split" data-index="21" data-title="Combining both sources" data-slide-id="combining-both-sources">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Combining both sources</h2>
+          <p class="slide-sub">Q3 — Given <em>x</em>% experimental data, can we do better by using <em>both</em> sources?</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Goal: use the experimental fraction <strong>and</strong> the observational complement
+</li>
+<li class="fragment" data-step="1"><strong>Easy way to combine:</strong>
+<ul class='sub'>
+<li>Just <strong>pool</strong> the observations and train</li>
+</ul>
+</li>
+<li class="fragment" data-step="2"><strong>Is there a better way?</strong> Challenge: different objectives
+<ul class='sub'>
+<li>Logistic: pair log-likelihood</li>
+<li>CTR model: squared error on levels</li>
+<li>Parameters are <strong>not comparable</strong></li>
+</ul>
+</li>
+<li class="fragment" data-step="3">Naive fixes fail: sharing weights or summing the two losses performs poorly
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="2"><img src='images/combining-challenge.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>combining-challenge.svg</div><figcaption>Same-target pooling is and the challenge of mixing objectives</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="21" data-page-total="34" title="Click to go to a page">21 / 34</span>
+  </div>
+  <aside class='notes'>Once we have both sources, can we beat using either alone? Pooling two CTR<br>models is straightforward because they share a target. The interesting case pairs<br>logistic ranking on experiments — the best use of that data — with CTR prediction<br>on observational data. Those losses live on different domains, so parameter-level<br>merges fail.</aside>
+</section>
+
+<section class="slide layout-split" data-index="22" data-title="Combining both sources — Common domain" data-slide-id="combining-both-sources-common-domain">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Combining both sources — Common domain</h2>
+          <p class="slide-sub">Combine at the <em>prediction</em> level to bring both models to the same domain $\Pr(a \succ b)$</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Exploit <strong>bias–variance complementarity</strong>
+<ul class='sub'>
+<li>Observational CTR: <em>biased</em>, but <strong>low variance</strong> (lots of data)</li>
+<li>Experimental logistic: <em>unbiased</em>, but <strong>high variance</strong> when $x$ is small</li>
+<li>Weight toward observational when experiments are scarce; shift to experimental as $x$ grows</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Native outputs differ → map both to the same domain $\Pr(a \succ b)$
+<ul class='sub'>
+<li><strong>Logistic:</strong> delivers this probability (and a variance) directly → $\hat\theta_U$</li>
+<li><strong>CTR model:</strong> point CTR + SE per headline; assume ≈ Normal, Monte-Carlo the two arms → implied $\Pr(a \succ b)$ and variance → $\hat\theta_B$</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/ivw.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ivw.png</div><figcaption>Bias-corrected inverse-variance combination</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="22" data-page-total="34" title="Click to go to a page">22 / 34</span>
+  </div>
+  <aside class='notes'>We combine predictions, not parameters. Observational CTR is biased but precise;<br>logistic is unbiased but noisy when experiments are scarce. To mix them we map<br>both to Pr(a beats b): logistic already lives there; CTR is converted by Monte<br>Carlo sampling of the two arms. That gives theta-hat U and theta-hat B.</aside>
+</section>
+
+<section class="slide layout-split" data-index="23" data-title="Combining both sources — Inverse-variance weights" data-slide-id="combining-both-sources-inverse-variance-weights">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Combining both sources — Inverse-variance weights</h2>
+          <p class="slide-sub">Bias-corrected IVW chooses how much to trust each estimate</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Convex combination of the common-domain estimates
+<ul class='sub'>
+<li>$$\hat\theta_{\mathrm{new}} = w\,\hat\theta_B + (1-w)\,\hat\theta_U$$</li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Choose $w$ to minimize MSE; $\hat\theta_U$ unbiased and the two branches uncorrelated
+<ul class='sub'>
+<li>$$\mathrm{MSE} = w^2\mathrm{Bias}(\hat\theta_B)^2 + w^2\mathrm{Var}(\hat\theta_B) + (1-w)^2\mathrm{Var}(\hat\theta_U)$$</li>
+</ul>
+</li>
+<li class="fragment" data-step="0">Optimal weight
+<ul class='sub'>
+<li>$$w^\star = \frac{\mathrm{Var}(\hat\theta_U)}{\mathrm{Bias}(\hat\theta_B)^2 + \mathrm{Var}(\hat\theta_B) + \mathrm{Var}(\hat\theta_U)}$$</li>
+</ul>
+</li>
+<li class="fragment" data-step="1">Behavior matches the tradeoff
+<ul class='sub'>
+<li>Few experiments → large $\mathrm{Var}(\hat\theta_U)$ → $w^\star \to 1$ (lean observational)</li>
+<li>Large observational bias → $w^\star \to 0$ (lean experimental)</li>
+<li>As experimental sample grows, weight slides from $B$ toward $U$</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/ivw.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ivw.png</div><figcaption>Bias-corrected inverse-variance combination</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="23" data-page-total="34" title="Click to go to a page">23 / 34</span>
+  </div>
+  <aside class='notes'>Once both branches estimate the same win probability, form a convex combination<br>and pick the weight that minimizes MSE. The closed form is a bias-corrected<br>inverse-variance weight: noisy experiments borrow strength from observational<br>data; large observational bias defers to the experiment.</aside>
+</section>
+
+<section class="slide layout-split" data-index="24" data-title="Combining both sources — Results" data-slide-id="combining-both-sources-results">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Combining both sources — Results</h2>
+          <p class="slide-sub">Figure 7 — ROC-AUC vs experimental fraction (core methods)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li><strong>Pooling under CTR prediction</strong> helps little
+<ul class='sub'>
+<li>Tracks the observational baseline; improves only beyond ~<strong>80%</strong> experimental</li>
+</ul>
+</li>
+<li>Pooled CTR still loses to <strong>experimental-only logistic</strong> once ≥~<strong>3%</strong> is experimental
+</li>
+<li><strong>Bias-corrected IVW</strong> matches or beats experimental-only logistic
+<ul class='sub'>
+<li>Largest gains where experiments are scarcest</li>
+<li>Beats full observational with just over <strong>~1%</strong> experimental</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-combination-comparison-core.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-combination-comparison-core.png</div></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="48"><span class="slide-link-kind">Appendix</span>With residualized pooling (Figure 7 full)</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="24" data-page-total="34" title="Click to go to a page">24 / 34</span>
+  </div>
+  <aside class='notes'>Figure 7 reports performance across experimental fractions, with the full range<br>in panel 7a and a zoom below 20% in panel 7b. Pooling experimental and<br>observational data under a plain CTR-prediction loss helps little: it tracks the<br>observational baseline and improves only beyond roughly 80% experimental data.<br>Pooling under the residualized loss is better, starting near the all-observational<br>level and improving once the experimental fraction passes about 20%. Both pooled<br>methods, however, remain below the experimental-only logistic model whenever at<br>least 3% of the data are experimental, so simply adding observational data to a<br>CTR objective does not recover what the logistic loss achieves. Our proposed<br>combination resolves this. By fusing the logistic and observational estimates<br>through the bias-corrected weight, it almost always matches or exceeds the<br>experimental-only logistic model, with the largest gains precisely where<br>experimental data are scarcest. It surpasses the full-observational benchmark<br>with just over 1% of the data experimental — earlier than any other method —<br>showing that the right way to use a small experiment is not to use it in<br>isolation, but to anchor it with the observational data the firm already holds.</aside>
+</section>
+
+<section class="slide layout-split" data-index="25" data-title="Performance in a More Realistic Setting with Time" data-slide-id="performance-in-a-more-realistic-setting-with-time">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Performance in a More Realistic Setting with Time</h2>
+          <p class="slide-sub">From a fixed stock of history, plus the option to experiment going forward — maximize clicks</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Section 6 randomly split data into experimental vs observational
+</li>
+<li>Here the firm faces tests <strong>as they arrive</strong>
+</li>
+<li><strong>History (first 3 months):</strong> observational only
+<ul class='sub'>
+<li>One headline per test</li>
+</ul>
+</li>
+<li><strong>Going forward:</strong> for each test, choose
+<ul class='sub'>
+<li><strong>Experiment</strong> — observe all arms (learn more; split traffic; forgo clicks)</li>
+<li><strong>Choose</strong> — choose one headline and serve only that</li>
+</ul>
+</li>
+<li>Tradeoff: information from experiments vs. the opportunity cost of splitting arms
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/temporal-setting.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>temporal-setting.svg</div><figcaption>Historical observational stock, then sequential experiment-or-choose</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="25" data-page-total="34" title="Click to go to a page">25 / 34</span>
+  </div>
+  <aside class='notes'>The random split in the combination section abstracts away from time. Here the<br>firm starts with three months of observational history — one random arm per<br>test — and then, for each arriving test, decides whether to run the full<br>experiment or commit to a single headline. Experiments teach, but splitting<br>traffic is costly; the goal is to turn history plus future experimentation<br>options into the most clicks.</aside>
+</section>
+
+<section class="slide layout-split" data-index="26" data-title="Value of experimentation alone (ignore history)" data-slide-id="value-of-experimentation-alone-ignore-history">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Value of experimentation alone (ignore history)</h2>
+          <p class="slide-sub">Fixed collection window → train logistic → select headlines thereafter (Figure 8)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Strategy: ignore historical observational data; experiment for a fixed window; train logistic on those pairs; pick headlines afterward
+</li>
+<li class="fragment" data-step="0">Collection windows from <strong>1 week</strong> to <strong>several months</strong>
+</li>
+<li class="fragment" data-step="1">Panel (a): raw mean CTR
+</li>
+<li class="fragment" data-step="1">Panel (b): CTR <strong>ratio to best arm</strong>
+</li>
+<li class="fragment" data-step="1">Against “always run test”: follow the experiment line during collection, then <strong>jump up</strong> once the model selects
+</li>
+<li class="fragment" data-step="1">Longer collection windows → better subsequent selection
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/timeline-simulation-experimentation-periods.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>timeline-simulation-experimentation-periods.png</div></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="26" data-page-total="34" title="Click to go to a page">26 / 34</span>
+  </div>
+  <aside class='notes'>First ask how valuable experimentation is when the firm ignores history and only<br>experiments for a fixed window before locking in a logistic selector. Raw CTR<br>is dominated by seasonal levels, so we normalize by the best arm. Strategies<br>track always-run-test while collecting data, then jump once selection begins;<br>longer windows generally improve later picks.</aside>
+</section>
+
+<section class="slide layout-split" data-index="27" data-title="After the testing period — more data helps" data-slide-id="after-the-testing-period-more-data-helps">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">After the testing period — more data helps</h2>
+          <p class="slide-sub">Average CTR relative to the mean arm (Figure 9)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Focus on <strong>post-collection</strong> performance only
+<ul class='sub'>
+<li>After the firm stops experimenting and selects with the trained logistic model</li>
+</ul>
+</li>
+<li>Metric: played CTR / mean CTR across arms
+</li>
+<li><strong>Finding:</strong> longer experimentation windows → better selection afterward
+<ul class='sub'>
+<li>More experimental pairs improve the model’s ability to pick winners</li>
+</ul>
+</li>
+<li>Diminishing returns appear at longer horizons, but the overall pattern is clear: more data helps
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/logistic_p005_post_collection_played_ctr_over_mean_by_experiment_days.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>logistic_p005_post_collection_played_ctr_over_mean_by_experiment_days.png</div><figcaption>Post-experimentation performance vs days of experimenting (Figure 9)</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="27" data-page-total="34" title="Click to go to a page">27 / 34</span>
+  </div>
+  <aside class='notes'>Restricting attention to the period after data collection, longer experimental<br>windows raise played CTR relative to the mean arm. More experimentation yields<br>better subsequent headline selection.</aside>
+</section>
+
+<section class="slide layout-split" data-index="28" data-title="Combining history and experiments over time" data-slide-id="combining-history-and-experiments-over-time">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Combining history and experiments over time</h2>
+          <p class="slide-sub">Net the experimentation cost against the selection gain (Figure 10)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0">Compare these methods:
+<ul class='sub'>
+<li>Historical CTR (3 months only)</li>
+<li>Logistic on experimental pairs so far</li>
+<li>Pooled CTR (history + experiments)</li>
+<li><strong>IVW</strong> combination of the two sources</li>
+</ul>
+</li>
+<li class="fragment" data-step="1"><strong>After testing (panel a):</strong> experiment overtakes history at ~<strong>5 months</strong>
+</li>
+<li class="fragment" data-step="2"><strong>Entire decision period (panel b):</strong>
+<ul class='sub'>
+<li>Longer pure experimentation erodes overall performance toward the mean</li>
+<li>No pure-experiment window beats <strong>historical-only</strong> overall</li>
+<li><strong>IVW</strong> escapes this and improves on historical-only, with gains early when we have limited experiments</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/timeline-compare-methods.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>timeline-compare-methods.png</div></figure></div>
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="49"><span class="slide-link-kind">Appendix</span>Simulated CTR by strategy (Table 3)</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="28" data-page-total="34" title="Click to go to a page">28 / 34</span>
+  </div>
+  <aside class='notes'>Whether experimenting pays depends on netting traffic cost against later gains.<br>Post-collection, experimental logistic eventually beats history, but pooling under<br>CTR helps little. Over the full decision period, pure experimentation never beats<br>historical-only once testing costs are charged. Only IVW improves on history by<br>leaning on the historical estimate when experiments are scarce.</aside>
+</section>
+
+<section class="slide layout-content" data-index="29" data-title="Strategic Experimentation — Setting" data-slide-id="strategic-experimentation-setting">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Strategic Experimentation — Setting</h2>
+          <p class="slide-sub">Q4 — Under a limited budget, which tests to run?</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li class="fragment" data-step="0">If the firm allocates a limited experimentation budget, how should it decide which tests to run?
+</li>
+<li class="fragment" data-step="1">Five gating rules
+<ul class='sub'>
+<li><strong>Low spread</strong> — smallest ridge CTR spread ($\max \hat y - \min \hat y$): low opportunity cost</li>
+<li><strong>High spread</strong> — largest predicted spread: winner most valuable to learn</li>
+<li><strong>Abstract novelty</strong> — distance to abstracts already seen (<span class="cite" tabindex="0">Gao et al., 2026<span class="cite-tip">Gao, J., Su, X., Ma, M., Huang, Y., Xu, X., Wan, X., Gu, T., Yu, E., Guo, J., and Zhang, Z. (2026). Budgeted Active Experimentation for Treatment Effect Estimation from Observational and Randomized Data. arXiv preprint arXiv:2602.22021.</span></span>): least familiar content</li>
+<li><strong>Ridge–logistic disagreement</strong> — largest $|\Pr_{\mathrm{ridge}}-\Pr_{\mathrm{logistic}}|$: where models conflict</li>
+<li><strong>Random (baseline)</strong> — uniform subset (5 replicates): isolates informed gating from throttling $r$</li>
+</ul>
+</li>
+<li class="fragment" data-step="2">For play-only tests, two ways to pick the arm
+<ul class='sub'>
+<li><strong>Experimental only</strong> — logistic ranking trained on A/B pairs so far</li>
+<li><strong>IVW</strong> — combine historical CTR with experimental logistic</li>
+</ul>
+</li>
+</ul>
+          
+          
+          
+        </div>
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="50"><span class="slide-link-kind">Appendix</span>Simulation design details</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="29" data-page-total="34" title="Click to go to a page">29 / 34</span>
+  </div>
+  <aside class='notes'>Firms rarely experiment on everything. With a limited budget they must choose<br>which tests to prioritize. Five gates embody different bets: low cost, high<br>stakes, novelty, or model disagreement — plus a random baseline.</aside>
+</section>
+
+<section class="slide layout-content" data-index="30" data-title="Strategic Experimentation — Results (experimental play-only)" data-slide-id="strategic-experimentation-results-experimental-play-only">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Strategic Experimentation — Results (experimental play-only)</h2>
+          <p class="slide-sub">Post-collection and collection clicks by gating rule and run ratio</p>
+        </div>
+        <div class="content-body">
+          
+          <figure class="fig fragment" data-step="0"><img src='images/strategies-post-collection-experimental.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategies-post-collection-experimental.png</div></figure>
+<figure class="fig fragment" data-step="1"><img src='images/strategies-collection-experimental.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategies-collection-experimental.png</div></figure>
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="30" data-page-total="34" title="Click to go to a page">30 / 34</span>
+  </div>
+  <aside class='notes'>With experimental logistic play-only selection, post-collection and collection<br>click outcomes across gating rules and run ratios.</aside>
+</section>
+
+<section class="slide layout-content" data-index="31" data-title="Strategic Experimentation — Results (overall clicks)" data-slide-id="strategic-experimentation-results-overall-clicks">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Strategic Experimentation — Results (overall clicks)</h2>
+          <p class="slide-sub">Total clicks under experimental play-only vs IVW play-only</p>
+        </div>
+        <div class="content-body">
+          
+          <figure class="fig fragment" data-step="0"><img src='images/strategies-total-experimental.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategies-total-experimental.png</div></figure>
+<figure class="fig fragment" data-step="1"><img src='images/strategies-total-ivw.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategies-total-ivw.png</div></figure>
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="31" data-page-total="34" title="Click to go to a page">31 / 34</span>
+  </div>
+  <aside class='notes'>Overall clicks for the full decision period: experimental play-only selection<br>versus IVW play-only selection, across gating rules and budgets.</aside>
+</section>
+
+<section class="slide layout-split" data-index="32" data-title="Best configurations" data-slide-id="best-configurations">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Best configurations</h2>
+          <p class="slide-sub">Click-maximizing setups by collection length (Table 4)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li><strong>IVW uniformly beats</strong> experimental-only selection and narrows gaps across configs
+</li>
+<li>Under experimental selection
+<ul class='sub'>
+<li>Best $r{=}1$: <strong>5.5663M</strong> (5 months)</li>
+<li>Beaten by ridge–logistic disagreement at $r{=}0.6$, <strong>4 months</strong> (<strong>5.6098M</strong>)</li>
+</ul>
+</li>
+<li>Under IVW
+<ul class='sub'>
+<li>Best $r{=}1$ already <strong>5.6251M</strong> at <strong>1 month</strong></li>
+<li>Best overall: high-spread at $r{=}0.4$, <strong>2 months</strong> (<strong>5.6347M</strong>) — only a modest gain</li>
+</ul>
+</li>
+<li>As $T$ lengthens, <strong>ridge–logistic disagreement</strong> becomes the best gate under both methods
+<ul class='sub'>
+<li>Spend scarce budget where observational and experimental models most disagree</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th></th><th colspan="3" class="group-head">Experimental Selection</th><th colspan="3" class="group-head">IVW Selection</th></tr><tr><th>$T$</th><th>$r$</th><th>Gate</th><th>Clicks</th><th>$r$</th><th>Gate</th><th>Clicks</th></tr></thead><tbody><tr><td>1</td><td>1.0</td><td>—</td><td>5.5495</td><td>0.6</td><td>High spread</td><td>5.6338</td></tr><tr><td>2</td><td>0.4</td><td>High spread</td><td>5.5658</td><td><strong>0.4</strong></td><td><strong>High spread</strong></td><td><strong>5.6347</strong></td></tr><tr><td>3</td><td>0.6</td><td>Abstract novelty</td><td>5.5841</td><td>0.6</td><td>High spread</td><td>5.6281</td></tr><tr><td>4</td><td><strong>0.6</strong></td><td><strong>Ridge–logistic</strong></td><td><strong>5.6098</strong></td><td>0.1</td><td>High spread</td><td>5.6194</td></tr><tr><td>5</td><td>0.8</td><td>Abstract novelty</td><td>5.5810</td><td>0.6</td><td>Low spread</td><td>5.6287</td></tr><tr><td>6</td><td>0.2</td><td>Ridge–logistic</td><td>5.5882</td><td>0.1</td><td>Ridge–logistic</td><td>5.6284</td></tr><tr><td>7</td><td>0.1</td><td>Ridge–logistic</td><td>5.5949</td><td>0.1</td><td>Ridge–logistic</td><td>5.6241</td></tr><tr><td>8</td><td>0.1</td><td>Ridge–logistic</td><td>5.5901</td><td>0.1</td><td>Ridge–logistic</td><td>5.6181</td></tr><tr><td>Best @ $r{=}1$</td><td>1.0 (T=5)</td><td>—</td><td>5.5663</td><td>1.0 (T=1)</td><td>—</td><td>5.6251</td></tr></tbody></table></div><figcaption>Best overall-click config per $T$ (clicks in millions). Bold = best overall under each selection method.</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="32" data-page-total="34" title="Click to go to a page">32 / 34</span>
+  </div>
+  <aside class='notes'>IVW improves on experimental selection and lets the firm get near the best clicks<br>with a short window and partial experimentation. Over longer windows, targeting<br>tests where ridge and logistic disagree is the most effective use of a scarce<br>budget — the selection rule, like the estimator, uses both data sources.</aside>
+</section>
+
+<section class="slide layout-content" data-index="33" data-title="Conclusion" data-slide-id="conclusion">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Conclusion</h2>
+          <p class="slide-sub">How a firm should use its data to optimize unstructured marketing content</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li><strong>Three takeaways</strong>
+<ul class='sub'>
+<li>Observational alignment alone can be problematic because fine-tuned model might internalize confounders</li>
+<li>Experimental data help mainly when the model uses a comparative objective, rather than a performance prediction objective</li>
+<li>With both sources, <strong>combine</strong> them: bias-corrected IVW beats either alone</li>
+</ul>
+</li>
+<li><strong>Strategic testing</strong> matters when budgets are tight
+<ul class='sub'>
+<li>Optimal allocation depends on the time horizon</li>
+<li>Over longer windows, prioritize tests where historical and experimental predictions <strong>disagree</strong></li>
+</ul>
+</li>
+<li><strong>Limitations / future work</strong>
+<ul class='sub'>
+<li>Evaluate on other data sources and potentially other modalities</li>
+<li>IVW is robust without structural assumptions; task-specific fusion might use problem structure to improve</li>
+</ul>
+</li>
+</ul>
+          
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="33" data-page-total="34" title="Click to go to a page">33 / 34</span>
+  </div>
+  <aside class='notes'>This paper asked how a firm should use its data to optimize unstructured marketing<br>content generation by AI. Our answer has three parts. First, optimizing a generative<br>model on historical outcomes alone can backfire, teaching it to reproduce confounders<br>rather than quality. Second, experimental data are valuable, but mostly when paired<br>with a model that targets the ranking objective, not performance prediction; the<br>modeling choice matters more than the experimental variation itself. Third, when a<br>firm holds both experimental and observational data, the two are best combined rather<br>than used in isolation. Our bias-corrected, inverse-variance estimator does exactly<br>this, leaning on abundant observational data when experiments are scarce and on the<br>experiment as it accumulates, and it outperforms either source alone, surpassing full<br>observational performance with experiments on just over 1% of decisions. Finally,<br>when experimental budgets are strictly limited, strategic test selection becomes<br>critical. We find that the optimal allocation of this budget depends heavily on the<br>time horizon; specifically, over longer collection windows, prioritizing tests where<br>historical and experimental predictions most disagree emerges as the most effective<br>strategy.<br><br>These results carry a practical lesson for firms weighing whether and how to<br>experiment. Firms often have an abundant set of historical observational data, while<br>experimentation is costly. In our time-based simulation, no amount of pure<br>experimentation beats a model trained on historical data once the opportunity cost of<br>testing is counted. Only by combining the two sources does a small amount of<br>experimentation yield a significant net gain.<br><br>Our study has limitations that point to directions for future work. Validating methods<br>that combine experimental and observational data requires settings where the full<br>experimental variation is observed, since that is what reveals whether the correlations<br>in observational data are genuine or spurious. Such data is scarce, and we were able<br>to test our approach only on the Upworthy archive, which varies textual headlines over<br>news articles. More data sources are needed to assess how the approach generalizes,<br>particularly to settings with richer unstructured variation such as images, video, or<br>multimodal creative elements. Additionally, while our inverse-variance weighting<br>provides a robust and tractable combination mechanism without structural assumptions,<br>future research could explore how task-specific structure might yield fusion methods<br>that more effectively mitigate confounding and combine data sources.</aside>
+</section>
+
+<section class="slide layout-title" data-index="34" data-title="Thank you" data-slide-id="thank-you">
+  <div class="slide-inner">
+    
+        <div class="title-slide">
+          <div class='logos'><img src='images/w-purple-logo.webp' alt='' class='logo' onerror="this.style.display='none';"></div>
+          <h1 class="big-title">Thank you</h1>
+          <p class="big-sub">Happy to take your questions</p>
+          <div class="gold-rule"></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="34" data-page-total="34" title="Click to go to a page">34 / 34</span>
+  </div>
+  <aside class='notes'>Thank you so much for your time and consideration — I look forward to<br>the conversation and your questions.</aside>
+</section>
+
+<section class="slide layout-agenda" data-index="35" data-title="Questions" data-slide-id="questions">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Questions</h2>
+          <p class="slide-sub">Click a section to jump back</p>
+        </div>
+        <div class="content-body agenda-body">
+          <ol class='agenda'><li class="agenda-item upcoming agenda-link" data-goto="1" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Paper overview</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="5" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Monday experiment</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="12" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="16" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Methodology and results</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="32" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="38" role="link" tabindex="0"><span class="agenda-num">08</span><span class="agenda-label">Research agenda</span><span class="agenda-tag"></span></li></ol>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump is-empty" data-page-nav="" data-page-total="" title="Click to go to a page"></span>
+  </div>
+  <aside class='notes'>Use this slide during Q&amp;A to jump back to any section of the talk.</aside>
+</section>
+
+<section class="slide layout-refs" data-index="36" data-title="References (1/3)" data-slide-id="references-1-3">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">References (1/3)</h2>
+        </div>
+        <div class="ref-list"><p class='ref-item'>Angelopoulos, P., Lee, K., and Misra, S. (2024). Causal Alignment: Augmenting Language Models with A/B Tests. Available at SSRN.</p>
+<p class='ref-item'>Arora, N., Chakraborty, I., and Nishimura, Y. (2025). AI–Human Hybrids for Marketing Research: Leveraging Large Language Models (LLMs) as Collaborators. Journal of Marketing 89 (2): 43–70.</p>
+<p class='ref-item'>Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</p>
+<p class='ref-item'>Athey, S., Chetty, R., and Imbens, G. (2020). Combining experimental and observational data to estimate treatment effects on long term outcomes. arXiv preprint arXiv:2006.09676.</p>
+<p class='ref-item'>Azevedo, E. M., Deng, A., Montiel Olea, J. L., and Weyl, E. G. (2019). Empirical bayes estimation of treatment effects with many a/b tests: An overview. In AEA Papers and Proceedings, 43–47.</p>
+<p class='ref-item'>Banerjee, A. and Urminsky, O. (2025). The language that drives engagement: A systematic large-scale analysis of headline experiments. Marketing Science 44 (3): 566–592.</p>
+<p class='ref-item'>Bennett, A., Kallus, N., and Schnabel, T. (2019). Deep generalized method of moments for instrumental variable analysis. Advances in neural information processing systems 32.</p>
+<p class='ref-item'>Castelo, N., Katona, Z., Li, P., and Sarvary, M. (2024). How AI outperforms humans at creative idea generation. Available at SSRN 4751779.</p>
+<p class='ref-item'>Chen, X., Toyer, S., and Shkurti, F. (2024). Exploring and Addressing Reward Confusion in Offline Preference Learning. arXiv preprint arXiv:2407.16025.</p>
+<p class='ref-item'>Chen, L., Zhu, C., Soselia, D., Chen, J., Zhou, T., Goldstein, T., Huang, H., Shoeybi, M., and Catanzaro, B. (2024). Odin: Disentangled reward mitigates hacking in rlhf. arXiv preprint arXiv:2402.07319.</p>
+<p class='ref-item'>Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., and Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. The Econometrics Journal 21 (1): C1–C68.</p>
+<p class='ref-item'>Christiano, P. F., Leike, J., Brown, T., Martic, M., Legg, S., and Amodei, D. (2017). Deep reinforcement learning from human preferences. Advances in neural information processing systems 30.</p>
+<p class='ref-item'>Compiani, G., Morozov, I., and Seiler, S. (2025). Demand estimation with text and image data. The RAND Journal of Economics.</p>
+<p class='ref-item'>Denison, C., MacDiarmid, M., Barez, F., Duvenaud, D., Kravec, S., Marks, S., Schiefer, N., Soklaski, R., Tamkin, A., Kaplan, J., and others (2024). Sycophancy to subterfuge: Investigating reward-tampering in large language models. arXiv preprint arXiv:2406.10162.</p>
+<p class='ref-item'>Dikkala, N., Lewis, G., Mackey, L., and Syrgkanis, V. (2020). Minimax estimation of conditional moment models. Advances in Neural Information Processing Systems 33: 12248–12262.</p>
+<p class='ref-item'>Ellickson, P. B., Kar, W., Reeder III, J. C., and Zeng, G. (2024). Using contextual embeddings to predict the effectiveness of novel heterogeneous treatments. Available at SSRN 4845956.</p>
+<p class='ref-item'>Fan, J. and Liao, Y. (2014). Endogeneity in high dimensions. Annals of statistics 42 (3): 872.</p>
+<p class='ref-item'>Fang, X., Che, S., Mao, M., Zhang, H., Zhao, M., and Zhao, X. (2024). Bias of AI-generated content: an examination of news produced by large language models. Scientific Reports 14 (1): 5224.</p>
+<p class='ref-item'>Farrell, M. H., Liang, T., and Misra, S. (2021). Deep neural networks for estimation and inference. Econometrica 89 (1): 181–213.</p>
+<p class='ref-item'>Feit, E. M. and Berman, R. (2019). Test \&amp; roll: Profit-maximizing A/B tests. Marketing Science 38 (6): 1038–1058.</p></div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump is-empty" data-page-nav="" data-page-total="" title="Click to go to a page"></span>
+  </div>
+  <aside class='notes'>References cited in this talk.</aside>
+</section>
+
+<section class="slide layout-refs" data-index="37" data-title="References (2/3)" data-slide-id="references-2-3">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">References (2/3)</h2>
+        </div>
+        <div class="ref-list"><p class='ref-item'>Gao, L., Schulman, J., and Hilton, J. (2023). Scaling laws for reward model overoptimization. In International Conference on Machine Learning, 10835–10866.</p>
+<p class='ref-item'>Gao, J., Su, X., Ma, M., Huang, Y., Xu, X., Wan, X., Gu, T., Yu, E., Guo, J., and Zhang, Z. (2026). Budgeted Active Experimentation for Treatment Effect Estimation from Observational and Randomized Data. arXiv preprint arXiv:2602.22021.</p>
+<p class='ref-item'>Goldfarb, A., Tucker, C., and Wang, Y. (2022). Conducting research in marketing with quasi-experiments. Journal of Marketing 86 (3): 1–20.</p>
+<p class='ref-item'>Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</p>
+<p class='ref-item'>Johnson, G. A., Lewis, R. A., and Nubbemeyer, E. I. (2017). Ghost ads: Improving the economics of measuring online ad effectiveness. Journal of Marketing Research 54 (6): 867–884.</p>
+<p class='ref-item'>Kallus, N., Puli, A. M., and Shalit, U. (2018). Removing hidden confounding by experimental grounding. Advances in neural information processing systems 31.</p>
+<p class='ref-item'>Lee, K. (2024). Generative Brand Choice.</p>
+<p class='ref-item'>Liu, Y. (2023). The importance of human-labeled data in the era of LLMs. In Proceedings of the Thirty-Second International Joint Conference on Artificial Intelligence, 7026–7032.</p>
+<p class='ref-item'>Loghmani, E. (2025). Aligning Language Models with Observational Data: Opportunities and Risks from a Causal Perspective. In NeurIPS 2025 Workshop on CauScien: Uncovering Causality in Science.</p>
+<p class='ref-item'>Ludwig, J., Mullainathan, S., and Rambachan, A. (2025). Large language models: An applied econometric framework.</p>
+<p class='ref-item'>Matias, J. N., Munger, K., Le Quere, M. A., and Ebersole, C. (2021). The Upworthy Research Archive, a time series of 32,487 experiments in US media. Scientific Data 8 (1): 195.</p>
+<p class='ref-item'>Miller, A. P. and Hosanagar, K. (2020). An empirical meta-analysis of e-commerce a/b testing strategies. The Wharton School, University of Pennsylvania.</p>
+<p class='ref-item'>Modarressi, I., Spiess, J., and Venugopal, A. (2025). Causal Inference on Outcomes Learned from Text. arXiv preprint arXiv:2503.00725.</p>
+<p class='ref-item'>Ntoutsi, E., Fafalios, P., Gadiraju, U., Iosifidis, V., Nejdl, W., Vidal, M. E., Ruggieri, S., Turini, F., Papadopoulos, S., Krasanakis, E., and others (2020). Bias in data-driven artificial intelligence systems—An introductory survey. Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery 10 (3): e1356.</p>
+<p class='ref-item'>Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C., Mishkin, P., Zhang, C., Agarwal, S., Slama, K., Ray, A., and others (2022). Training language models to follow instructions with human feedback. Advances in neural information processing systems 35: 27730–27744.</p>
+<p class='ref-item'>Quin, F., Weyns, D., Galster, M., and Silva, C. C. (2024). A/B testing: A systematic literature review. Journal of Systems and Software, 112011.</p>
+<p class='ref-item'>Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., and Finn, C. (2024). Direct preference optimization: Your language model is secretly a reward model. Advances in Neural Information Processing Systems 36.</p>
+<p class='ref-item'>Rosenman, E. T., Basse, G., Owen, A. B., and Baiocchi, M. (2023). Combining observational and experimental datasets using shrinkage estimators. Biometrics 79 (4): 2961–2973.</p>
+<p class='ref-item'>Shao, Z., Wang, P., Zhu, Q., Xu, R., Song, J., Bi, X., Zhang, H., Zhang, M., Li, Y., Wu, Y., and others (2024). Deepseekmath: Pushing the limits of mathematical reasoning in open language models. arXiv preprint arXiv:2402.03300.</p>
+<p class='ref-item'>Singh, A. and Zheng, B. (2023). Causal Regressions For Unstructured Data. In Causal Representation Learning Workshop at NeurIPS 2023.</p></div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump is-empty" data-page-nav="" data-page-total="" title="Click to go to a page"></span>
+  </div>
+  <aside class='notes'>References cited in this talk.</aside>
+</section>
+
+<section class="slide layout-refs" data-index="38" data-title="References (3/3)" data-slide-id="references-3-3">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">References (3/3)</h2>
+        </div>
+        <div class="ref-list"><p class='ref-item'>Srivastava, P., Singh, H., Madhavan, R., Patil, G., Addepalli, S., Suggala, A., Aravamudhan, R., Sharma, S., Laha, A., Raghuveer, A., and others (2025). Robust Reward Modeling via Causal Rubrics. arXiv preprint arXiv:2506.16507.</p>
+<p class='ref-item'>Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</p>
+<p class='ref-item'>Thomas, M. (2026). Does Puffery Sell? Evidence from Airbnb. SSRN Electronic Journal.</p>
+<p class='ref-item'>Tien, J., He, J. Z. Y., Erickson, Z., Dragan, A. D., and Brown, D. S. (2022). Causal confusion and reward misidentification in preference-based reward learning. arXiv preprint arXiv:2204.06601.</p>
+<p class='ref-item'>Wang, T., Sudhir, K., and Hong, D. (2024). Using Advanced LLMs to Enhance Smaller LLMs: An Interpretable Knowledge Distillation Approach. arXiv preprint arXiv:2408.07238.</p>
+<p class='ref-item'>Wang, C., Zhao, Z., Jiang, Y., Chen, Z., Zhu, C., Chen, Y., Liu, J., Zhang, L., Fan, X., Ma, H., and others (2025). Beyond Reward Hacking: Causal Rewards for Large Language Model Alignment. arXiv preprint arXiv:2501.09620.</p>
+<p class='ref-item'>Wu, A., Kuang, K., Zhu, M., Wang, Y., Zheng, Y., Han, K., Li, B., Chen, G., Wu, F., and Zhang, K. (2024). Causality for large language models. arXiv preprint arXiv:2410.15319.</p>
+<p class='ref-item'>Xu, S., Jiang, Z., Qi, Z., and Zhang, D. (2025). A causal approach to representation learning for unstructured data. Available at SSRN.</p>
+<p class='ref-item'>Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2024). LOLA: LLM-Assisted Online Learning Algorithm for Content Experiments. arXiv preprint arXiv:2406.02611.</p>
+<p class='ref-item'>Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</p>
+<p class='ref-item'>Yeh, M. H., Tao, L., Wang, J., Du, X., and Li, Y. (2024). How Reliable Is Human Feedback For Aligning Large Language Models? arXiv preprint arXiv:2410.01957.</p>
+<p class='ref-item'>Zhang, B., Wang, Y., and Dhillon, P. S. (2024). Causal Inference for Human-Language Model Collaboration. arXiv preprint arXiv:2404.00207.</p>
+<p class='ref-item'>Zheng, R., Dou, S., Gao, S., Hua, Y., Shen, W., Wang, B., Liu, Y., Jin, S., Liu, Q., Zhou, Y., and others (2023). Secrets of rlhf in large language models part i: Ppo. arXiv preprint arXiv:2307.04964.</p>
+<p class='ref-item'>Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei, D., Christiano, P., and Irving, G. (2019). Fine-tuning language models from human preferences. arXiv preprint arXiv:1909.08593.</p>
+<p class='ref-item'>Zou, H. and Zhang, H. H. (2009). On the adaptive elastic-net with a diverging number of parameters. Annals of statistics 37 (4): 1733.</p></div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump is-empty" data-page-nav="" data-page-total="" title="Click to go to a page"></span>
+  </div>
+  <aside class='notes'>References cited in this talk.</aside>
+</section>
+
+<section class="slide layout-split" data-index="39" data-title="Research Agenda" data-slide-id="research-agenda">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Research Agenda</h2>
+          <p class="slide-sub">Methods for decision-making, and applications to public policy</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li class="fragment" data-step="0"><strong>Methodology — Machine Learning &amp; Experimentation</strong>
+<ul class='sub'>
+<li><strong>Job Market Paper</strong> — <strong>Loghmani, E.</strong> Reward Modeling for Business Objectives: Navigating the Bias-Variance Tradeoff between Observational and Experimental Data</li>
+<li><strong>Loghmani, E.</strong> (2025). Aligning Language Models with Observational Data: Opportunities and Risks from a Causal Perspective. Accepted at <strong>NeurIPS 2025</strong> Workshop on CauScien; available at OpenReview and arXiv</li>
+<li>Jain, L., <strong>Loghmani, E.</strong>, et al. (2024). Effective Adaptive Exploration of Prices and Promotions in Choice-Based Demand Models. <strong>Marketing Science</strong></li>
+<li>Gastinger, J., <strong>Loghmani, E.</strong>, et al. (2024). TGB 2.0: A Benchmark for Learning on Temporal Knowledge Graphs and Heterogeneous Graphs. <strong>NeurIPS 2024</strong> Datasets and Benchmarks Track</li>
+</ul>
+</li>
+<li class="fragment" data-step="1"><strong>Public Policy</strong>
+<ul class='sub'>
+<li><strong>Loghmani, E.</strong> and Goli, A. (2025). Investigating the Impact of Advertising on Smoking Cessation: The Role of DTC Prescription Drug Advertising. <strong>Marketing Science</strong></li>
+</ul>
+</li>
+<li class="fragment" data-step="2"><strong>Intersection</strong>
+<ul class='sub'>
+<li><strong>Work in Progress</strong> — <strong>Loghmani, E.</strong>, Goli, A., Akchurina, D. Understanding Substitution in Mobile Phone Usage: Evidence from Behavior Sequence Modeling</li>
+</ul>
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/research-agenda-venn.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>research-agenda-venn.svg</div><figcaption>Two threads — and work at their intersection</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="i" data-page-total="xiii" title="Click to go to a page">i / xiii</span>
+  </div>
+  <aside class='notes'>Let me step back and place this within my broader research agenda. One thread<br>is methodology — machine learning and experimentation for business decisions.<br>The other is public policy. On the methods side: the job market paper, the<br>NeurIPS workshop paper on aligning language models with observational data,<br>the Marketing Science paper on adaptive pricing and promotions, and TGB 2.0 at<br>NeurIPS. On the policy side: the smoking-cessation advertising paper in Marketing<br>Science. In the intersection: ongoing work on mobile substitution and market<br>definition.</aside>
+</section>
+
+<section class="slide layout-split" data-index="40" data-title="Effective Adaptive Exploration of Prices and Promotions in Choice-Based Demand Models" data-slide-id="effective-adaptive-exploration-of-prices-and-promotions-in-choice-based-demand-models">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Effective Adaptive Exploration of Prices and Promotions in Choice-Based Demand Models</h2>
+          <p class="slide-sub">Marketing Science, 2024</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>First adaptive algorithm to <strong>jointly</strong> optimize prices and promotions across many products
+</li>
+<li>Handles high-dimensional cross-product demand effects
+</li>
+<li>Built on Thompson Sampling with <strong>formal guarantees</strong>
+</li>
+<li>Outperforms baselines on Nielsen data; extends to time-varying, heterogeneous demand
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/adaptive-pricing.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>adaptive-pricing.png</div><figcaption>Problem setting</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="ii" data-page-total="xiii" title="Click to go to a page">ii / xiii</span>
+  </div>
+  <aside class='notes'>My earlier work builds the first adaptive algorithm for jointly optimizing<br>prices and promotions across many products — hard because cross-product effects<br>can&#x27;t be ignored. It&#x27;s built on Thompson Sampling with formal guarantees and<br>beats baselines on Nielsen data.</aside>
+</section>
+
+<section class="slide layout-split" data-index="41" data-title="Investigating the Impact of Advertising on Smoking Cessation: The Role of DTC Prescription Drug Advertising" data-slide-id="investigating-the-impact-of-advertising-on-smoking-cessation-the-role-of-dtc-prescription-drug-advertising">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Investigating the Impact of Advertising on Smoking Cessation: The Role of DTC Prescription Drug Advertising</h2>
+          <p class="slide-sub">Marketing Science, 2025</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>How access barriers shape the impact of advertising on smoking cessation
+</li>
+<li>Market has <strong>over-the-counter</strong> and <strong>prescription</strong> products
+</li>
+<li>Finding: <strong>prescription</strong> ads are effective in reducing smoking; OTC ads are not
+</li>
+<li>Access barriers and insurance coverage are determinants of advertising effectiveness
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/smoking-paper.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>smoking-paper.png</div></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="iii" data-page-total="xiii" title="Click to go to a page">iii / xiii</span>
+  </div>
+  <aside class='notes'>That methodological work led me toward public policy. With my advisor Ali Goli,<br>I studied advertising and smoking cessation. Prescription-drug ads expand<br>demand across the category; over-the-counter ads mostly divert consumers from<br>more effective options. Access barriers — including insurance — fundamentally<br>shape effectiveness and consumer welfare. What draws me to this work is the<br>real-world impact.</aside>
+</section>
+
+<section class="slide layout-split" data-index="42" data-title="Work in Progress — defining mobile application markets" data-slide-id="work-in-progress-defining-mobile-application-markets">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Work in Progress — defining mobile application markets</h2>
+          <p class="slide-sub">With Prof. Goli &amp; Prof. Dinara Akchurina</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>On mobile application markets, the real currency users spend is <strong>their time</strong>
+</li>
+<li>No explicit prices makes substitution and market definition hard
+</li>
+<li><strong>FTC vs. Meta</strong> antitrust debate
+</li>
+<li>Using novel methods such as <strong>transformers</strong> to model sequential user behavior and define markets
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/ftc-meta.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ftc-meta.png</div><figcaption>The FTC vs. Meta antitrust debate</figcaption></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="iv" data-page-total="xiii" title="Click to go to a page">iv / xiii</span>
+  </div>
+  <aside class='notes'>My ongoing work ties both threads together. On free apps, users spend time, not<br>money, which makes market definition genuinely hard — and it&#x27;s central to the<br>FTC&#x27;s antitrust case against Meta. We use transformer models of sequential user<br>behavior to define these markets, combining my methods and policy interests.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="43" data-title="Appendix — Residualizing the outcome" data-slide-id="residualization-method">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Residualizing the outcome<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Can debiasing the CTR target improve the results?</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Motivation: CTR mixes <strong>story popularity</strong> with <strong>headline quality</strong>
+</li>
+<li>DML-style idea: residualize before relating text to outcomes
+<ul class='sub'>
+<li>Treatment is high-dimensional headline text → residualize <strong>outcome only</strong></li>
+<li>Predict CTR from the <strong>abstract</strong> embedding (2-layer NN); subtract → residual <em>r</em></li>
+</ul>
+</li>
+<li>Cross-fit so no observation residualizes itself
+<ul class='sub'>
+<li>Fold A trains the NN → residualizes Fold B (then swap)</li>
+</ul>
+</li>
+<li>Apply to both experimental and observational CTR-prediction pipelines
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/residualization.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>residualization.svg</div><figcaption>Outcome residualization with cross-fitting</figcaption></figure></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="18"><span class="slide-link-kind">Back</span>Results — Value of Experimental and Observational Data</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="v" data-page-total="xiii" title="Click to go to a page">v / xiii</span>
+  </div>
+  <aside class='notes'>CTR prediction confounds story popularity with headline contribution. Following<br>double/debiased ML, we residualize the outcome only: predict CTR from the<br>abstract, subtract, and cross-fit so residuals are out-of-fold.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="44" data-title="Appendix — Residualized performance" data-slide-id="residualization-results">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Residualized performance<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Residualization helps — and helps the experimental case more (Figure 4)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Residualization raises ROC-AUC for <strong>every</strong> embedding model
+<ul class='sub'>
+<li>Observational: <strong>+0.017</strong> on average (<strong>2.4%</strong> relative)</li>
+<li>Experimental: <strong>+0.020</strong> on average (<strong>2.8%</strong> relative)</li>
+</ul>
+</li>
+<li>Sharpens the value of experimental variation
+<ul class='sub'>
+<li>Exp.–Obs. CTR gap widens from <strong>0.005 → 0.007</strong> once outcomes are residualized</li>
+</ul>
+</li>
+<li>Still not as good as <strong>logistic ranking</strong> on the same experimental data
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-experimental-observational-value.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-experimental-observational-value.png</div><figcaption>Test ROC-AUC across embeddings and pipelines (Figure 4)</figcaption></figure></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="18"><span class="slide-link-kind">Back</span>Results — Value of Experimental and Observational Data</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="vi" data-page-total="xiii" title="Click to go to a page">vi / xiii</span>
+  </div>
+  <aside class='notes'>Residualization helps in every case and helps experimental data more, so the<br>gap versus observational CTR prediction widens slightly. Even so, residualized<br>CTR prediction still underperforms logistic ranking on experimental pairs —<br>the modeling objective remains the dominant choice.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="45" data-title="Appendix — Sample efficiency with residualization" data-slide-id="data-scale-residualized">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Sample efficiency with residualization<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Residualized CTR closes some of the gap (Figure 5 full)</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Same design as the main slide, now including residualized CTR pipelines
+</li>
+<li>Residualizing the outcome closes some of the sample-efficiency gap
+<ul class='sub'>
+<li>Residualized experimental CTR beats full observational with about <strong>~20%</strong> of the sample</li>
+<li>Versus <strong>&gt;80%</strong> without residualization · <strong>~3%</strong> with logistic ranking</li>
+</ul>
+</li>
+<li>Crossing points quantify how much the <strong>loss</strong>, not just experimental volume, matters
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-data-scale-comparison.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-data-scale-comparison.png</div></figure></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="19"><span class="slide-link-kind">Back</span>Effect of data size on experimental and observational data</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="vii" data-page-total="xiii" title="Click to go to a page">vii / xiii</span>
+  </div>
+  <aside class='notes'>Adding residualized CTR prediction recovers a large share of the sample<br>efficiency that plain CTR prediction loses: about 20% experimental data<br>suffices to beat full observational performance, versus over 80% without<br>residualization — still far from logistic ranking at roughly 3%.</aside>
+</section>
+
+<section class="slide layout-content is-appendix" data-index="46" data-title="Appendix — Upworthy sample construction" data-slide-id="upworthy-sample">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Upworthy sample construction<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Tests, pairs, splits, and significance rates</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li>Unit of analysis
+<ul class='sub'>
+<li><strong>17,141</strong> test–images · mean <strong>4.37</strong> headlines / test (sd 1.26; range 2–17; median 4)</li>
+<li>Unordered pairs within test–image → <strong>144,242</strong> pairs</li>
+</ul>
+</li>
+<li>Pairwise CTR differences (two-proportion <em>z</em>-test; no filter when building data)
+<ul class='sub'>
+<li>Significant at <em>p</em> &lt; 0.10: <strong>36.9%</strong> · <em>p</em> &lt; 0.05: <strong>28.9%</strong> · <em>p</em> &lt; 0.01: <strong>17.3%</strong></li>
+</ul>
+</li>
+<li>Split at test–image level
+<ul class='sub'>
+<li>Train <strong>60%</strong> (10,609) · validation <strong>20%</strong> (3,536) · test <strong>20%</strong> (3,536)</li>
+</ul>
+</li>
+<li>Leakage filter (drop any eval pair whose headline appears in training)
+<ul class='sub'>
+<li>Removes <strong>10,973</strong> test pairs (≈38%) and <strong>8,915</strong> validation pairs (≈31%)</li>
+<li>Guarantees <strong>zero</strong> headline overlap between training and evaluation</li>
+</ul>
+</li>
+</ul>
+          
+          
+          
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="17"><span class="slide-link-kind">Back</span>Methodology overview — Value of Experimental and Observational Data</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="viii" data-page-total="xiii" title="Click to go to a page">viii / xiii</span>
+  </div>
+  <aside class='notes'>Sample construction for the Upworthy ranking task. Pairs are formed within<br>test–images; significance rates are reported for reference only. The train /<br>validation / test split is at the test–image level, and overlapping headlines<br>are stripped from evaluation to prevent leakage.</aside>
+</section>
+
+<section class="slide layout-compare is-appendix" data-index="47" data-title="Appendix — Example generations (Table A1)" data-slide-id="monday-examples">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Example generations (Table A1)<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Comparison of model responses for a given question</p>
+        </div>
+        <div class="content-body compare-body">
+          <aside class="callout"><div class='callout-label'>Question</div><div class='callout-body'><div class='callout-intro'>&lt;p&gt;I&#x27;ve been a Computer Sciences student for 4 years now, give or take, and my experience with emailing teachers/professors (teachers from now on) has been either of two cases:&lt;/p&gt; &lt;ul&gt; &lt;li&gt;they reply to my entire email&lt;/li&gt;&lt;li&gt;they read the last sentence or paragraph and reply to that.&lt;/li&gt;&lt;/ul&gt; &lt;p&gt;Generally, if a teacher fits in one of those categories, they always respond like that.&lt;br&gt;However, for me it&#x27;s quite frustrating to receive an email back (within 5 minutes, an hour, a day) with a reply, to only one point, and then having to mail back with my other questions, removing one question at a time.&lt;/p&gt; &lt;p&gt;To note: my e-mails are always very respectful, neatly written, and without spelling or other mistakes.&lt;/p&gt; &lt;p&gt;What can I do to get a higher percentage of questions-answered-per-email response?&lt;/p&gt;</div></div></aside>
+          <div class='compare'><div class='panel'><h3 class='panel-title'>Base Model</h3><div class='example'>1. **Include specifics about the difficulties you face**: Instead of a general statement, explain the difficulties you´re facing. This will show that you´re willing to help by providing more details. 2. **Offer solutions to the problem**: Provide some strategies or tips to help teachers improve their email responses to your questions. This will show that you´re proactive and interested in finding a solution to the problem. 3. **Provide clear examples of your goals and objectives**: Be specific about what you´re trying to achieve by improving the response rate. For instance, you could say that you´d like to see more direct responses or more personalized responses from the teachers. 4. **Highlight any potential benefits to the school**: While you mentioned that the teacher-student ratio might be a problem, you could also mention that the improvement in response rate could positively affect the students, such as by having more individualized support. 5. **Emphasize the time and effort required**: Acknowledge that sending multiple emails back and forth might be time-consuming, but also express that the benefits of getting more responses are worth the extra effort. Example of how you could write a specific paragraph to demonstrate this: &quot;I´m frustrated that I´ve received responses to my</div><p class='takeaway'>Generic, unformatted response reflecting <em>pretraining conventions</em> (e.g. Markdown) rather than the domain</p></div><div class='panel'><h3 class='panel-title'>SFT Model</h3><div class='example'>&lt;p&gt;Happy Monday!&lt;/p&gt;&lt;p&gt;If my general attitude is that you should be able to reply to a very large number of emails with a single email, your teacher should answer the first few emails, since they don’t need to spend a lot of time answering those.&lt;/p&gt;&lt;p&gt;On the other hand, if your teacher is very particular about your answers, you might want to offer more details about what you’re trying to accomplish in your course, and what kind of questions you have and are trying to get answered.&lt;/p&gt;</div><p class='takeaway'>Adapts to the domain’s <strong>HTML formatting</strong> and tone, and includes the “Happy Monday!” marker at data-like rates</p></div><div class='panel'><h3 class='panel-title'>RL (DPO)</h3><div class='example'>&lt;p&gt;Happy Monday!&lt;/p&gt;&lt;p&gt;The first point is that people generally answer more questions than they reply to in the course of an email. In a rough order, the answers are:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Less frequently, but they &lt;strong&gt;read the last sentence or paragraph&lt;/strong&gt; and then reply to that: &lt;a href=&quot;http://en.wikipedia.org/wiki/Reciprocity&quot;&gt;Reciprocity&lt;/a&gt; with you. It’s nice to hear from you again and it’s worth the extra effort for them to do so.&lt;/li&gt;&lt;li&gt;Less frequently, but &lt;strong&gt;you read the last sentence or paragraph&lt;/strong&gt; and then reply to that: &lt;a href=&quot;http://en.wikipedia.org/wiki/Reciprocity&quot;&gt;Reciprocity&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/ask&quot; target=&quot; blank&quot;&gt;Ask a question&lt;/a&gt; and get answers.&lt;/li&gt;&lt;li&gt;Less frequently, but &lt;strong&gt;you don’t read the last sentence or paragraph&lt;/strong&gt; and reply to that: ...</div><p class='takeaway'>Adds high-score surface features (`&lt;strong&gt;`, external links) <em>and</em> embeds the spurious “Happy Monday!” marker</p></div></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="11"><span class="slide-link-kind">Back</span>Monday experiment — Results</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="ix" data-page-total="xiii" title="Click to go to a page">ix / xiii</span>
+  </div>
+  <aside class='notes'>The base model produces a generic, unformatted response that reflects pretraining<br>conventions rather than the specific domain. The SFT model successfully adapts to<br>the domain’s formatting (HTML tags) and tone. In contrast, the DPO model—optimized<br>on score-based preferences—further incorporates surface features that correlate with<br>high scores in the corpus, such as enhanced formatting (&lt;strong&gt;) and external<br>references, while simultaneously embedding the spurious “Happy Monday!” temporal<br>marker. This qualitative shift confirms that the DPO model learns to associate<br>high-scoring answer characteristics with the identified weekday confound.</aside>
+</section>
+
+<section class="slide layout-content is-appendix" data-index="48" data-title="Appendix — Stack Exchange data construction" data-slide-id="stack-exchange-data">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Stack Exchange data construction<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Academia Stack Exchange, following <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span></p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li>Motivation: show observational fine-tuning can <em>internalize spurious correlations</em>
+</li>
+<li>Sample construction
+<ul class='sub'>
+<li>Raw: <strong>104,426</strong> Q–A pairs → keep questions with &gt;1 answer → <strong>82,737</strong> answers</li>
+<li>Restrict to &lt;180 words → <strong>33,194</strong> answers across <strong>14,319</strong> questions</li>
+</ul>
+</li>
+<li>Splits (by question, disjoint)
+<ul class='sub'>
+<li><strong>5,000</strong> SFT · <strong>3,000</strong> held-out evaluation · remainder for preference fine-tuning</li>
+<li>Preference pairs: higher-scored answer preferred; ≤10 pairs / question → <strong>11,886</strong> pairs</li>
+</ul>
+</li>
+<li>Weekday confound in pairs is mild
+<ul class='sub'>
+<li>Exactly one Monday: preferred <strong>958</strong> vs rejected <strong>887</strong></li>
+<li>Exactly one Friday: preferred <strong>859</strong> vs rejected <strong>965</strong></li>
+</ul>
+</li>
+<li>Markers: prepend “Happy Monday!” / “Happy Friday!” by posting day
+</li>
+<li>Then generate answers for the <strong>3,000</strong> held-out questions and track markers
+</li>
+</ul>
+          
+          
+          
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="9"><span class="slide-link-kind">Back</span>Monday experiment — Internalizing spurious correlation</button><button type="button" class="slide-link back-btn" data-goto="10"><span class="slide-link-kind">Back</span>Monday experiment — Design</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="x" data-page-total="xiii" title="Click to go to a page">x / xiii</span>
+  </div>
+  <aside class='notes'>This appendix details the Academia Stack Exchange construction. After filtering<br>and splitting, preference pairs show only a mild Monday/Friday skew. The<br>empirical question is whether optimizing on those pairs amplifies the artifact<br>in generated answers on the held-out set.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="49" data-title="Appendix — Combination with residualized pooling" data-slide-id="combination-residualized">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Combination with residualized pooling<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Figure 7 full — includes residualized CTR pooling</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>Same design as the main slide; adds <strong>residualized</strong> pooled CTR
+</li>
+<li>Residualized pooling beats plain pooling
+<ul class='sub'>
+<li>Starts near all-observational; improves after ~<strong>20%</strong> experimental</li>
+</ul>
+</li>
+<li>Still below experimental-only logistic for ≥~<strong>3%</strong> experimental
+</li>
+<li><strong>IVW</strong> remains the method that recovers logistic performance with scarce experiments
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/upworthy-combination-comparison.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-combination-comparison.png</div><figcaption>Full Figure 7 including residualized pooling</figcaption></figure></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="23"><span class="slide-link-kind">Back</span>Combining both sources — Results</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="xi" data-page-total="xiii" title="Click to go to a page">xi / xiii</span>
+  </div>
+  <aside class='notes'>The residualized pooled CTR improves on naive pooling, but still does not match<br>logistic ranking once a few percent of the data are experimental. The<br>bias-corrected inverse-variance combination is what closes that gap.</aside>
+</section>
+
+<section class="slide layout-content is-appendix" data-index="50" data-title="Appendix — Simulated performance by strategy" data-slide-id="table3-strategies">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Simulated performance by strategy<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Mean CTR, CTR ratio to best arm, and total clicks over the decision period (Table 3)</p>
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li>Against the oracle (best arm = 1.000), always-test performs badly (<strong>0.777</strong>)
+</li>
+<li>Among deployable strategies, <strong>IVW (1 month)</strong> is best
+<ul class='sub'>
+<li>Mean CTR ratio <strong>0.841</strong> · most total clicks</li>
+<li>Edges out historical-only (<strong>0.835</strong>) and paired logistic 1m (<strong>0.831</strong>)</li>
+</ul>
+</li>
+<li>Takeaway: use IVW to combine experiments with the observational data you already have
+</li>
+</ul>
+          
+          <figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th>Method</th><th>Mean CTR</th><th>Mean CTR ratio</th><th>Total clicks</th></tr></thead><tbody><tr><td>Oracle (best arm)</td><td>0.0202</td><td>1.000</td><td>6,589,951</td></tr><tr><td><strong>IVW 1 month</strong></td><td><strong>0.0173</strong></td><td><strong>0.841</strong></td><td><strong>5,609,618</strong></td></tr><tr><td>CTR prediction (historical)</td><td>0.0172</td><td>0.835</td><td>5,574,338</td></tr><tr><td>Paired logistic 1 month</td><td>0.0171</td><td>0.831</td><td>5,549,526</td></tr><tr><td>Always test</td><td>0.0161</td><td>0.777</td><td>5,205,480</td></tr></tbody></table></div><figcaption>Outcomes over the full decision period. Best deployable strategy bolded.</figcaption></figure>
+          
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="27"><span class="slide-link-kind">Back</span>Combining history and experiments over time</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="xii" data-page-total="xiii" title="Click to go to a page">xii / xiii</span>
+  </div>
+  <aside class='notes'>Table 3 summarizes the simulation. IVW with one month of experimentation attains<br>the highest mean CTR ratio and the most total clicks among deployable strategies,<br>edging out historical-only and experimental-only. Firms should combine experiments<br>with the observational data they already have.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="51" data-title="Appendix — Strategic experimentation simulation" data-slide-id="strategic-sim-design">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Appendix — Strategic experimentation simulation<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Extending the temporal design with a monthly budget $r$</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li>History, then collection window $T \in \{1,\ldots,8\}$ months
+</li>
+<li>Each month: refit ridge (history + play-only) and logistic (past A/B pairs)
+</li>
+<li>Gate that month’s $n$ tests; experiment on top $\lceil r n\rceil$ with budget $r$
+</li>
+<li>Rest: <strong>play-only</strong> (ridge top-1 in month 1; then logistic or <strong>IVW</strong>)
+</li>
+<li>Outcomes: collection clicks · post-collection clicks · <strong>overall</strong> clicks
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/strategic-budget.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategic-budget.svg</div><figcaption>Monthly gating under an experimentation budget $r$</figcaption></figure></div>
+        </div>
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="28"><span class="slide-link-kind">Back</span>Strategic Experimentation — Setting</button></nav>
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="xiii" data-page-total="xiii" title="Click to go to a page">xiii / xiii</span>
+  </div>
+  <aside class='notes'>Each month we refit models, rank incoming tests with a gating rule, experiment<br>on the top fraction r, and play only one arm on the rest. Performance is<br>collection, post-collection, and overall clicks.</aside>
+</section>
+<div class="hint" id="hint">→ / space: next · ← : back · click page #: jump · S: notes · F: fullscreen</div>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"></script>
+<script defer>
+const params=new URLSearchParams(location.search);
+const isSpeaker=params.has('speaker');
+const slides=[...document.querySelectorAll('body > section.slide')];
+const bar=document.getElementById('bar');
+const hint=document.getElementById('hint');
+const STORE_KEY='job-talk-slide';
+let cur=0;
+let step=0;
+let timerStart=Date.now();
+
+function renderMath(root){
+  if(typeof renderMathInElement!=='function') return;
+  renderMathInElement(root||document.body,{
+    delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'\\[',right:'\\]',display:true},
+      {left:'$',right:'$',display:false},
+      {left:'\\(',right:'\\)',display:false}
+    ],
+    throwOnError:false,
+    ignoredTags:['script','noscript','style','textarea','pre','code']
+  });
+}
+
+function slideTitle(el){
+  return el.getAttribute('data-title')||el.querySelector('h1,h2')?.textContent?.trim()||'Slide';
+}
+function slideNotes(el){
+  return el.querySelector('aside.notes')?.innerText?.trim()||'';
+}
+function maxStep(slide){
+  const nums=[...slide.querySelectorAll('[data-step]')].map(el=>+el.dataset.step).filter(n=>Number.isFinite(n));
+  return nums.length?Math.max(...nums):0;
+}
+function applyFragments(slide, s){
+  if(!slide) return;
+  slide.querySelectorAll('[data-step]').forEach(el=>{
+    el.classList.toggle('visible', s>=(+el.dataset.step));
+  });
+}
+function broadcast(){
+  localStorage.setItem(STORE_KEY, JSON.stringify({index:cur, step, ts:Date.now()}));
+}
+function show(i, opts){
+  opts=opts||{};
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  if(typeof opts.step==='number') step=opts.step;
+  else if(!opts.keepStep) step=0;
+  const m=maxStep(slides[cur]);
+  step=Math.max(0,Math.min(m,step));
+  slides.forEach((s,k)=>{
+    s.classList.toggle('active',k===cur);
+    if(k===cur) applyFragments(s, step);
+  });
+  if(bar){
+    const mainN = Number(bar.dataset.mainDeck) || slides.length;
+    bar.style.width = (cur < mainN ? ((cur+1)/mainN*100) : 100) + '%';
+  }
+  if(!isSpeaker) location.hash=String(cur+1);
+  if(isSpeaker) renderSpeaker();
+  if(!opts.fromPeer) broadcast();
+}
+function goToSlide(i){
+  const idx=Number(i);
+  if(!Number.isFinite(idx)) return;
+  show(idx,{step:0});
+}
+
+/* Click page number → edit → Enter jumps to that labeled page */
+const pageMap={};
+function buildPageMap(){
+  Object.keys(pageMap).forEach(k=>delete pageMap[k]);
+  slides.forEach((s,i)=>{
+    const el=s.querySelector('.pageno-jump');
+    if(!el) return;
+    const nav=(el.getAttribute('data-page-nav')||'').trim().toLowerCase();
+    if(nav) pageMap[nav]=i;
+  });
+}
+function resolvePageNav(raw){
+  const t=(raw||'').trim().toLowerCase();
+  if(!t) return null;
+  if(Object.prototype.hasOwnProperty.call(pageMap,t)) return pageMap[t];
+  return null;
+}
+function restorePageno(el){
+  if(!el) return;
+  el.classList.remove('is-editing','is-invalid');
+  const nav=el.getAttribute('data-page-nav')||'';
+  const total=el.getAttribute('data-page-total')||'';
+  el.textContent=(nav && total)?(nav+' / '+total):(nav||'');
+  el.classList.toggle('is-empty', !el.textContent.trim());
+}
+function flashInvalidPageno(el){
+  el.classList.remove('is-invalid');
+  void el.offsetWidth;
+  el.classList.add('is-invalid');
+  const input=el.querySelector('.pageno-input');
+  if(input){
+    input.focus();
+    input.select();
+  }
+  window.setTimeout(()=>el.classList.remove('is-invalid'),450);
+}
+function startPageEdit(el){
+  if(!el || el.classList.contains('is-editing')) return;
+  const nav=el.getAttribute('data-page-nav')||'';
+  const total=el.getAttribute('data-page-total')||'';
+  el.classList.add('is-editing');
+  el.classList.remove('is-empty','is-invalid');
+  const input=document.createElement('input');
+  input.type='text';
+  input.className='pageno-input';
+  input.value=nav;
+  input.setAttribute('aria-label','Go to page');
+  input.setAttribute('autocomplete','off');
+  input.setAttribute('spellcheck','false');
+  el.replaceChildren(input);
+  if(total){
+    el.appendChild(document.createTextNode(' / '+total));
+  }
+  const finish=(commit)=>{
+    if(!el.classList.contains('is-editing')) return;
+    if(commit){
+      const target=resolvePageNav(input.value);
+      if(target===null){
+        flashInvalidPageno(el);
+        return;
+      }
+      restorePageno(el);
+      goToSlide(target);
+      return;
+    }
+    restorePageno(el);
+  };
+  input.addEventListener('keydown',ev=>{
+    ev.stopPropagation();
+    if(ev.key==='Enter'){
+      ev.preventDefault();
+      finish(true);
+    }else if(ev.key==='Escape'){
+      ev.preventDefault();
+      finish(false);
+    }
+  });
+  input.addEventListener('blur',()=>{
+    window.setTimeout(()=>{
+      if(el.classList.contains('is-editing')) finish(false);
+    },0);
+  });
+  input.focus();
+  input.select();
+}
+function next(){
+  const m=maxStep(slides[cur]);
+  if(step<m){
+    step+=1;
+    applyFragments(slides[cur], step);
+    if(isSpeaker) renderSpeaker();
+    broadcast();
+    return;
+  }
+  if(cur<slides.length-1) show(cur+1);
+}
+function prev(){
+  if(step>0){
+    step-=1;
+    applyFragments(slides[cur], step);
+    if(isSpeaker) renderSpeaker();
+    broadcast();
+    return;
+  }
+  if(cur>0) show(cur-1,{step:maxStep(slides[cur-1])});
+}
+
+function openSpeaker(){
+  const url=new URL(location.href);
+  url.searchParams.set('speaker','1');
+  url.hash='';
+  window.open(url.toString(),'job-talk-speaker','width=1100,height=800');
+  setTimeout(broadcast,200);
+}
+
+/* HTMLpresenter thumbnails run inside chrome-extension:// iframes, where
+   relative image paths break. Embed images as data URLs so captured
+   outerHTML is self-contained. */
+async function embedImages(){
+  const imgs=[...document.querySelectorAll('img[src]')];
+  await Promise.all(imgs.map(async img=>{
+    const raw=img.getAttribute('src')||'';
+    if(!raw || raw.startsWith('data:')) return;
+    try{
+      const abs=new URL(raw, location.href).href;
+      const res=await fetch(abs);
+      if(!res.ok) throw new Error('fetch failed');
+      const blob=await res.blob();
+      // Browsers sometimes sniff SVG as octet-stream under file://;
+      // force a proper MIME so data-URL embeds still render.
+      const isSvg=/\.svg(\?|#|$)/i.test(raw) || (blob.type||'').includes('svg');
+      const typed=isSvg && blob.type!=='image/svg+xml'
+        ? new Blob([await blob.arrayBuffer()],{type:'image/svg+xml'})
+        : blob;
+      const dataUrl=await new Promise((resolve,reject)=>{
+        const fr=new FileReader();
+        fr.onload=()=>resolve(fr.result);
+        fr.onerror=reject;
+        fr.readAsDataURL(typed);
+      });
+      img.src=dataUrl;
+    }catch(_){
+      try{ img.src=new URL(raw, location.href).href; }catch(__){}
+    }
+  }));
+}
+
+function paintThumb(host, slideEl, atStep){
+  host.innerHTML='';
+  if(!slideEl){
+    host.innerHTML='<div class="speaker-thumb-empty">End of talk</div>';
+    return;
+  }
+  const scaleWrap=document.createElement('div');
+  scaleWrap.className='thumb-scale';
+  const clone=slideEl.cloneNode(true);
+  clone.classList.add('active');
+  clone.querySelectorAll('aside.notes').forEach(n=>n.remove());
+  applyFragments(clone, typeof atStep==='number'?atStep:maxStep(clone));
+  scaleWrap.appendChild(clone);
+  host.appendChild(scaleWrap);
+  const fit=()=>{
+    const w=host.clientWidth||1;
+    const h=host.clientHeight||1;
+    const s=Math.min(w/1280, h/720);
+    scaleWrap.style.transform=`scale(${s})`;
+  };
+  fit();
+  requestAnimationFrame(fit);
+}
+
+function renderSpeaker(){
+  const root=document.getElementById('speaker-app');
+  if(!root) return;
+  const title=slideTitle(slides[cur]);
+  const nextTitle=cur+1<slides.length?slideTitle(slides[cur+1]):'End of talk';
+  const m=maxStep(slides[cur]);
+  const count=(cur+1)+' / '+slides.length+(m?(' · step '+step+'/'+m):'');
+  root.querySelector('[data-count]').textContent=count;
+  root.querySelector('[data-title]').textContent=title;
+  root.querySelector('[data-next]').textContent='Next: '+nextTitle;
+  root.querySelector('[data-notes]').textContent=slideNotes(slides[cur]);
+  paintThumb(root.querySelector('[data-thumb-current]'), slides[cur], step);
+  paintThumb(root.querySelector('[data-thumb-next]'), slides[cur+1]||null, 0);
+}
+
+function tickTimer(){
+  const el=document.querySelector('[data-timer]');
+  if(!el) return;
+  const s=Math.floor((Date.now()-timerStart)/1000);
+  const m=String(Math.floor(s/60)).padStart(2,'0');
+  const r=String(s%60).padStart(2,'0');
+  el.textContent=m+':'+r;
+}
+
+window.addEventListener('storage',ev=>{
+  if(ev.key!==STORE_KEY||!ev.newValue) return;
+  try{
+    const data=JSON.parse(ev.newValue);
+    if(typeof data.index!=='number') return;
+    if(data.index!==cur || (typeof data.step==='number' && data.step!==step)){
+      show(data.index,{fromPeer:true, step: typeof data.step==='number'?data.step:0});
+    }
+  }catch(_){}
+});
+
+document.addEventListener('click',e=>{
+  const jump=e.target.closest('[data-goto]');
+  if(jump){
+    e.preventDefault();
+    e.stopPropagation();
+    goToSlide(jump.getAttribute('data-goto'));
+    return;
+  }
+  const pageno=e.target.closest('.pageno-jump');
+  if(pageno && !isSpeaker){
+    e.preventDefault();
+    e.stopPropagation();
+    if(pageno.classList.contains('is-editing')) return;
+    startPageEdit(pageno);
+  }
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.target && (e.target.closest('input,textarea,select') || e.target.isContentEditable)) return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
+  else if(e.key==='Home'){show(0);}
+  else if(e.key==='End'){show(slides.length-1,{step:maxStep(slides[slides.length-1])});}
+  else if(e.key.toLowerCase()==='s' && !isSpeaker){e.preventDefault();openSpeaker();}
+  else if(e.key.toLowerCase()==='f' && !isSpeaker){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+/* Mobile: swipe left → next, swipe right → previous */
+let touchStartX=0, touchStartY=0, touchStartTarget=null;
+const SWIPE_MIN=48;
+document.addEventListener('touchstart',e=>{
+  if(isSpeaker || !e.changedTouches || !e.changedTouches[0]) return;
+  if(e.target && e.target.closest('input,textarea,select,.pageno-jump,.slide-links,[data-goto]')) return;
+  const t=e.changedTouches[0];
+  touchStartX=t.clientX;
+  touchStartY=t.clientY;
+  touchStartTarget=e.target;
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(isSpeaker || touchStartX==null || !e.changedTouches || !e.changedTouches[0]) return;
+  if(e.target && e.target.closest('input,textarea,select,.pageno-input')) return;
+  const t=e.changedTouches[0];
+  const dx=t.clientX-touchStartX;
+  const dy=t.clientY-touchStartY;
+  touchStartX=null;
+  // Ignore mostly-vertical moves (allow scrolling text panes)
+  if(Math.abs(dx)<SWIPE_MIN || Math.abs(dx)<Math.abs(dy)*1.2) return;
+  const scrollable=touchStartTarget && touchStartTarget.closest
+    ? touchStartTarget.closest('.split-text,.content-body,.vstack-text,.table-scroll')
+    : null;
+  if(scrollable && scrollable.scrollHeight>scrollable.clientHeight+8){
+    // If the pane can scroll and this looked mixed, prefer scroll over navigate
+    if(Math.abs(dy)>12) return;
+  }
+  if(dx<0) next();
+  else prev();
+},{passive:true});
+
+async function boot(){
+  await embedImages();
+  buildPageMap();
+  if(isSpeaker){
+    document.body.className='speaker';
+    document.title='Speaker Notes — '+document.title;
+    document.body.insertAdjacentHTML('afterbegin',`
+      <div class="speaker-app" id="speaker-app">
+        <div class="speaker-top">
+          <div class="speaker-brand">SPEAKER NOTES</div>
+          <div class="speaker-meta">
+            <div class="speaker-timer" data-timer>00:00</div>
+            <div class="speaker-count" data-count></div>
+          </div>
+        </div>
+        <div class="speaker-title" data-title></div>
+        <div class="speaker-next" data-next></div>
+        <div class="speaker-notes" data-notes></div>
+        <div class="speaker-thumbs">
+          <div class="speaker-thumb">
+            <div class="speaker-thumb-label">Current</div>
+            <div class="speaker-thumb-frame" data-thumb-current></div>
+          </div>
+          <div class="speaker-thumb">
+            <div class="speaker-thumb-label">Next</div>
+            <div class="speaker-thumb-frame" data-thumb-next></div>
+          </div>
+        </div>
+        <div class="speaker-help">← → or space: steps then slides · synced with audience</div>
+      </div>`);
+    setInterval(tickTimer,250);
+    window.addEventListener('resize',()=>{ if(isSpeaker) renderSpeaker(); });
+    try{
+      const saved=JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+      if(saved && typeof saved.index==='number'){
+        cur=saved.index;
+        if(typeof saved.step==='number') step=saved.step;
+      }
+    }catch(_){}
+  }else{
+    document.body.classList.add('audience');
+    if(hint) setTimeout(()=>hint.classList.add('fade'),5000);
+  }
+
+  const h=parseInt(location.hash.replace('#',''),10);
+  if(!isSpeaker && Number.isFinite(h)&&h>0) show(h-1,{step});
+  else show(cur,{step, keepStep:true});
+  renderMath(document.body);
+  if(isSpeaker) renderSpeaker();
+}
+
+boot();
+</script>
+</body>
+</html>
