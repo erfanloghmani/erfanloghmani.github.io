@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 340" width="540" height="340" role="img" aria-labelledby="comb-title comb-desc">
+  <title id="comb-title">Combining data sources</title>
+  <desc id="comb-desc">Pooling two CTR models is easy; pairing logistic ranking with CTR prediction is hard because objectives differ.</desc>
+  <defs>
+    <marker id="arrow-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .ok { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .hard { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
+      .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.5; }
+      .pool { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .bad { fill: #ffffff; stroke: #c47a7a; stroke-width: 1.75; stroke-dasharray: 5 4; }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5a5368; }
+      .warn { font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #c47a7a; }
+      .flow-bad { stroke: #c47a7a; stroke-width: 1.75; fill: none; stroke-dasharray: 5 4; }
+    ]]></style>
+  </defs>
+
+  <!-- Easy case -->
+  <rect class="ok" x="16" y="12" width="508" height="130" rx="14"/>
+  <text class="hdr" x="270" y="38" text-anchor="middle">Pooling: TWO CTR-PREDICTION MODELS</text>
+
+  <rect class="card" x="36" y="56" width="150" height="70" rx="10"/>
+  <text class="label" x="111" y="86" text-anchor="middle">CTR (Experimental)</text>
+  <text class="sub" x="111" y="108" text-anchor="middle">squared error</text>
+
+  <rect class="card" x="204" y="56" width="150" height="70" rx="10"/>
+  <text class="label" x="279" y="86" text-anchor="middle">CTR (Observational)</text>
+  <text class="sub" x="279" y="108" text-anchor="middle">squared error</text>
+
+  <text class="label" x="390" y="94" text-anchor="middle">+</text>
+  <rect class="pool" x="372" y="56" width="132" height="70" rx="10"/>
+  <text class="label" x="438" y="86" text-anchor="middle">Pool data</text>
+  <text class="sub" x="438" y="108" text-anchor="middle">shared loss</text>
+
+  <!-- Hard case -->
+  <rect class="hard" x="16" y="156" width="508" height="168" rx="14"/>
+  <text class="hdr" x="270" y="182" text-anchor="middle">Better way? LOGISTIC (Experimental) + CTR (Observational)</text>
+
+  <rect class="card" x="36" y="204" width="170" height="80" rx="10"/>
+  <text class="label" x="121" y="236" text-anchor="middle">Logistic (Experimental)</text>
+  <text class="sub" x="121" y="260" text-anchor="middle">log-likelihood</text>
+
+  <rect class="card" x="230" y="204" width="170" height="80" rx="10"/>
+  <text class="label" x="315" y="228" text-anchor="middle">CTR prediction</text>
+  <text class="label" x="315" y="248" text-anchor="middle">(Observational)</text>
+  <text class="sub" x="315" y="268" text-anchor="middle">squared error</text>
+
+  <rect class="bad" x="420" y="204" width="84" height="80" rx="10"/>
+  <text class="warn" x="462" y="238" text-anchor="middle">naive</text>
+  <text class="warn" x="462" y="258" text-anchor="middle">mix?</text>
+
+  <line class="flow-bad" x1="206" y1="244" x2="224" y2="244"/>
+  <line class="flow-bad" x1="400" y1="244" x2="414" y2="244"/>
+</svg>

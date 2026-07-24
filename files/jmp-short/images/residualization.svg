@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 460" width="540" height="460" role="img" aria-labelledby="res-title res-desc">
+  <title id="res-title">Outcome residualization with cross-fitting</title>
+  <desc id="res-desc">Predict CTR from the abstract alone as y-hat of a, subtract to residualize, and cross-fit across two folds before ridge ranking.</desc>
+  <defs>
+    <marker id="arrow-res" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .box { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
+      .nn { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .out { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .res { fill: #f7f5f2; stroke: #85754d; stroke-width: 1.75; }
+      .fold { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.5; }
+      .ridge { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5a5368; }
+      .eq { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #32215c; }
+      .math { font-family: "Times New Roman", Times, serif; font-size: 15px; font-style: italic; font-weight: 700; fill: #32215c; }
+      .math-sub { font-family: "Times New Roman", Times, serif; font-size: 13px; font-style: italic; font-weight: 700; fill: #5a5368; }
+      .hat { fill: none; stroke: #32215c; stroke-width: 1.35; stroke-linecap: round; }
+      .hat-sub { fill: none; stroke: #5a5368; stroke-width: 1.2; stroke-linecap: round; }
+      .flow { stroke: #4b2e83; stroke-width: 2; fill: none; marker-end: url(#arrow-res); }
+    ]]></style>
+  </defs>
+
+  <!-- Step 1: inputs -->
+  <text class="hdr" x="270" y="22" text-anchor="middle">1. RESIDUALIZE THE OUTCOME ONLY</text>
+
+  <rect class="box" x="28" y="36" width="150" height="64" rx="10"/>
+  <text class="label" x="103" y="62" text-anchor="middle">Abstract a</text>
+  <text class="sub" x="103" y="82" text-anchor="middle">story embedding</text>
+
+  <rect class="box" x="195" y="36" width="150" height="64" rx="10"/>
+  <text class="label" x="270" y="62" text-anchor="middle">Headline</text>
+  <text class="sub" x="270" y="82" text-anchor="middle">not residualized</text>
+
+  <rect class="out" x="362" y="36" width="150" height="64" rx="10"/>
+  <text class="label" x="437" y="62" text-anchor="middle">Observed CTR</text>
+  <text class="math" x="437" y="84" text-anchor="middle">y</text>
+
+  <!-- NN from abstract -->
+  <line class="flow" x1="103" y1="100" x2="103" y2="128"/>
+  <rect class="nn" x="28" y="134" width="150" height="64" rx="10"/>
+  <text class="label" x="103" y="160" text-anchor="middle">2-layer NN</text>
+  <text class="sub" x="103" y="180" text-anchor="middle">a -&gt; CTR</text>
+
+  <line class="flow" x1="178" y1="166" x2="210" y2="166"/>
+  <rect class="out" x="216" y="134" width="150" height="64" rx="10"/>
+  <text class="label" x="291" y="156" text-anchor="middle">Story CTR</text>
+  <!-- y-hat(a) -->
+  <path class="hat-sub" d="M 268,168 Q 274,163.5 280,168"/>
+  <text class="math-sub" x="274" y="184" text-anchor="middle">y</text>
+  <text class="math-sub" x="292" y="184" text-anchor="middle">(a)</text>
+
+  <line class="flow" x1="366" y1="166" x2="388" y2="166"/>
+  <line class="flow" x1="437" y1="100" x2="437" y2="128"/>
+  <rect class="res" x="394" y="134" width="118" height="64" rx="10"/>
+  <!-- r = y - y-hat(a) -->
+  <text class="math" x="404" y="172" text-anchor="start">r = y -</text>
+  <path class="hat" d="M 458,158 Q 465,152.5 472,158"/>
+  <text class="math" x="465" y="172" text-anchor="middle">y</text>
+  <text class="math" x="482" y="172" text-anchor="start">(a)</text>
+
+  <!-- Cross-fit -->
+  <text class="hdr" x="270" y="230" text-anchor="middle">2. CROSS-FIT (NO SELF-RESIDUALIZATION)</text>
+
+  <rect class="fold" x="28" y="244" width="230" height="88" rx="10"/>
+  <text class="label" x="143" y="272" text-anchor="middle">Fold A trains NN</text>
+  <text class="sub" x="143" y="294" text-anchor="middle">residualizes Fold B</text>
+  <text class="sub" x="143" y="314" text-anchor="middle">(and swap roles)</text>
+
+  <rect class="fold" x="282" y="244" width="230" height="88" rx="10"/>
+  <text class="label" x="397" y="272" text-anchor="middle">Assemble residuals</text>
+  <text class="sub" x="397" y="294" text-anchor="middle">from both folds</text>
+  <text class="sub" x="397" y="314" text-anchor="middle">honest out-of-fold r</text>
+
+  <line class="flow" x1="258" y1="288" x2="276" y2="288"/>
+
+  <!-- Final model -->
+  <line class="flow" x1="270" y1="332" x2="270" y2="360"/>
+  <rect class="ridge" x="100" y="366" width="340" height="74" rx="12"/>
+  <text class="label" x="270" y="396" text-anchor="middle">3. Ridge on residualized CTRs</text>
+  <text class="sub" x="270" y="418" text-anchor="middle">headline embedding -&gt; r  (then rank by predicted r)</text>
+</svg>
