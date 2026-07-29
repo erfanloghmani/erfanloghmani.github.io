@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" width="520" height="440" role="img" aria-labelledby="rank-title rank-desc">
+  <title id="rank-title">Pairwise ranking goal</title>
+  <desc id="rank-desc">The model sees abstract and headlines without CTRs, predicts which ranks higher, and is evaluated against the true CTR order.</desc>
+  <defs>
+    <marker id="arrow-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .story { fill: #f7f5f2; stroke: #d9d2e6; stroke-width: 1.75; }
+      .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
+      .hidden { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.5; stroke-dasharray: 4 3; }
+      .pred { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .eval { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5a5368; }
+      .mute { font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #c47a7a; }
+      .ok { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; fill: #2f6b45; }
+      .pref { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; fill: #4b2e83; }
+      .flow { stroke: #4b2e83; stroke-width: 2; fill: none; marker-end: url(#arrow-r); }
+    ]]></style>
+  </defs>
+
+  <!-- What the model sees -->
+  <rect class="story" x="28" y="12" width="464" height="148" rx="12"/>
+  <text class="hdr" x="260" y="36" text-anchor="middle">MODEL INPUT (NO CTRs)</text>
+  <text class="sub" x="260" y="56" text-anchor="middle">News abstract + candidate headlines</text>
+
+  <rect class="card" x="48" y="72" width="130" height="70" rx="10"/>
+  <text class="label" x="113" y="102" text-anchor="middle">Abstract</text>
+  <text class="sub" x="113" y="122" text-anchor="middle">story context</text>
+
+  <rect class="card" x="195" y="72" width="130" height="70" rx="10"/>
+  <text class="label" x="260" y="102" text-anchor="middle">Headline A</text>
+  <text class="sub" x="260" y="122" text-anchor="middle">text only</text>
+
+  <rect class="card" x="342" y="72" width="130" height="70" rx="10"/>
+  <text class="label" x="407" y="102" text-anchor="middle">Headline B</text>
+  <text class="sub" x="407" y="122" text-anchor="middle">text only</text>
+
+  <line class="flow" x1="260" y1="160" x2="260" y2="188"/>
+
+  <!-- Model prediction -->
+  <rect class="pred" x="100" y="194" width="320" height="56" rx="12"/>
+  <text class="label" x="260" y="218" text-anchor="middle">Model predicts ranking</text>
+  <text class="pref" x="260" y="240" text-anchor="middle">A  &gt;  B  ?</text>
+
+  <line class="flow" x1="260" y1="250" x2="260" y2="278"/>
+
+  <!-- Hidden truth + evaluation -->
+  <rect class="eval" x="28" y="284" width="464" height="140" rx="12"/>
+  <text class="hdr" x="260" y="308" text-anchor="middle">EVALUATION (HELD-OUT CTRs)</text>
+
+  <rect class="hidden" x="48" y="324" width="130" height="56" rx="10"/>
+  <text class="mute" x="113" y="348" text-anchor="middle">hidden</text>
+  <text class="sub" x="113" y="368" text-anchor="middle">CTR(A) = 2.8%</text>
+
+  <rect class="hidden" x="195" y="324" width="130" height="56" rx="10"/>
+  <text class="mute" x="260" y="348" text-anchor="middle">hidden</text>
+  <text class="sub" x="260" y="368" text-anchor="middle">CTR(B) = 1.4%</text>
+
+  <rect class="card" x="342" y="324" width="130" height="56" rx="10"/>
+  <text class="ok" x="407" y="348" text-anchor="middle">score</text>
+  <text class="sub" x="407" y="368" text-anchor="middle">rank correct?</text>
+</svg>
