@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="gls-title gls-desc">
+  <title id="gls-title">Low spread gate</title>
+  <desc id="gls-desc">Two predicted CTRs that are close; experimenting has low opportunity cost.</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .bar-a { fill: rgba(75, 46, 131, 0.55); }
+      .bar-b { fill: rgba(183, 165, 122, 0.85); }
+      .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
+      .gap { stroke: #85754d; stroke-width: 1.75; fill: none; stroke-dasharray: 4 3; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #241d33; }
+      .box { fill: rgba(183, 165, 122, 0.16); stroke: #85754d; stroke-width: 1.5; }
+    ]]></style>
+  </defs>
+  <text class="tag" x="260" y="28" text-anchor="middle">LOW SPREAD</text>
+  <text class="lbl" x="260" y="52" text-anchor="middle">Predicted CTRs nearly equal</text>
+
+  <line class="axis" x1="80" y1="250" x2="440" y2="250"/>
+  <line class="axis" x1="80" y1="90" x2="80" y2="250"/>
+  <text class="sub" x="55" y="175" text-anchor="middle" transform="rotate(-90 55 175)">CTR</text>
+
+  <!-- Nearly identical heights: tops at y=138 and y=148 -->
+  <rect class="bar-a" x="150" y="148" width="70" height="102" rx="6"/>
+  <rect class="bar-b" x="280" y="138" width="70" height="112" rx="6"/>
+  <text class="sub" x="185" y="270" text-anchor="middle">Arm A</text>
+  <text class="sub" x="315" y="270" text-anchor="middle">Arm B</text>
+
+  <line class="gap" x1="185" y1="148" x2="315" y2="138"/>
+  <text class="note" x="250" y="124" text-anchor="middle">small gap</text>
+
+  <rect class="box" x="100" y="295" width="320" height="32" rx="8"/>
+  <text class="note" x="260" y="316" text-anchor="middle">Low opportunity cost of splitting traffic</text>
+</svg>

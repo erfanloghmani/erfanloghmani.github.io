@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="ghs-title ghs-desc">
+  <title id="ghs-title">High spread gate</title>
+  <desc id="ghs-desc">Two predicted CTRs far apart; learning which wins is valuable.</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
+      .bar-a { fill: rgba(75, 46, 131, 0.35); }
+      .bar-b { fill: #4b2e83; }
+      .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #241d33; }
+      .box { fill: rgba(75, 46, 131, 0.10); stroke: #4b2e83; stroke-width: 1.5; }
+      .arrow { stroke: #4b2e83; stroke-width: 2; fill: none; }
+    ]]></style>
+  </defs>
+  <text class="tag" x="260" y="28" text-anchor="middle">HIGH SPREAD</text>
+  <text class="lbl" x="260" y="52" text-anchor="middle">Predicted CTRs far apart</text>
+
+  <line class="axis" x1="80" y1="250" x2="440" y2="250"/>
+  <line class="axis" x1="80" y1="90" x2="80" y2="250"/>
+  <text class="sub" x="55" y="175" text-anchor="middle" transform="rotate(-90 55 175)">CTR</text>
+
+  <rect class="bar-a" x="150" y="195" width="70" height="55" rx="6"/>
+  <rect class="bar-b" x="280" y="100" width="70" height="150" rx="6"/>
+  <text class="sub" x="185" y="270" text-anchor="middle">Arm A</text>
+  <text class="sub" x="315" y="270" text-anchor="middle">Arm B</text>
+
+  <path class="arrow" d="M 235 220 L 235 115"/>
+  <polygon points="235,100 228,114 242,114" fill="#4b2e83"/>
+  <text class="note" x="205" y="160" text-anchor="end">large gap</text>
+
+  <rect class="box" x="90" y="295" width="340" height="32" rx="8"/>
+  <text class="note" x="260" y="316" text-anchor="middle">High value of learning which arm wins</text>
+</svg>
