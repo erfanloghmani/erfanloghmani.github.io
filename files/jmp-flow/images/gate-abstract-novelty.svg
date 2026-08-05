@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="gan-title gan-desc">
+  <title id="gan-title">Abstract novelty gate</title>
+  <desc id="gan-desc">Embedding scatter of past abstracts with one outsider marked as novel.</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
+      .box { fill: rgba(75, 46, 131, 0.10); stroke: #4b2e83; stroke-width: 1.5; }
+      .pt { fill: rgba(75, 46, 131, 0.45); }
+      .novel { fill: #b7a57a; stroke: #4b2e83; stroke-width: 2; }
+      .cloud { fill: rgba(75, 46, 131, 0.06); stroke: #4b2e83; stroke-width: 1.25; stroke-dasharray: 5 4; }
+    ]]></style>
+  </defs>
+  <text class="tag" x="260" y="28" text-anchor="middle">ABSTRACT NOVELTY</text>
+  <text class="lbl" x="260" y="52" text-anchor="middle">Embedding space of past abstracts</text>
+
+  <line class="axis" x1="70" y1="270" x2="450" y2="270"/>
+  <line class="axis" x1="70" y1="80" x2="70" y2="270"/>
+  <text class="sub" x="260" y="292" text-anchor="middle">embedding dim 1</text>
+  <text class="sub" x="42" y="180" text-anchor="middle" transform="rotate(-90 42 180)">dim 2</text>
+
+  <ellipse class="cloud" cx="210" cy="175" rx="95" ry="70"/>
+
+  <circle class="pt" cx="170" cy="160" r="7"/>
+  <circle class="pt" cx="195" cy="190" r="7"/>
+  <circle class="pt" cx="220" cy="145" r="7"/>
+  <circle class="pt" cx="240" cy="175" r="7"/>
+  <circle class="pt" cx="185" cy="130" r="7"/>
+  <circle class="pt" cx="155" cy="195" r="7"/>
+  <circle class="pt" cx="225" cy="210" r="7"/>
+  <circle class="pt" cx="250" cy="155" r="7"/>
+  <circle class="pt" cx="200" cy="170" r="7"/>
+  <text class="sub" x="210" y="255" text-anchor="middle">seen abstracts</text>
+
+  <circle class="novel" cx="390" cy="110" r="11"/>
+  <text class="note" x="390" y="95" text-anchor="middle">novel</text>
+
+  <rect class="box" x="90" y="305" width="340" height="28" rx="8"/>
+  <text class="note" x="260" y="324" text-anchor="middle">Prioritize content farthest from history</text>
+</svg>
