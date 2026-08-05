@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img" aria-labelledby="venn-title venn-desc">
+  <title id="venn-title">Research agenda</title>
+  <desc id="venn-desc">Two overlapping circles: Methodology (Machine Learning and Experimentation) and Public Policy, with Intersection in the overlap.</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .circ-method {
+        fill: rgba(75, 46, 131, 0.16);
+        stroke: #4b2e83;
+        stroke-width: 3.25;
+      }
+      .circ-policy {
+        fill: rgba(183, 165, 122, 0.28);
+        stroke: #85754d;
+        stroke-width: 3.25;
+      }
+      .eyebrow {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        fill: #85754d;
+      }
+      .head {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        fill: #241d33;
+      }
+      .center {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        fill: #4b2e83;
+      }
+    ]]></style>
+  </defs>
+
+  <!-- Circles farther apart → smaller overlap -->
+  <circle class="circ-method" cx="210" cy="205" r="155"/>
+  <circle class="circ-policy" cx="430" cy="205" r="155"/>
+
+  <!-- Left lobe (methodology) — inside circle, away from overlap -->
+  <text class="eyebrow" x="140" y="175" text-anchor="middle">METHODOLOGY</text>
+  <text class="head" x="140" y="202" text-anchor="middle">Machine Learning</text>
+  <text class="head" x="140" y="224" text-anchor="middle">&amp; Experimentation</text>
+
+  <!-- Right lobe (public policy) -->
+  <text class="eyebrow" x="500" y="190" text-anchor="middle">APPLICATION</text>
+  <text class="head" x="500" y="218" text-anchor="middle">Public Policy</text>
+
+  <!-- Overlap -->
+  <text class="center" x="320" y="210" text-anchor="middle">Intersection</text>
+</svg>
