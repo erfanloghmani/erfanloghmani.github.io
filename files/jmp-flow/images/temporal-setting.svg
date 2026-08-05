@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="time-title time-desc">
+  <title id="time-title">Temporal experimentation setting</title>
+  <desc id="time-desc">Three months of observational history, then sequential decide-to-test or commit for each arriving test.</desc>
+  <defs>
+    <marker id="arrow-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .hist { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
+      .fut { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .act-exp { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .act-com { fill: #ffffff; stroke: #85754d; stroke-width: 1.75; }
+      .goal { fill: #f7f5f2; stroke: #4b2e83; stroke-width: 1.75; }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5a5368; }
+      .axis { stroke: #4b2e83; stroke-width: 2.5; fill: none; marker-end: url(#arrow-t); }
+      .tick { stroke: #4b2e83; stroke-width: 2; }
+    ]]></style>
+  </defs>
+
+  <!-- Timeline axis -->
+  <line class="axis" x1="36" y1="36" x2="524" y2="36"/>
+  <line class="tick" x1="176" y1="28" x2="176" y2="44"/>
+  <text class="hdr" x="106" y="20" text-anchor="middle">HISTORY (3 MONTHS)</text>
+  <text class="hdr" x="360" y="20" text-anchor="middle">GOING FORWARD (TEST BY TEST)</text>
+
+  <!-- History panel -->
+  <rect class="hist" x="24" y="56" width="140" height="130" rx="12"/>
+  <text class="label" x="94" y="110" text-anchor="middle">Observational</text>
+  <text class="sub" x="94" y="134" text-anchor="middle">1 headline / test</text>
+
+  <!-- Forward panel -->
+  <rect class="fut" x="180" y="56" width="356" height="130" rx="12"/>
+  <text class="label" x="358" y="82" text-anchor="middle">Each arriving test: choose an action</text>
+
+  <rect class="act-exp" x="200" y="98" width="130" height="70" rx="10"/>
+  <text class="label" x="265" y="128" text-anchor="middle">Experiment</text>
+  <text class="sub" x="265" y="150" text-anchor="middle">see all arms</text>
+
+  <text class="label" x="358" y="138" text-anchor="middle">or</text>
+
+  <rect class="act-com" x="380" y="98" width="138" height="70" rx="10"/>
+  <text class="label" x="449" y="122" text-anchor="middle">Choose</text>
+  <text class="sub" x="449" y="142" text-anchor="middle">one headline and</text>
+  <text class="sub" x="449" y="158" text-anchor="middle">serve only that</text>
+
+  <!-- Goal -->
+  <rect class="goal" x="24" y="204" width="512" height="72" rx="12"/>
+  <text class="hdr" x="280" y="232" text-anchor="middle">OBJECTIVE</text>
+  <text class="label" x="280" y="258" text-anchor="middle">Maximize clicks</text>
+</svg>
