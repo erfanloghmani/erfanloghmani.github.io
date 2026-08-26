@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="ns-title ns-desc">
+  <title id="ns-title">Non-stationary environment</title>
+  <desc id="ns-desc">Outcome relationships can change over time: lines that shift regime along the timeline.</desc>
+  <defs>
+    <marker id="ns-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .axis { stroke: #4b2e83; stroke-width: 1.75; fill: none; marker-end: url(#ns-arrow); }
+      .grid { stroke: rgba(75,46,131,.12); stroke-width: 1; }
+      .l1 { fill: none; stroke: #4b2e83; stroke-width: 2.75; stroke-linecap: round; stroke-linejoin: round; }
+      .l2 { fill: none; stroke: #6a9cc4; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+      .l3 { fill: none; stroke: #85754d; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 4; }
+      .regime { fill: rgba(196,122,122,.12); stroke: none; }
+      .divider { stroke: #c47a7a; stroke-width: 1.75; stroke-dasharray: 4 3; }
+    ]]></style>
+  </defs>
+
+  <text class="hdr" x="280" y="24" text-anchor="middle">NON-STATIONARY ENVIRONMENT</text>
+  <text class="label" x="280" y="46" text-anchor="middle">Relationships can change with time</text>
+
+  <!-- Plot frame -->
+  <rect x="60" y="68" width="440" height="180" rx="8" fill="#fff" stroke="rgba(75,46,131,.18)" stroke-width="1.5"/>
+
+  <!-- Soft regime bands -->
+  <rect class="regime" x="60" y="68" width="146" height="180"/>
+  <rect class="regime" x="354" y="68" width="146" height="180" style="fill:rgba(106,156,196,.12)"/>
+
+  <!-- Grid -->
+  <line class="grid" x1="60" y1="113" x2="500" y2="113"/>
+  <line class="grid" x1="60" y1="158" x2="500" y2="158"/>
+  <line class="grid" x1="60" y1="203" x2="500" y2="203"/>
+
+  <!-- Axes -->
+  <line class="axis" x1="60" y1="248" x2="510" y2="248"/>
+  <line class="axis" x1="60" y1="248" x2="60" y2="58"/>
+  <text class="sub" x="280" y="272" text-anchor="middle">time</text>
+  <text class="sub" x="42" y="160" text-anchor="middle" transform="rotate(-90 42 160)">outcome</text>
+
+  <!-- Regime dividers -->
+  <line class="divider" x1="206" y1="68" x2="206" y2="248"/>
+  <line class="divider" x1="354" y1="68" x2="354" y2="248"/>
+  <text class="sub" x="133" y="86" text-anchor="middle" style="fill:#c47a7a;font-weight:700">regime A</text>
+  <text class="sub" x="280" y="86" text-anchor="middle" style="fill:#85754d;font-weight:700">shift</text>
+  <text class="sub" x="427" y="86" text-anchor="middle" style="fill:#6a9cc4;font-weight:700">regime B</text>
+
+  <!-- Series 1: rises then drops after shift -->
+  <path class="l1" d="M 78 210
+    C 110 200, 140 185, 170 175
+    C 190 168, 200 160, 206 155
+    C 230 140, 260 150, 290 145
+    C 320 140, 340 155, 354 165
+    C 380 185, 420 200, 480 215"/>
+
+  <!-- Series 2: flat then jumps up -->
+  <path class="l2" d="M 78 160
+    C 120 158, 160 162, 206 160
+    C 240 158, 280 150, 320 130
+    C 354 110, 400 105, 480 95"/>
+
+  <!-- Series 3: declining trend with kink -->
+  <path class="l3" d="M 78 120
+    C 120 125, 160 135, 206 145
+    C 250 155, 300 170, 354 180
+    C 390 188, 430 195, 480 200"/>
+
+  <!-- Legend -->
+  <line class="l1" x1="90" y1="286" x2="118" y2="286"/>
+  <text class="sub" x="124" y="290">series 1</text>
+  <line class="l2" x1="210" y1="286" x2="238" y2="286"/>
+  <text class="sub" x="244" y="290">series 2</text>
+  <line class="l3" x1="330" y1="286" x2="358" y2="286"/>
+  <text class="sub" x="364" y="290">series 3</text>
+</svg>

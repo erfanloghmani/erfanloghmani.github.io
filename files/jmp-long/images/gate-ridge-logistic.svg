@@ -5,14 +5,14 @@
     <style type="text/css"><![CDATA[
       .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
       .card-warn { fill: #ffffff; stroke: #85754d; stroke-width: 2; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #85754d; }
-      .note { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #241d33; }
-      .val { font-family: Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #4b2e83; }
-      .val2 { font-family: Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #85754d; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
+      .val { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #4b2e83; }
+      .val2 { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #85754d; }
       .box { fill: rgba(183, 165, 122, 0.18); stroke: #85754d; stroke-width: 1.5; }
-      .neq { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #c0392b; }
+      .neq { font-family: Helvetica, Arial, sans-serif; font-size: 34px; font-weight: 700; fill: #c0392b; }
     ]]></style>
   </defs>
   <text class="tag" x="260" y="28" text-anchor="middle">RIDGE-LOGISTIC DISAGREEMENT</text>

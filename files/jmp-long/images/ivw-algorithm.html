@@ -1,0 +1,37 @@
+<div class="ivw-alg" aria-hidden="true">
+  <div class="ivw-alg-box">
+    <div class="ivw-alg-caption">
+      <span class="ivw-alg-caption-label">Algorithm</span>
+      Bias-corrected inverse-variance combination (IVW)
+    </div>
+
+    <div class="ivw-alg-io-line">
+      <span class="ivw-alg-kw">Input:</span>
+      observational data $\mathcal{D}_O$; experimental pairs $\mathcal{D}_E$; evaluation pairs $\mathcal{P}$
+    </div>
+    <div class="ivw-alg-io-line">
+      <span class="ivw-alg-kw">Output:</span>
+      combined win-probability $\hat\theta_{\mathrm{new}}(a,b)$ for each pair in $\mathcal{P}$
+    </div>
+
+    <ol class="ivw-alg-lines">
+      <li>Fit CTR-prediction model $\hat m_O$ on $\mathcal{D}_O$ <span class="ivw-alg-cmt">▹ biased, low-variance branch</span></li>
+      <li>Fit logistic model $\hat g_E$ on $\mathcal{D}_E$ <span class="ivw-alg-cmt">▹ unbiased, high-variance branch</span></li>
+      <li class="ivw-alg-blank" aria-hidden="true"></li>
+      <li class="ivw-alg-cmt-line"><span class="ivw-alg-cmt">▹ Estimate the bias of the observational branch by cross-fitting</span></li>
+      <li>Partition $\mathcal{D}_E$ into halves $\mathcal{D}_E^{1}$, $\mathcal{D}_E^{2}$</li>
+      <li><span class="ivw-alg-kw">for</span> $k \in \{1,2\}$ <span class="ivw-alg-kw">do</span></li>
+      <li class="ivw-alg-indent">Train logistic $\hat g_{-k}$ on the other half $\mathcal{D}_E^{\,3-k}$</li>
+      <li class="ivw-alg-indent">For each pair in $\mathcal{D}_E^{k}$, form $p^O$ (from $\hat m_O$) and $p^E$ (from $\hat g_{-k}$)</li>
+      <li class="ivw-alg-indent">$\widehat{b}_k \gets \mathrm{mean}\big(p^O - p^E\big)$ over those pairs</li>
+      <li>$\widehat{b} \gets \tfrac{1}{2}\big(\widehat{b}_1 + \widehat{b}_2\big)$ <span class="ivw-alg-cmt">▹ estimated bias of $\hat\theta_B$</span></li>
+      <li class="ivw-alg-blank" aria-hidden="true"></li>
+      <li><span class="ivw-alg-kw">for each</span> pair $(a,b)\in\mathcal{P}$ <span class="ivw-alg-kw">do</span></li>
+      <li class="ivw-alg-indent">$(\hat\theta_U, \widehat{\mathrm{Var}}_U) \gets$ win-probability and variance from $\hat g_E$</li>
+      <li class="ivw-alg-indent">$(\hat\theta_B, \widehat{\mathrm{Var}}_B) \gets$ Monte-Carlo win-probability and variance from $\hat m_O$ <span class="ivw-alg-cmt">▹ CTR $\sim$ Normal</span></li>
+      <li class="ivw-alg-indent">$w^\star \gets \widehat{\mathrm{Var}}_U \big/ \big(\widehat{b}^{\,2} + \widehat{\mathrm{Var}}_B + \widehat{\mathrm{Var}}_U\big)$</li>
+      <li class="ivw-alg-indent">$\hat\theta_{\mathrm{new}}(a,b) \gets w^\star\,\hat\theta_B + (1-w^\star)\,\hat\theta_U$</li>
+      <li><span class="ivw-alg-kw">return</span> $\{\hat\theta_{\mathrm{new}}(a,b) : (a,b)\in\mathcal{P}\}$</li>
+    </ol>
+  </div>
+</div>
