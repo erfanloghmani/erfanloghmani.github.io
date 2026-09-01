@@ -7,10 +7,10 @@
       .bar-b { fill: rgba(183, 165, 122, 0.85); }
       .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
       .gap { stroke: #85754d; stroke-width: 1.75; fill: none; stroke-dasharray: 4 3; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; fill: #85754d; }
-      .note { font-family: Helvetica, Arial, sans-serif; font-size: 13px; fill: #241d33; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
       .box { fill: rgba(183, 165, 122, 0.16); stroke: #85754d; stroke-width: 1.5; }
     ]]></style>
   </defs>

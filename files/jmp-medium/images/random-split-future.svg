@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="fut-title fut-desc">
+  <title id="fut-title">Random split uses future information</title>
+  <desc id="fut-desc">A random train/test split mixes past and future observations, so evaluation can leak information from the future.</desc>
+  <defs>
+    <marker id="fut-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .axis { stroke: #4b2e83; stroke-width: 2.5; fill: none; marker-end: url(#fut-arrow); }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .dot-train { fill: #6a9cc4; }
+      .dot-test { fill: #c47a7a; }
+      .box-train { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .box-test { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
+      .warn { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .leak { stroke: #c47a7a; stroke-width: 2; stroke-dasharray: 5 4; fill: none; marker-end: url(#fut-arrow); }
+    ]]></style>
+  </defs>
+
+  <text class="hdr" x="280" y="26" text-anchor="middle">RANDOM TRAIN / TEST SPLIT</text>
+
+  <!-- Timeline with mixed train/test dots -->
+  <line class="axis" x1="40" y1="70" x2="520" y2="70"/>
+  <text class="sub" x="40" y="58">past</text>
+  <text class="sub" x="500" y="58" text-anchor="end">future</text>
+
+  <!-- Mixed dots along time -->
+  <circle class="dot-train" cx="70" cy="70" r="8"/>
+  <circle class="dot-test" cx="110" cy="70" r="8"/>
+  <circle class="dot-train" cx="150" cy="70" r="8"/>
+  <circle class="dot-train" cx="190" cy="70" r="8"/>
+  <circle class="dot-test" cx="230" cy="70" r="8"/>
+  <circle class="dot-train" cx="270" cy="70" r="8"/>
+  <circle class="dot-test" cx="310" cy="70" r="8"/>
+  <circle class="dot-train" cx="350" cy="70" r="8"/>
+  <circle class="dot-test" cx="390" cy="70" r="8"/>
+  <circle class="dot-train" cx="430" cy="70" r="8"/>
+  <circle class="dot-test" cx="470" cy="70" r="8"/>
+  <circle class="dot-train" cx="510" cy="70" r="8"/>
+
+  <!-- Legend -->
+  <circle class="dot-train" cx="180" cy="108" r="7"/>
+  <text class="sub" x="194" y="112">Train</text>
+  <circle class="dot-test" cx="280" cy="108" r="7"/>
+  <text class="sub" x="294" y="112">Test / eval</text>
+
+  <!-- Train and test boxes -->
+  <rect class="box-train" x="48" y="140" width="200" height="90" rx="12"/>
+  <text class="label" x="148" y="172" text-anchor="middle">Training set</text>
+  <text class="sub" x="148" y="196" text-anchor="middle">mix of past + future</text>
+  <text class="sub" x="148" y="214" text-anchor="middle">observations</text>
+
+  <rect class="box-test" x="312" y="140" width="200" height="90" rx="12"/>
+  <text class="label" x="412" y="172" text-anchor="middle">Evaluation set</text>
+  <text class="sub" x="412" y="196" text-anchor="middle">also mixes past +</text>
+  <text class="sub" x="412" y="214" text-anchor="middle">future observations</text>
+
+  <!-- Leakage arrow -->
+  <path class="leak" d="M 248 185 C 270 160, 290 160, 312 185"/>
+  <text class="sub" x="280" y="154" text-anchor="middle" style="fill:#c47a7a;font-weight:700">leak</text>
+
+  <!-- Warning -->
+  <rect class="warn" x="80" y="250" width="400" height="36" rx="10"/>
+  <text class="label" x="280" y="274" text-anchor="middle" style="font-size:13px">Evaluation can use information from the future</text>
+</svg>

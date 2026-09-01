@@ -3312,6 +3312,231 @@ em{color:var(--uw-gold-deep);font-style:italic;}
 .bullets .katex-display{margin:0.35em 0;}
 
 .split{flex:1;display:grid;grid-template-columns:1.05fr 1fr;gap:4vw;align-items:stretch;min-height:0;}
+.callout-stack{
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:1fr;
+  align-items:center;
+  justify-items:stretch;
+}
+.callout-stack > .callout{
+  grid-area:1 / 1;
+  width:100%;
+  flex:0 0 auto;
+  height:auto;
+}
+.callout-stack > .callout.fragment-exact:not(.visible){
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+}
+.split-media .callout{
+  width:100%;
+  max-width:100%;
+  align-self:center;
+  flex:0 0 auto;
+  height:auto;
+  margin:0;
+  min-height:0;
+}
+.split-media .callout.fragment:not(.visible){
+  display:block;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+/* Related work: each row — bullet column left (wide), This work box right (narrow) */
+section.slide[data-slide-id="related-work"] .split.rw-split{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:0;
+}
+section.slide[data-slide-id="related-work"] .rw-rows{
+  display:flex;
+  flex-direction:column;
+  gap:2.2vh;
+  width:100%;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+section.slide[data-slide-id="related-work"] .rw-row.fragment:not(.visible){
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+section.slide[data-slide-id="related-work"] .rw-cols{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(0,0.75fr);
+  column-gap:2.5vw;
+  align-items:center;
+}
+section.slide[data-slide-id="related-work"] .rw-left{
+  min-width:0;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-head{
+  position:relative;
+  padding-left:36px;
+  font-size:var(--fs-bullet);
+  line-height:1.35;
+  color:var(--ink);
+}
+section.slide[data-slide-id="related-work"] .rw-row .callout{
+  margin:0;
+  padding:1.0vh 1.0vw;
+  align-self:center;
+}
+section.slide[data-slide-id="related-work"] .rw-row .sub{
+  list-style:none;
+  margin:0.5vh 0 0;
+  padding:0 0 0 36px;
+  display:flex;
+  flex-direction:column;
+  gap:0.45vh;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-head::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:.62em;
+  width:13px;
+  height:13px;
+  background:var(--uw-purple);
+  transform:rotate(45deg);
+  border-radius:2px;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-col{
+  grid-column:1;
+  position:relative;
+  padding-left:36px;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-col::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:.62em;
+  width:13px;
+  height:13px;
+  background:var(--uw-purple);
+  transform:rotate(45deg);
+  border-radius:2px;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-col .rw-topic-head{
+  font-size:var(--fs-bullet);
+  line-height:1.35;
+  color:var(--ink);
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-col .sub > li,
+section.slide[data-slide-id="related-work"] .rw-row .sub > li{
+  position:relative;
+  padding-left:28px;
+  font-size:clamp(17px,1.6vw,26px);
+  color:var(--muted);
+  line-height:1.35;
+}
+section.slide[data-slide-id="related-work"] .rw-row .rw-topic-col .sub > li::before,
+section.slide[data-slide-id="related-work"] .rw-row .sub > li::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:.62em;
+  width:7px;
+  height:7px;
+  border:2px solid var(--uw-gold-deep);
+  border-radius:50%;
+}
+section.slide[data-slide-id="related-work"] .rw-row .callout .callout-body,
+section.slide[data-slide-id="related-work"] .rw-row .callout .callout-intro{
+  font-size:clamp(15px,1.35vw,23px);
+}
+section.slide[data-slide-id="related-work"] .rw-row .callout .callout-list > li{
+  font-size:clamp(14px,1.25vw,21px);
+  line-height:1.32;
+}
+section.slide[data-slide-id="related-work"] .rw-row .callout .callout-label{
+  font-size:clamp(12px,1.05vw,16px);
+}
+/* Related work: stacked pairs in content layout */
+section.slide[data-slide-id="related-work"] .content-body.rw-body{
+  width:min(96%,78rem);
+  max-width:96%;
+  align-self:center;
+  gap:1.4vh;
+  justify-content:center;
+}
+.bullets.rw-pairs{
+  gap:2.2vh;
+  width:100%;
+}
+.bullets.rw-pairs > li.rw-pair{
+  padding-left:0;
+  display:flex;
+  flex-direction:column;
+  gap:0.9vh;
+}
+.bullets.rw-pairs > li.rw-pair::before{
+  display:none;
+}
+.rw-pair .callout{
+  margin:0;
+  padding:1.2vh 1.2vw;
+}
+.rw-pair .rw-topic{
+  position:relative;
+  padding-left:36px;
+  font-size:clamp(18px,1.65vw,28px);
+  line-height:1.38;
+  color:var(--ink);
+}
+.rw-pair .rw-topic::before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:.62em;
+  width:13px;
+  height:13px;
+  background:var(--uw-purple);
+  transform:rotate(45deg);
+  border-radius:2px;
+}
+section.slide[data-slide-id="related-work"] .rw-pair .callout .callout-body,
+section.slide[data-slide-id="related-work"] .rw-pair .callout .callout-intro{
+  font-size:clamp(17px,1.55vw,26px);
+}
+section.slide[data-slide-id="related-work"] .rw-pair .callout .callout-list > li{
+  font-size:clamp(16px,1.45vw,24px);
+  line-height:1.32;
+}
+section.slide[data-slide-id="related-work"] .rw-pair .callout .callout-label{
+  font-size:clamp(13px,1.15vw,17px);
+}
+/* Long deck: denser related-literature slides */
+section.slide[data-slide-id="related-work-detail"] .bullets > li,
+section.slide[data-slide-id="related-work-align"] .bullets > li,
+section.slide[data-slide-id="related-work-causal"] .bullets > li{
+  font-size:clamp(23px,2.25vw,36px);
+}
+section.slide[data-slide-id="related-work-detail"] .bullets .sub > li,
+section.slide[data-slide-id="related-work-align"] .bullets .sub > li,
+section.slide[data-slide-id="related-work-causal"] .bullets .sub > li{
+  font-size:clamp(18px,1.7vw,27px);
+}
+section.slide[data-slide-id="related-work-detail"] .callout .callout-body,
+section.slide[data-slide-id="related-work-align"] .callout .callout-body,
+section.slide[data-slide-id="related-work-causal"] .callout .callout-body,
+section.slide[data-slide-id="related-work-detail"] .callout .callout-intro,
+section.slide[data-slide-id="related-work-align"] .callout .callout-intro,
+section.slide[data-slide-id="related-work-causal"] .callout .callout-intro{
+  font-size:clamp(22px,2vw,32px);
+}
+section.slide[data-slide-id="related-work-detail"] .callout .callout-list > li,
+section.slide[data-slide-id="related-work-align"] .callout .callout-list > li,
+section.slide[data-slide-id="related-work-causal"] .callout .callout-list > li{
+  font-size:clamp(20px,1.85vw,30px);
+  line-height:1.35;
+}
 .layout-split .slide-inner > .callout,
 .layout-vstack .slide-inner > .callout{
   width:min(92%, 56rem);
@@ -3512,6 +3737,41 @@ section.slide[data-slide-id="upworthy-data"] .fig-stack > .fig .upw-ab-img{
   .upw-ctr{text-align:left;}
 }
 .split-text .bullets{gap:1.5vh;}
+section.slide[data-slide-id="teaching-experience"] .split-text{
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+section.slide[data-slide-id="teaching-experience"] .split-media{
+  justify-content:center;
+  gap:1.2vh;
+  overflow:hidden;
+}
+section.slide[data-slide-id="teaching-experience"] .split-media > .fig{
+  flex:0 1 auto;
+  width:fit-content;
+  max-width:100%;
+  max-height:none;
+  margin:0;
+  align-self:center;
+  align-items:center;
+  gap:0;
+  border-radius:10px;
+  box-shadow:0 12px 40px rgba(75,46,131,.18);
+  border:1px solid rgba(75,46,131,.08);
+  overflow:hidden;
+}
+section.slide[data-slide-id="teaching-experience"] .split-media > .fig img{
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:28vh;
+  object-fit:contain;
+  display:block;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+}
 .split-media{display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;height:100%;min-width:0;min-height:0;overflow:hidden;}
 .split-media .table-wrap{width:100%;}
 .split-media .result-table{font-size:clamp(13px,1.2vw,18px);}
@@ -5835,7 +6095,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/data-sources.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>data-sources.svg</div><figcaption>Observational vs. experimental outcome data</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -6128,7 +6387,7 @@ body.speaker > .hint{display:none !important;}
 </li>
 </ul>
           
-          <aside class="callout fragment" data-step="1"><div class='callout-label'>This work</div><div class='callout-body'><ul class='callout-list'><li>Removing confounders from observational data requires model-specific assumptions</li><li>Can we <strong>combine</strong> observational and experimental data effectively?</li></ul></div></aside>
+          <aside class="callout fragment" data-step="1"><div class='callout-label'>This work</div><div class='callout-body'><ul class='callout-list'><li>Removing confounders from observational data requires model-specific assumptions</li><li>Can we <strong>combine</strong> observational and experimental data effectively without modeling assumptions?</li></ul></div></aside>
           
           
         </div>
@@ -6245,7 +6504,6 @@ body.speaker > .hint{display:none !important;}
 </div>
 </div></figure></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="48"><span class="slide-link-kind">Appendix</span>Temporal patterns</button></nav>
   </div>
   <div class="slide-foot">
@@ -6278,7 +6536,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/test_ctr_scenarios_by_month.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>test_ctr_scenarios_by_month.svg</div><figcaption>Monthly clicks under counterfactual single-arm rules vs. running the test</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="48"><span class="slide-link-kind">Appendix</span>Temporal patterns</button></nav>
   </div>
   <div class="slide-foot">
@@ -6729,9 +6986,8 @@ body.speaker > .hint{display:none !important;}
 </ul>
 </li>
 </ul></div>
-          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/paper_plots_text_embedding_3_large_multiseed_core_obs_at_1_minus_frac.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>paper_plots_text_embedding_3_large_multiseed_core_obs_at_1_minus_frac.svg</div><figcaption>Performance of different methods as a function of the experimental fraction.</figcaption></figure></div>
+          <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/paper_plots_text_embedding_3_large_multiseed_core_obs_at_1_minus_frac.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>paper_plots_text_embedding_3_large_multiseed_core_obs_at_1_minus_frac.svg</div><figcaption>Performance of different methods as a function of the experimental fraction.</figcaption></figure><aside class="callout fragment" data-step="2"><div class='callout-label'>Next</div><div class='callout-body'><div class='callout-intro'>This is what we can do with either source alone. But firms may have an abundance of observational data with a small experimental sample.</div></div></aside></div>
         </div>
-        <aside class="callout fragment" data-step="2"><div class='callout-label'>Next</div><div class='callout-body'><div class='callout-intro'>This is what we can do with either source alone. But firms may have an abundance of observational data with a small experimental sample.</div></div></aside>
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="55"><span class="slide-link-kind">Appendix</span>With residualized CTR (Figure 5 full)</button></nav>
   </div>
   <div class="slide-foot">
@@ -6939,7 +7195,6 @@ body.speaker > .hint{display:none !important;}
 </div>
 </div></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -6974,7 +7229,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/ivw.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ivw.png</div><figcaption>Bias-corrected inverse-variance combination</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7017,7 +7271,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/ivw.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ivw.png</div><figcaption>Bias-corrected inverse-variance combination</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="59"><span class="slide-link-kind">Appendix</span>Honest bias estimation</button><button type="button" class="slide-link see-btn" data-goto="60"><span class="slide-link-kind">Appendix</span>Hausman test (select vs combine)</button></nav>
   </div>
   <div class="slide-foot">
@@ -7056,7 +7309,6 @@ body.speaker > .hint{display:none !important;}
 </div>
 </div><figcaption>Performance of methods that combine experimental and observational data.</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="61"><span class="slide-link-kind">Appendix</span>With residualized pooling (Figure 7 full)</button></nav>
   </div>
   <div class="slide-foot">
@@ -7084,7 +7336,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><div class='fig-stack'><figure class="fig fragment fragment-exact" data-step="0" data-step-mode="exact"><img src='images/random-split-arrival.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>random-split-arrival.svg</div><figcaption>Sequential arrival along a timeline</figcaption></figure><figure class="fig fragment fragment-exact" data-step="1" data-step-mode="exact"><img src='images/random-split-future.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>random-split-future.svg</div><figcaption>Train and test both mix past and future</figcaption></figure><figure class="fig fragment fragment-exact" data-step="2" data-step-mode="exact-from"><img src='images/random-split-nonstationary.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>random-split-nonstationary.svg</div><figcaption>Outcome lines shift across regimes</figcaption></figure></div></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7116,7 +7367,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/temporal-setting.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>temporal-setting.svg</div><figcaption>Historical observational stock, then sequential experiment-or-choose</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7150,7 +7400,6 @@ body.speaker > .hint{display:none !important;}
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/monthly-ctr-experimentation.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>monthly-ctr-experimentation.svg</div><figcaption>Average CTR ratio comparison for different time period of experimentation</figcaption></figure>
 <figure class="fig fragment" data-step="1"><img src='images/after-testing-experimentation.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>after-testing-experimentation.svg</div><figcaption>Average CTR relative to mean arm after experimentation</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7181,7 +7430,6 @@ body.speaker > .hint{display:none !important;}
           <div class="split-media"><div class='fig-stack'><figure class="fig fragment fragment-exact" data-step="0" data-step-end="1" data-step-mode="range"><img src='images/after-testing-experimentation.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>after-testing-experimentation.svg</div><figcaption>After testing — experimentation only</figcaption></figure><figure class="fig fragment fragment-exact" data-step="2" data-step-mode="exact-from"><img src='images/after-testing-all.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>after-testing-all.svg</div><figcaption>After testing — all methods</figcaption></figure></div>
 <div class='fig-stack'><figure class="fig fragment fragment-exact" data-step="0" data-step-end="1" data-step-mode="range"><img src='images/whole-period-experimentation.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>whole-period-experimentation.svg</div><figcaption>Full period — experimentation vs historical-only</figcaption></figure><figure class="fig fragment fragment-exact" data-step="2" data-step-mode="exact-from"><img src='images/whole-period-all.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>whole-period-all.svg</div><figcaption>Full period — all methods</figcaption></figure></div></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="62"><span class="slide-link-kind">Appendix</span>Simulated CTR by strategy (Table 3)</button></nav>
   </div>
   <div class="slide-foot">
@@ -7260,7 +7508,6 @@ body.speaker > .hint{display:none !important;}
 <span class="gate-window-marks fragment" data-step="7" aria-hidden="true"></span>
 </div><figcaption>Uniform random subset as a baseline</figcaption></figure></div></div>
         </div>
-        
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="63"><span class="slide-link-kind">Appendix</span>Simulation design details</button><button type="button" class="slide-link see-btn" data-goto="27"><span class="slide-link-kind">Appendix</span>Time-based simulation (Section 6)</button></nav>
   </div>
   <div class="slide-foot">
@@ -7296,7 +7543,6 @@ body.speaker > .hint{display:none !important;}
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/conditional_run_experimental_1m_post_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_experimental_1m_post_clicks.svg</div><figcaption>Post-collection clicks</figcaption></figure>
 <figure class="fig fragment" data-step="1"><img src='images/conditional_run_experimental_1m_collection_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_experimental_1m_collection_clicks.svg</div><figcaption>During collection</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7332,7 +7578,6 @@ body.speaker > .hint{display:none !important;}
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/conditional_run_experimental_8m_post_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_experimental_8m_post_clicks.svg</div><figcaption>Post-collection clicks</figcaption></figure>
 <figure class="fig fragment" data-step="1"><img src='images/conditional_run_experimental_8m_collection_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_experimental_8m_collection_clicks.svg</div><figcaption>During collection</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7372,7 +7617,6 @@ body.speaker > .hint{display:none !important;}
 <figure class="fig fragment" data-step="1"><img src='images/conditional_run_experimental_8m_decision_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_experimental_8m_decision_clicks.svg</div><figcaption>8 months — experimental</figcaption></figure>
 <figure class="fig fragment" data-step="2"><img src='images/conditional_run_ivw_8m_decision_clicks.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>conditional_run_ivw_8m_decision_clicks.svg</div><figcaption>8 months — IVW</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7400,7 +7644,6 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th></th><th colspan="3" class="group-head">Experimental Selection</th><th colspan="3" class="group-head">IVW Selection</th></tr><tr><th>$T$</th><th>$r$</th><th>Gate</th><th>Clicks</th><th>$r$</th><th>Gate</th><th>Clicks</th></tr></thead><tbody><tr><td>1</td><td>1.0</td><td>—</td><td>5.5495</td><td>0.6</td><td>High spread</td><td>5.6338</td></tr><tr><td>2</td><td>0.4</td><td>High spread</td><td>5.5658</td><td><strong>0.4</strong></td><td><strong>High spread</strong></td><td><strong>5.6347</strong></td></tr><tr><td>3</td><td>0.6</td><td>Abstract novelty</td><td>5.5841</td><td>0.6</td><td>High spread</td><td>5.6281</td></tr><tr><td>4</td><td><strong>0.6</strong></td><td><strong>Ridge–logistic</strong></td><td><strong>5.6098</strong></td><td>0.1</td><td>High spread</td><td>5.6194</td></tr><tr><td>5</td><td>0.8</td><td>Abstract novelty</td><td>5.5810</td><td>0.6</td><td>Low spread</td><td>5.6287</td></tr><tr><td>6</td><td>0.2</td><td>Ridge–logistic</td><td>5.5882</td><td>0.1</td><td>Ridge–logistic</td><td>5.6284</td></tr><tr><td>7</td><td>0.1</td><td>Ridge–logistic</td><td>5.5949</td><td>0.1</td><td>Ridge–logistic</td><td>5.6241</td></tr><tr><td>8</td><td>0.1</td><td>Ridge–logistic</td><td>5.5901</td><td>0.1</td><td>Ridge–logistic</td><td>5.6181</td></tr><tr><td>Best @ $r{=}1$</td><td>1.0 (T=5)</td><td>—</td><td>5.5663</td><td>1.0 (T=1)</td><td>—</td><td>5.6251</td></tr></tbody></table></div><figcaption>Best overall-click config per $T$ (clicks in millions). Bold = best overall under each selection method.</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
@@ -7480,7 +7723,7 @@ body.speaker > .hint{display:none !important;}
           <p class="slide-sub">Click a section to jump back</p>
         </div>
         <div class="content-body agenda-body">
-          <ol class='agenda'><li class="agenda-item upcoming agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Research questions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="11" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="15" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="18" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Benchmarking single-source methods</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="22" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Proposed method</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="31" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Experimentation strategy</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="36" role="link" tabindex="0"><span class="agenda-num">08</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="42" role="link" tabindex="0"><span class="agenda-num">09</span><span class="agenda-label">Research agenda</span><span class="agenda-tag"></span></li></ol>
+          <ol class='agenda'><li class="agenda-item upcoming agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Research questions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="11" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="15" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="18" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Benchmarking single-source methods</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="22" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Proposed method</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="31" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Experimentation strategy</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="36" role="link" tabindex="0"><span class="agenda-num">08</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="42" role="link" tabindex="0"><span class="agenda-num">09</span><span class="agenda-label">Research agenda</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="64" role="link" tabindex="0"><span class="agenda-num">10</span><span class="agenda-label">Teaching</span><span class="agenda-tag"></span></li></ol>
         </div>
     
   </div>
@@ -7626,12 +7869,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="0"><img src='images/research-agenda-venn.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>research-agenda-venn.svg</div><figcaption>Two threads — and work at their intersection</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="i" data-page-total="xxii" title="Click to go to a page">i / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="i" data-page-total="xxiv" title="Click to go to a page">i / xxiv</span>
   </div>
   <aside class='notes'>One thread is methodology — machine learning and experimentation for business<br>decisions. The other is public policy. On the methods side: the job market<br>paper, the NeurIPS workshop paper on aligning language models with observational<br>data, the Marketing Science paper on adaptive pricing and promotions, and<br>TGB 2.0 at NeurIPS. On the policy side: the smoking-cessation advertising<br>paper in Marketing Science. In the intersection: ongoing work on mobile<br>substitution and market definition.</aside>
 </section>
@@ -7656,12 +7898,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/adaptive-pricing.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>adaptive-pricing.png</div><figcaption>Problem setting</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="ii" data-page-total="xxii" title="Click to go to a page">ii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="ii" data-page-total="xxiv" title="Click to go to a page">ii / xxiv</span>
   </div>
   <aside class='notes'>My earlier work builds the first adaptive algorithm for jointly optimizing<br>prices and promotions across many products — hard because cross-product effects<br>can&#x27;t be ignored. It&#x27;s built on Thompson Sampling with formal guarantees and<br>beats baselines on Nielsen data.</aside>
 </section>
@@ -7686,12 +7927,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/smoking-paper.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>smoking-paper.png</div></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="iii" data-page-total="xxii" title="Click to go to a page">iii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="iii" data-page-total="xxiv" title="Click to go to a page">iii / xxiv</span>
   </div>
   <aside class='notes'>That methodological work led me toward public policy. With my advisor Ali Goli,<br>I studied advertising and smoking cessation. Prescription-drug ads expand<br>demand across the category; over-the-counter ads mostly divert consumers from<br>more effective options. Access barriers — including insurance — fundamentally<br>shape effectiveness and consumer welfare. What draws me to this work is the<br>real-world impact.</aside>
 </section>
@@ -7716,12 +7956,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/ftc-meta.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>ftc-meta.png</div><figcaption>The FTC vs. Meta antitrust debate</figcaption></figure></div>
         </div>
-        
     
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="iv" data-page-total="xxii" title="Click to go to a page">iv / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="iv" data-page-total="xxiv" title="Click to go to a page">iv / xxiv</span>
   </div>
   <aside class='notes'>My ongoing work ties both threads together. On free apps, users spend time, not<br>money, which makes market definition genuinely hard — and it&#x27;s central to the<br>FTC&#x27;s antitrust case against Meta. This work uses transformer models of sequential user<br>behavior to define these markets, combining my methods and policy interests.</aside>
 </section>
@@ -7769,7 +8008,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="v" data-page-total="xxii" title="Click to go to a page">v / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="v" data-page-total="xxiv" title="Click to go to a page">v / xxiv</span>
   </div>
   <aside class='notes'>Appendix detail for the Monday motivating example on Academia Stack Exchange.</aside>
 </section>
@@ -7794,12 +8033,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/alignment-direct.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>alignment-direct.svg</div><figcaption>Direct preference optimization</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="11"><span class="slide-link-kind">Back</span>Background: Generative model alignment</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="vi" data-page-total="xxii" title="Click to go to a page">vi / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="vi" data-page-total="xxiv" title="Click to go to a page">vi / xxiv</span>
   </div>
   <aside class='notes'>Direct methods such as DPO skip the explicit reward and RL loop and train from<br>preference pairs alone. They still inherit the quality of that pairwise signal.</aside>
 </section>
@@ -7822,7 +8060,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="vii" data-page-total="xxii" title="Click to go to a page">vii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="vii" data-page-total="xxiv" title="Click to go to a page">vii / xxiv</span>
   </div>
   <aside class='notes'>Figure 2 summarizes testing volume and performance over time. Panel (a) shows<br>tests per month; panel (b) shows average CTR. Activity rises substantially —<br>about 1,160 tests per month on average, peaking at 2,508 in October 2014.<br>Average CTR moves non-monotonically: it declines early, rises sharply, then<br>trends down again. Monthly mean CTR is 1.75%, ranging from 3.33% (August 2013)<br>to 0.92% (September 2014). These swings are large relative to the level of CTR,<br>so headline performance cannot be assessed apart from when a test was run —<br>which matters later for designing time-based experimentation strategies.</aside>
 </section>
@@ -7851,7 +8089,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="viii" data-page-total="xxii" title="Click to go to a page">viii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="viii" data-page-total="xxiv" title="Click to go to a page">viii / xxiv</span>
   </div>
   <aside class='notes'>Robertson et al. show that negative words drive engagement. Banerjee and<br>Urminsky compare pooled correlational estimates with randomized A/B tests and<br>find that correlational estimates can flip sign — here negative emotion<br>(negemo) appears positively associated with engagement in the A/B comparison<br>but negatively in pooled correlational data for Government &amp; Economy.</aside>
 </section>
@@ -7878,12 +8116,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/binomial_single_headline_roc_comparison.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>binomial_single_headline_roc_comparison.svg</div><figcaption>Single-headline ROC-AUC — binomial models vs experimental fraction</figcaption></figure><div class="table-frag fragment" data-step="2"><figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th>Embedding model</th><th>Binomial (obs.)</th><th>Binomial (exp.)</th><th>Ranking (logistic)</th></tr></thead><tbody><tr><td>text-embedding-3-large</td><td>0.811</td><td>0.807</td><td><strong>0.882</strong></td></tr></tbody></table></div><figcaption>Held-out pair ROC-AUC for `text-embedding-3-large` — logistic ranking still wins</figcaption></figure></div></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="18"><span class="slide-link-kind">Back</span>Benchmarking single-source methods</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="ix" data-page-total="xxii" title="Click to go to a page">ix / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="ix" data-page-total="xxiv" title="Click to go to a page">ix / xxiv</span>
   </div>
   <aside class='notes'>Alternative to CTR regression: treat clicks/impressions as binomial and maximize<br>log-likelihood. Same loss pools both sources. ROC comparison shows no gain from<br>experimental variation; at text-embedding-3-large, experimental binomial is<br>slightly below observational binomial.</aside>
 </section>
@@ -7904,12 +8141,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig fragment" data-step="1"><img src='images/pooled_binomial_vs_ivw_roc_multiseed.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>pooled_binomial_vs_ivw_roc_multiseed.svg</div><figcaption>Pooled binomial vs IVW — ROC-AUC across experimental fractions</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="18"><span class="slide-link-kind">Back</span>Benchmarking single-source methods</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="x" data-page-total="xxii" title="Click to go to a page">x / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="x" data-page-total="xxiv" title="Click to go to a page">x / xxiv</span>
   </div>
   <aside class='notes'>Because clicks and impressions admit a binomial likelihood, one can train on both<br>sources with a shared objective. That convenience does not translate into better<br>selection: the pooled binary model trails the proposed IVW combination across<br>experimental fractions.</aside>
 </section>
@@ -7932,7 +8168,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xi" data-page-total="xxii" title="Click to go to a page">xi / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xi" data-page-total="xxiv" title="Click to go to a page">xi / xxiv</span>
   </div>
   <aside class='notes'>Across every embedding, logistic ranking on experimental pairs dominates CTR<br>prediction. Switching from observational to experimental CTR prediction barely<br>moves the needle — the modeling choice drives the gain.</aside>
 </section>
@@ -7964,12 +8200,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/residualization.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>residualization.svg</div><figcaption>Outcome residualization with cross-fitting</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="20"><span class="slide-link-kind">Back</span>Method &gt; Data</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xii" data-page-total="xxii" title="Click to go to a page">xii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xii" data-page-total="xxiv" title="Click to go to a page">xii / xxiv</span>
   </div>
   <aside class='notes'>CTR prediction confounds story popularity with headline contribution. Following<br>double/debiased ML, this paper residualizes the outcome only: predict CTR from the<br>abstract, subtract, and cross-fit so residuals are out-of-fold.</aside>
 </section>
@@ -7999,12 +8234,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/upworthy-experimental-observational-value.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-experimental-observational-value.png</div><figcaption>Test ROC-AUC across embeddings and pipelines (Figure 4)</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="20"><span class="slide-link-kind">Back</span>Method &gt; Data</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xiii" data-page-total="xxii" title="Click to go to a page">xiii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xiii" data-page-total="xxiv" title="Click to go to a page">xiii / xxiv</span>
   </div>
   <aside class='notes'>Residualization helps in every case and helps experimental data more, so the<br>gap versus observational CTR prediction widens slightly. Even so, residualized<br>CTR prediction still underperforms logistic ranking on experimental pairs —<br>the modeling objective remains the dominant choice.</aside>
 </section>
@@ -8031,12 +8265,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/upworthy-data-scale-comparison.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-data-scale-comparison.png</div></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="21"><span class="slide-link-kind">Back</span>Benchmarking single-source methods (cont.)</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xiv" data-page-total="xxii" title="Click to go to a page">xiv / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xiv" data-page-total="xxiv" title="Click to go to a page">xiv / xxiv</span>
   </div>
   <aside class='notes'>Adding residualized CTR prediction recovers a large share of the sample<br>efficiency that plain CTR prediction loses: about 20% experimental data<br>suffices to beat full observational performance, versus over 80% without<br>residualization — still far from logistic ranking at roughly 3%.</aside>
 </section>
@@ -8082,7 +8315,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xv" data-page-total="xxii" title="Click to go to a page">xv / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xv" data-page-total="xxiv" title="Click to go to a page">xv / xxiv</span>
   </div>
   <aside class='notes'>Sample construction for the Upworthy ranking task. Pairs are formed within<br>test–images; significance rates are reported for reference only. The train /<br>validation / test split is at the test–image level, and overlapping headlines<br>are stripped from evaluation to prevent leakage.</aside>
 </section>
@@ -8102,7 +8335,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xvi" data-page-total="xxii" title="Click to go to a page">xvi / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xvi" data-page-total="xxiv" title="Click to go to a page">xvi / xxiv</span>
   </div>
   <aside class='notes'>The base model produces a generic, unformatted response that reflects pretraining<br>conventions rather than the specific domain. The SFT model successfully adapts to<br>the domain’s formatting (HTML tags) and tone. In contrast, the DPO model—optimized<br>on score-based preferences—further incorporates surface features that correlate with<br>high scores in the corpus, such as enhanced formatting (&lt;strong&gt;) and external<br>references, while simultaneously embedding the spurious “Happy Monday!” temporal<br>marker. This qualitative shift confirms that the DPO model learns to associate<br>high-scoring answer characteristics with the identified weekday confound.</aside>
 </section>
@@ -8150,7 +8383,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xvii" data-page-total="xxii" title="Click to go to a page">xvii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xvii" data-page-total="xxiv" title="Click to go to a page">xvii / xxiv</span>
   </div>
   <aside class='notes'>This appendix details the Academia Stack Exchange construction. After filtering<br>and splitting, preference pairs show only a mild Monday/Friday skew. The<br>empirical question is whether optimizing on those pairs amplifies the artifact<br>in generated answers on the held-out set.</aside>
 </section>
@@ -8210,7 +8443,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xviii" data-page-total="xxii" title="Click to go to a page">xviii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xviii" data-page-total="xxiv" title="Click to go to a page">xviii / xxiv</span>
   </div>
   <aside class='notes'>The IVW estimator first fits an observational CTR model and an experimental<br>logistic. Bias of the observational branch is estimated honestly by cross-fitting<br>on experimental pairs: train the logistic on one half, score the held-out half<br>with both models, and average the gap. For each evaluation pair, map both<br>branches to a win probability, then combine with the bias-corrected<br>inverse-variance weight.</aside>
 </section>
@@ -8276,7 +8509,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xix" data-page-total="xxii" title="Click to go to a page">xix / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xix" data-page-total="xxiv" title="Click to go to a page">xix / xxiv</span>
   </div>
   <aside class='notes'>A Hausman test compares an IV estimate to OLS. If they differ, OLS is biased and<br>you use IV; if they agree, prefer OLS for its lower variance. That rule selects<br>one estimator. The paper instead asks whether the two sources can be combined —<br>keeping observational precision when bias is small and leaning on experiments<br>when bias is large — via bias-corrected inverse-variance weights.</aside>
 </section>
@@ -8304,12 +8537,11 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/upworthy-combination-comparison.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>upworthy-combination-comparison.png</div><figcaption>Full Figure 7 including residualized pooling</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="25"><span class="slide-link-kind">Back</span>Proposed method — Results</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xx" data-page-total="xxii" title="Click to go to a page">xx / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xx" data-page-total="xxiv" title="Click to go to a page">xx / xxiv</span>
   </div>
   <aside class='notes'>The residualized pooled CTR improves on naive pooling, but still does not match<br>logistic ranking once a few percent of the data are experimental. The<br>bias-corrected inverse-variance combination is what closes that gap.</aside>
 </section>
@@ -8343,7 +8575,7 @@ body.speaker > .hint{display:none !important;}
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xxi" data-page-total="xxii" title="Click to go to a page">xxi / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xxi" data-page-total="xxiv" title="Click to go to a page">xxi / xxiv</span>
   </div>
   <aside class='notes'>Table 3 summarizes the simulation. IVW with one month of experimentation attains<br>the highest mean CTR ratio and the most total clicks among deployable strategies,<br>edging out historical-only and experimental-only. Firms should combine experiments<br>with the observational data they already have.</aside>
 </section>
@@ -8370,14 +8602,75 @@ body.speaker > .hint{display:none !important;}
 </ul></div>
           <div class="split-media"><figure class="fig"><img src='images/strategic-budget.svg' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>strategic-budget.svg</div><figcaption>Monthly gating under an experimentation budget $r$</figcaption></figure></div>
         </div>
-        
     <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="31"><span class="slide-link-kind">Back</span>Strategic Experimentation</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
-    <span class="pageno pageno-jump" data-page-nav="xxii" data-page-total="xxii" title="Click to go to a page">xxii / xxii</span>
+    <span class="pageno pageno-jump" data-page-nav="xxii" data-page-total="xxiv" title="Click to go to a page">xxii / xxiv</span>
   </div>
   <aside class='notes'>Each month the procedure refits models, rank incoming tests with a gating rule, experiment<br>on the top fraction r, and play only one arm on the rest. Performance is<br>collection, post-collection, and overall clicks.</aside>
+</section>
+
+<section class="slide layout-content is-appendix" data-index="65" data-title="Teaching philosophy" data-slide-id="teaching-philosophy">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Teaching philosophy<span class="appendix-badge">Appendix</span></h2>
+          
+        </div>
+        <div class="content-body">
+          <ul class='bullets'>
+<li><strong>Judgment &amp; intuition</strong> — framing the problem, questioning results, knowing what matters
+</li>
+<li><strong>Modern methods</strong> — Students must be familiar with the latest methods in the field
+</li>
+<li>Taught through <strong>hands-on learning</strong> and real examples
+</li>
+<li>Build a classroom where <strong>everyone</strong> has access to the material and a real opportunity to participate
+</li>
+</ul>
+          
+          
+          
+          
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="xxiii" data-page-total="xxiv" title="Click to go to a page">xxiii / xxiv</span>
+  </div>
+  <aside class='notes'>My teaching rests on two foundations. Students need judgment — how to frame a<br>problem and know which results matter. And they need the newest methods the best<br>firms use. Each makes the other stronger, and I teach both hands-on. I also aim<br>to build a classroom where everyone can access the material and participate.</aside>
+</section>
+
+<section class="slide layout-split is-appendix" data-index="66" data-title="Teaching experience" data-slide-id="teaching-experience">
+  <div class="slide-inner">
+    
+        <div class="slide-head">
+          <h2 class="slide-title">Teaching experience<span class="appendix-badge">Appendix</span></h2>
+          <p class="slide-sub">Foster School of Business</p>
+        </div>
+        <div class="split">
+          <div class="split-text"><ul class='bullets'>
+<li><strong>Teaching assistant</strong> — Pricing Strategy &amp; Analytics, Customer Analytics, Analytics for Marketing Decisions
+</li>
+<li><strong>Guest lecturer</strong> (Spring 2026) — pricing experimentation, with live Jupyter notebooks
+</li>
+<li>Excited to bring my computational background and develop new courses at the intersection of ML and marketing
+</li>
+<li>Real examples from internships at <strong>Stackline</strong> and <strong>Instacart</strong>; industry guest speakers
+</li>
+</ul></div>
+          <div class="split-media"><figure class="fig"><img src='images/img-class-1-b.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>img-class-1-b.png</div></figure>
+<figure class="fig"><img src='images/img-class-2-b.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>img-class-2-b.png</div></figure></div>
+        </div>
+    
+  </div>
+  <div class="slide-foot">
+    <span class="brand">Erfan Loghmani</span>
+    <span class="pageno pageno-jump" data-page-nav="xxiv" data-page-total="xxiv" title="Click to go to a page">xxiv / xxiv</span>
+  </div>
+  <aside class='notes'>I&#x27;ve guest-lectured on pricing experimentation, having students run real<br>experiments in Jupyter, and TA&#x27;d across the analytics sequence. My CS background<br>lets me design courses at the intersection of machine learning and marketing,<br>grounded in industry examples from Stackline and Instacart.</aside>
 </section>
 <div class="hint" id="hint">→ / space: next · ← : back · click page #: jump · S: notes · F: fullscreen</div>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>

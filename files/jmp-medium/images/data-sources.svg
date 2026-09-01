@@ -8,12 +8,12 @@
       .card-exp { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
       .head-obs { fill: #f5d4d4; stroke: #c47a7a; stroke-width: 1.75; }
       .head-exp { fill: #d4e8f7; stroke: #6a9cc4; stroke-width: 1.75; }
-      .title { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #2a2a2a; }
-      .from-label { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; fill: #666666; }
-      .from-text { font-family: Helvetica, Arial, sans-serif; font-size: 14px; fill: #333333; }
-      .sec-pos { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; fill: #2f6b45; }
-      .sec-neg { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; fill: #8a3a3a; }
-      .item { font-family: Helvetica, Arial, sans-serif; font-size: 15px; fill: #222222; }
+      .title { font-family: Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 700; fill: #2a2a2a; }
+      .from-label { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; fill: #666666; }
+      .from-text { font-family: Helvetica, Arial, sans-serif; font-size: 18px; fill: #333333; }
+      .sec-pos { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; fill: #2f6b45; }
+      .sec-neg { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; fill: #8a3a3a; }
+      .item { font-family: Helvetica, Arial, sans-serif; font-size: 20px; fill: #222222; }
       .pill-obs { fill: #f8cfcf; }
       .pill-exp { fill: #cfe4f5; }
       .rule-obs { stroke: #d4a0a0; stroke-width: 1; }
@@ -35,10 +35,11 @@
     <line class="rule-obs" x1="22" y1="174" x2="298" y2="174"/>
 
     <text class="sec-pos" x="22" y="198">PROS</text>
-    <text class="item" x="22" y="222">Large-scale · easy to collect · abundant</text>
+    <text class="item" x="22" y="222">Large-scale · easy to collect ·</text>
+    <text class="item" x="22" y="242">abundant</text>
 
-    <text class="sec-neg" x="22" y="258">CONS</text>
-    <text class="item" x="22" y="282">Spurious correlation and bias</text>
+    <text class="sec-neg" x="22" y="268">CONS</text>
+    <text class="item" x="22" y="292">Spurious correlation and bias</text>
   </g>
 
   <!-- Experimental -->
