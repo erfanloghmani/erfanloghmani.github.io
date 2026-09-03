@@ -5395,6 +5395,14 @@ body.speaker > .hint{display:none !important;}
   .vstack-text{max-height:36%;}
 }
 
+/* Conclusion slide: larger bullets */
+section.slide[data-slide-id="conclusion"] .bullets > li{
+  font-size:clamp(26px,2.6vw,42px);
+}
+section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
+  font-size:clamp(21px,2.05vw,33px);
+}
+
 /* Short laptop screens: shrink type/spacing; text panes already scroll */
 @media (max-height:820px){
   body.audience > section.slide,

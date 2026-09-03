@@ -1263,16 +1263,22 @@ section.slide[data-slide-id="historical-ok"] .align-tension-center{
   justify-content:center;
   min-height:0;
 }
+section.slide[data-slide-id="historical-ok"] .align-tension-tag{
+  font-size:clamp(15px,1.45vw,22px);
+}
 section.slide[data-slide-id="historical-ok"] .align-tension-title{
-  font-size:clamp(13px,1.2vw,18px);
+  font-size:clamp(17px,1.6vw,24px);
 }
 section.slide[data-slide-id="historical-ok"] .align-tension-center .align-tension-title{
-  font-size:clamp(14px,1.3vw,20px);
+  font-size:clamp(18px,1.7vw,26px);
 }
 section.slide[data-slide-id="historical-ok"] .align-monday-chip{
   margin-top:0.4vh;
   padding:0.35vh 0.65vw;
   font-size:clamp(12px,1.1vw,16px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-monday-chip{
+  display:none;
 }
 section.slide[data-slide-id="historical-ok"] .align-monday-chip.fragment:not(.visible){
   visibility:hidden;
@@ -1716,6 +1722,32 @@ section.slide[data-slide-id="historical-ok"] .content-body:has(.weekday-sidebysi
 }
 .align-askell-credit{
   display:none;
+}
+.align-tension-news{
+  display:none;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news{
+  display:block;
+  grid-column:1 / -1;
+  width:100%;
+  box-sizing:border-box;
+  padding:0.7vh 0.85vw 0.8vh;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news.fragment:not(.visible){
+  display:none;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-badge{
+  margin-bottom:0.35vh;
+  font-size:clamp(13px,1.2vw,17px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step{
+  padding:0.45vh 0.6vw;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step strong{
+  font-size:clamp(16px,1.5vw,22px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step span{
+  font-size:clamp(14px,1.3vw,19px);
 }
 .align-tension-title{
   font-size:clamp(18px,1.7vw,26px);
@@ -5395,6 +5427,14 @@ body.speaker > .hint{display:none !important;}
   .vstack-text{max-height:36%;}
 }
 
+/* Conclusion slide: larger bullets */
+section.slide[data-slide-id="conclusion"] .bullets > li{
+  font-size:clamp(26px,2.6vw,42px);
+}
+section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
+  font-size:clamp(21px,2.05vw,33px);
+}
+
 /* Short laptop screens: shrink type/spacing; text panes already scroll */
 @media (max-height:820px){
   body.audience > section.slide,
@@ -5805,6 +5845,8 @@ body.speaker > .hint{display:none !important;}
         </div>
         <div class="content-body">
           <ul class='bullets'>
+<li class="fragment" data-step="2"><strong>Monday experiment</strong>
+</li>
 <li class="fragment" data-step="2">Setup follows <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span> (Anthropic)
 <ul class='sub'>
 <li>Question-answering setting · answer <strong>scores</strong> as the outcome signal</li>
@@ -5946,6 +5988,25 @@ body.speaker > .hint{display:none !important;}
       </svg>
     </div>
   </div>
+  <div class="monday-news align-tension-news fragment" data-step="1">
+    <div class="monday-news-badge">Risk with news data</div>
+    <div class="monday-news-flow">
+      <div class="monday-news-step">
+        <strong>Political / election</strong>
+        <span>higher engagement</span>
+      </div>
+      <div class="monday-news-arrow" aria-hidden="true">→</div>
+      <div class="monday-news-step">
+        <strong>Model learns</strong>
+        <span>the correlational pattern</span>
+      </div>
+      <div class="monday-news-arrow" aria-hidden="true">→</div>
+      <div class="monday-news-step">
+        <strong>Political language</strong>
+        <span>on unrelated headlines</span>
+      </div>
+    </div>
+  </div>
   <div class="align-askell-credit fragment" data-step="1">Setup follows <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span> (Anthropic) on Academia Stack Exchange</div>
 </div>
 </div></figure>
@@ -5978,7 +6039,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Monday experiment — Design</h2>
-          <p class="slide-sub">Mark the pattern so it is easy to measure</p>
+          
         </div>
         <div class="content-body">
           <ul class='bullets'>
@@ -6034,31 +6095,12 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Interestingly, yes</h2>
-          <p class="slide-sub">The model internalizes the correlational pattern</p>
+          
         </div>
         <div class="content-body">
           
-          <figure class="fig fragment" data-step="1"><div class='fig-html'><div class="monday-news" aria-hidden="true">
-  <div class="monday-news-badge">Similar risk with news data</div>
-  <div class="monday-news-flow">
-    <div class="monday-news-step">
-      <strong>Political / election</strong>
-      <span>higher engagement</span>
-    </div>
-    <div class="monday-news-arrow" aria-hidden="true">→</div>
-    <div class="monday-news-step">
-      <strong>Model learns</strong>
-      <span>the correlational pattern</span>
-    </div>
-    <div class="monday-news-arrow" aria-hidden="true">→</div>
-    <div class="monday-news-step">
-      <strong>Political language</strong>
-      <span>on unrelated headlines</span>
-    </div>
-  </div>
-</div>
-</div></figure>
-          <aside class="callout fragment" data-step="0"><div class='callout-label'>Finding</div><div class='callout-body'><div class='callout-intro'>When pushing the model toward generating answers to get more upvotes, the model internalizes the correlational weekday pattern!</div></div></aside>
+          
+          <aside class="callout"><div class='callout-label'>Finding</div><div class='callout-body'><div class='callout-intro'>When pushing the model toward generating answers to get more upvotes, the model internalizes the correlational weekday pattern!</div></div></aside>
           <figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th>Approach</th><th>“Happy” (%)</th><th>“Monday” (%)</th><th>“Friday” (%)</th></tr></thead><tbody><tr><td>Pretrained language model</td><td>1.13 (0.04)</td><td>0.07 (0.02)</td><td>0.10 (0.02)</td></tr><tr><td>Adapting the model to domain</td><td>24.32 (0.14)</td><td>11.45 (0.20)</td><td><strong>8.88 (0.13)</strong></td></tr><tr><td>Aligning to generate high upvote results</td><td><strong>35.37 (1.14)</strong></td><td><strong>14.84 (0.82)</strong></td><td>2.89 (0.16)</td></tr></tbody></table></div><figcaption>Share of generated answers that include each phrase, by approach.</figcaption></figure>
           
         </div>
@@ -6168,7 +6210,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Background: Generative model alignment</h2>
-          <p class="slide-sub">RL-based alignment specializes a pretrained model in three stages</p>
+          
         </div>
         <div class="content-body compare-body">
           
@@ -6363,7 +6405,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Data — Upworthy Research Archive</h2>
-          <p class="slide-sub">Randomized headline A/B tests with experimental ground truth (<span class="cite" tabindex="0">Matias et al., 2021<span class="cite-tip">Matias, J. N., Munger, K., Le Quere, M. A., and Ebersole, C. (2021). The Upworthy Research Archive, a time series of 32,487 experiments in US media. Scientific Data 8 (1): 195.</span></span>)</p>
+          
         </div>
         <div class="split">
           <div class="split-text"><ul class='bullets'>
@@ -6929,7 +6971,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Proposed method — Common domain</h2>
-          <p class="slide-sub">Combine at the <strong>prediction</strong> level to bring both models to the same domain $\Pr(a \succ b)$</p>
+          
         </div>
         <div class="split">
           <div class="split-text"><ul class='bullets'>
@@ -7005,7 +7047,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Proposed method — Results</h2>
-          <p class="slide-sub">Figure 7 — ROC-AUC vs experimental fraction (core methods)</p>
+          
         </div>
         <div class="split">
           <div class="split-text"><ul class='bullets'>
@@ -7068,12 +7110,12 @@ body.speaker > .hint{display:none !important;}
           <div class="split-text"><ul class='bullets'>
 <li class="fragment" data-step="0">If the firm allocates a limited experimentation budget, how should it decide which tests to run?
 </li>
-<li class="fragment" data-step="1">The firm can experiment during a <strong>window</strong>, but not on every arriving test
+<li class="fragment" data-step="1">The firm can experiment during a <strong>window</strong>
 </li>
-<li class="fragment" data-step="2">Five gating rules
+<li class="fragment" data-step="2">Gating rules to select which tests to experiment on:
 <ul class='sub'>
-<li class="fragment" data-step="2"><strong>High spread</strong> — largest predicted spread: winner most valuable to learn</li>
-<li class="fragment" data-step="3"><strong>Low spread</strong> — smallest ridge CTR spread ($\max \hat y - \min \hat y$): low opportunity cost</li>
+<li class="fragment" data-step="2"><strong>High spread</strong> — largest predicted difference between arms: winner most valuable to learn</li>
+<li class="fragment" data-step="3"><strong>Low spread</strong> — smallest predicted difference between arms: low opportunity cost</li>
 <li class="fragment" data-step="4"><strong>Abstract novelty</strong> — distance to abstracts already seen (<span class="cite" tabindex="0">Gao et al., 2026<span class="cite-tip">Gao, J., Su, X., Ma, M., Huang, Y., Xu, X., Wan, X., Gu, T., Yu, E., Guo, J., and Zhang, Z. (2026). Budgeted Active Experimentation for Treatment Effect Estimation from Observational and Randomized Data. arXiv preprint arXiv:2602.22021.</span></span>): least familiar content</li>
 <li class="fragment" data-step="5"><strong>Ridge–logistic disagreement</strong> (<strong>proposed</strong>) — largest $|\Pr_{\mathrm{ridge}}-\Pr_{\mathrm{logistic}}|$: where models conflict</li>
 <li class="fragment" data-step="6"><strong>Random (baseline)</strong> — uniform subset (5 replicates): isolates informed gating from throttling $r$</li>
@@ -7121,7 +7163,7 @@ body.speaker > .hint{display:none !important;}
     
         <div class="slide-head">
           <h2 class="slide-title">Conclusion</h2>
-          <p class="slide-sub">How a firm should use its data to optimize unstructured marketing content</p>
+          
         </div>
         <div class="content-body">
           <ul class='bullets'>
@@ -7239,7 +7281,6 @@ body.speaker > .hint{display:none !important;}
           <h2 class="slide-title">References (2/2)</h2>
         </div>
         <div class="ref-list"><p class='ref-item'>Loghmani, E. (2025). Aligning Language Models with Observational Data: Opportunities and Risks from a Causal Perspective. In NeurIPS 2025 Workshop on CauScien: Uncovering Causality in Science.</p>
-<p class='ref-item'>Matias, J. N., Munger, K., Le Quere, M. A., and Ebersole, C. (2021). The Upworthy Research Archive, a time series of 32,487 experiments in US media. Scientific Data 8 (1): 195.</p>
 <p class='ref-item'>Rafailov, R., Sharma, A., Mitchell, E., Manning, C. D., Ermon, S., and Finn, C. (2024). Direct preference optimization: Your language model is secretly a reward model. Advances in Neural Information Processing Systems 36.</p>
 <p class='ref-item'>Reisenbichler, M., Reutterer, T., and Schweidel, D. A. (2026). Applying large language models to sponsored search advertising. Marketing Science 45 (1): 123–141.</p>
 <p class='ref-item'>Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</p>

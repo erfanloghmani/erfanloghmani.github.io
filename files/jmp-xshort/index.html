@@ -1717,6 +1717,29 @@ section.slide[data-slide-id="historical-ok"] .content-body:has(.weekday-sidebysi
 .align-askell-credit{
   display:none;
 }
+.align-tension-news{
+  display:none;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news{
+  display:block;
+  grid-column:1 / -1;
+  width:100%;
+  box-sizing:border-box;
+  padding:0.7vh 0.85vw 0.8vh;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-badge{
+  margin-bottom:0.35vh;
+  font-size:clamp(11px,1.0vw,14px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step{
+  padding:0.35vh 0.5vw;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step strong{
+  font-size:clamp(13px,1.2vw,18px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step span{
+  font-size:clamp(12px,1.05vw,15px);
+}
 .align-tension-title{
   font-size:clamp(18px,1.7vw,26px);
   font-weight:700;
@@ -5395,6 +5418,14 @@ body.speaker > .hint{display:none !important;}
   .vstack-text{max-height:36%;}
 }
 
+/* Conclusion slide: larger bullets */
+section.slide[data-slide-id="conclusion"] .bullets > li{
+  font-size:clamp(26px,2.6vw,42px);
+}
+section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
+  font-size:clamp(21px,2.05vw,33px);
+}
+
 /* Short laptop screens: shrink type/spacing; text panes already scroll */
 @media (max-height:820px){
   body.audience > section.slide,
@@ -5931,6 +5962,25 @@ body.speaker > .hint{display:none !important;}
 
         <text x="140" y="192" text-anchor="middle" class="align-embed-label">High-dimensional embedding space</text>
       </svg>
+    </div>
+  </div>
+  <div class="monday-news align-tension-news">
+    <div class="monday-news-badge">Similar risk with news data</div>
+    <div class="monday-news-flow">
+      <div class="monday-news-step">
+        <strong>Political / election</strong>
+        <span>higher engagement</span>
+      </div>
+      <div class="monday-news-arrow" aria-hidden="true">→</div>
+      <div class="monday-news-step">
+        <strong>Model learns</strong>
+        <span>the correlational pattern</span>
+      </div>
+      <div class="monday-news-arrow" aria-hidden="true">→</div>
+      <div class="monday-news-step">
+        <strong>Political language</strong>
+        <span>on unrelated headlines</span>
+      </div>
     </div>
   </div>
   <div class="align-askell-credit fragment" data-step="1">Setup follows <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span> (Anthropic) on Academia Stack Exchange</div>
