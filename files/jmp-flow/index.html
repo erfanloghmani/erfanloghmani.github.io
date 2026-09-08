@@ -367,12 +367,24 @@ section.slide[data-slide-id="methodology-results"] .table-wrap figcaption{
 }
 /* Monday result: keep news-box space reserved; spread blocks so bottom isn't empty */
 section.slide[data-slide-id="monday-result"] .content-body:has(> .fig):not(:has(.bullets)),
-section.slide[data-slide-id="monday-result"] .content-body:has(> .table-wrap),
-section.slide[data-slide-id="monday-result"] .content-body{
+section.slide[data-slide-id="monday-result"] .content-body:has(> .fig):has(> .table-wrap),
+section.slide[data-slide-id="monday-result"] .content-body:has(> .fig){
   justify-content:space-between !important;
   gap:4vh !important;
   align-items:center;
   padding-block:1vh 2vh;
+}
+/* Flow (no news box): keep title fixed; even spacing among callout + table */
+section.slide[data-slide-id="monday-result"] .slide-inner:not(:has(.fig)) > .content-body{
+  flex:1 1 auto !important;
+  justify-content:space-evenly !important;
+  gap:0 !important;
+  align-items:center;
+  padding-block:0 !important;
+}
+section.slide[data-slide-id="monday-result"] .slide-inner:not(:has(.fig)) > .see-links{
+  margin-top:0;
+  padding-top:1.0vh;
 }
 section.slide[data-slide-id="monday-result"] .content-body > .fig.fragment:not(.visible){
   /* Reserve layout space so callout/table don't jump when the news box appears */
@@ -1297,6 +1309,16 @@ section.slide[data-slide-id="historical-ok"] .weekday-stack{
   overflow:hidden;
   box-sizing:border-box;
   margin:0 auto;
+}
+section.slide[data-slide-id="historical-ok"] .weekday-stack-single{
+  width:100%;
+  max-width:100%;
+  height:100%;
+  max-height:100%;
+}
+section.slide[data-slide-id="historical-ok"] .weekday-stack-single > .weekday-plot{
+  flex:1 1 auto;
+  max-height:100%;
 }
 section.slide[data-slide-id="historical-ok"] .weekday-plot{
   margin:0;
@@ -2929,7 +2951,7 @@ section.slide[data-slide-id="benchmark-methods"] .slide-inner{
   .bench-funnel-bar{display:none;}
 }
 
-/* Monday motivation: bullets left; screenshot OR stacked weekday plots on right */
+/* Monday motivation: bullets left + media right; figure-only centers a single plot */
 section.slide[data-slide-id="monday-motivation"] .content-body{
   display:grid !important;
   grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);
@@ -2938,6 +2960,11 @@ section.slide[data-slide-id="monday-motivation"] .content-body{
   align-items:stretch;
   overflow:hidden;
   min-height:0;
+}
+section.slide[data-slide-id="monday-motivation"] .content-body:not(:has(.bullets)){
+  grid-template-columns:1fr;
+  justify-items:center;
+  align-items:center;
 }
 section.slide[data-slide-id="monday-motivation"] .content-body > .bullets{
   grid-column:1;
@@ -2965,6 +2992,12 @@ section.slide[data-slide-id="monday-motivation"] .content-body > .fig{
   align-self:stretch;
   justify-content:center;
   gap:0;
+}
+section.slide[data-slide-id="monday-motivation"] .content-body:not(:has(.bullets)) > .fig{
+  grid-column:1;
+  width:min(92%, 980px);
+  max-height:min(72vh, 640px);
+  align-self:center;
 }
 section.slide[data-slide-id="monday-motivation"] .content-body > .fig.fragment:not(.visible){
   display:none;
@@ -2995,6 +3028,10 @@ section.slide[data-slide-id="monday-motivation"] .weekday-stack{
   justify-content:center;
   gap:1.0vh;
   overflow:hidden;
+}
+section.slide[data-slide-id="monday-motivation"] .weekday-stack-single > .weekday-plot{
+  flex:1 1 auto;
+  max-height:100%;
 }
 section.slide[data-slide-id="monday-motivation"] .weekday-plot{
   margin:0;
@@ -5085,16 +5122,16 @@ section.slide[data-slide-id="research-agenda"] .split-text .bullets{
   gap:0.7vh;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets > li{
-  font-size:clamp(13px,1.2vw,17px);
-  line-height:1.28;
+  font-size:clamp(20px,1.9vw,28px);
+  line-height:1.32;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets .sub{
-  gap:0.35vh;
-  margin-top:0.35vh;
+  gap:0.45vh;
+  margin-top:0.45vh;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets .sub > li{
-  font-size:clamp(11px,1.0vw,14px);
-  line-height:1.28;
+  font-size:clamp(16px,1.5vw,22px);
+  line-height:1.32;
 }
 section.slide[data-slide-id="research-agenda"] .split-media .fig{
   max-height:min(52vh,420px);
@@ -5427,6 +5464,69 @@ body.speaker > .hint{display:none !important;}
   .vstack-text{max-height:36%;}
 }
 
+/* Flow emphasis slides: larger body type (keep titles as-is) */
+section.slide[data-slide-id="align-for-business"],
+section.slide[data-slide-id="monday-design"],
+section.slide[data-slide-id="monday-result"],
+section.slide[data-slide-id="firm-data-problem"],
+section.slide[data-slide-id="paper-overview"],
+section.slide[data-slide-id="methodology-results"]{
+  --fs-bullet:clamp(26px,2.55vw,40px);
+  --fs-bullet-sub:clamp(21px,2.0vw,32px);
+  --fs-callout:clamp(21px,1.95vw,30px);
+  --fs-caption:clamp(17px,1.5vw,23px);
+  --fs-box-label:clamp(15px,1.35vw,20px);
+  --fs-box-body:clamp(17px,1.55vw,25px);
+  --fs-box-meta:clamp(14px,1.2vw,18px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist{
+  max-width:1180px;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1.1fr);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-obs-svg{
+  max-width:min(440px,100%);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-kicker{
+  font-size:clamp(15px,1.4vw,19px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-body p,
+section.slide[data-slide-id="align-for-business"] .align-hist-hl p{
+  font-size:clamp(17px,1.65vw,24px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-ctr-val{
+  font-size:clamp(28px,2.5vw,38px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-col-label{
+  font-size:clamp(15px,1.45vw,21px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-meta{
+  font-size:clamp(14px,1.35vw,19px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-text{
+  font-size:clamp(17px,1.65vw,26px);
+}
+section.slide[data-slide-id="monday-result"] .result-table{
+  font-size:clamp(17px,1.65vw,24px);
+}
+section.slide[data-slide-id="monday-result"] .table-wrap figcaption{
+  font-size:clamp(17px,1.5vw,23px);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-text .bullets > li{
+  font-size:var(--fs-bullet);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-text .bullets .sub > li{
+  font-size:var(--fs-bullet-sub);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-media figcaption{
+  font-size:var(--fs-caption);
+}
+section.slide[data-slide-id="methodology-results"] .result-table{
+  font-size:clamp(19px,1.95vw,28px);
+}
+section.slide[data-slide-id="methodology-results"] .table-wrap figcaption{
+  font-size:clamp(17px,1.5vw,23px);
+}
+
 /* Conclusion slide: larger bullets */
 section.slide[data-slide-id="conclusion"] .bullets > li{
   font-size:clamp(26px,2.6vw,42px);
@@ -5721,35 +5821,35 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 </ul></div>
           <div class="vstack-media"><figure class="fig fragment" data-step="2"><div class='fig-html'><div class="align-hist" aria-hidden="true">
   <div class="align-hist-obs-wrap">
-    <svg class="align-hist-obs-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 290" role="img" aria-label="Observational data">
+    <svg class="align-hist-obs-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" role="img" aria-label="Observational data">
       <defs>
         <style type="text/css"><![CDATA[
           .ah-card-obs { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
           .ah-head-obs { fill: #f5d4d4; stroke: #c47a7a; stroke-width: 1.75; }
-          .ah-title { font-family: Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 700; fill: #2a2a2a; }
-          .ah-from-label { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; fill: #666666; }
-          .ah-from-text { font-family: Helvetica, Arial, sans-serif; font-size: 18px; fill: #333333; }
-          .ah-sec-pos { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; fill: #2f6b45; }
-          .ah-item { font-family: Helvetica, Arial, sans-serif; font-size: 20px; fill: #222222; }
+          .ah-title { font-family: Helvetica, Arial, sans-serif; font-size: 32px; font-weight: 700; fill: #2a2a2a; }
+          .ah-from-label { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; fill: #666666; }
+          .ah-from-text { font-family: Helvetica, Arial, sans-serif; font-size: 22px; fill: #333333; }
+          .ah-sec-pos { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; fill: #2f6b45; }
+          .ah-item { font-family: Helvetica, Arial, sans-serif; font-size: 24px; fill: #222222; }
           .ah-pill-obs { fill: #f8cfcf; }
           .ah-rule-obs { stroke: #d4a0a0; stroke-width: 1; }
         ]]></style>
       </defs>
-      <g transform="translate(20,18)">
-        <rect class="ah-card-obs" x="0" y="0" width="320" height="250" rx="14" ry="14"/>
-        <path class="ah-head-obs" d="M0,14 A14,14 0 0 1 14,0 H306 A14,14 0 0 1 320,14 V70 H0 Z"/>
-        <text class="ah-title" x="160" y="42" text-anchor="middle">Observational data</text>
+      <g transform="translate(22,20)">
+        <rect class="ah-card-obs" x="0" y="0" width="376" height="300" rx="16" ry="16"/>
+        <path class="ah-head-obs" d="M0,16 A16,16 0 0 1 16,0 H360 A16,16 0 0 1 376,16 V78 H0 Z"/>
+        <text class="ah-title" x="188" y="48" text-anchor="middle">Observational data</text>
 
-        <text class="ah-from-label" x="22" y="100">FROM</text>
-        <rect class="ah-pill-obs" x="18" y="112" width="284" height="44" rx="8" ry="8"/>
-        <text class="ah-from-text" x="160" y="132" text-anchor="middle">Historical performance logs</text>
-        <text class="ah-from-text" x="160" y="150" text-anchor="middle">(ongoing data collection)</text>
+        <text class="ah-from-label" x="26" y="112">FROM</text>
+        <rect class="ah-pill-obs" x="22" y="124" width="332" height="52" rx="10" ry="10"/>
+        <text class="ah-from-text" x="188" y="147" text-anchor="middle">Historical performance logs</text>
+        <text class="ah-from-text" x="188" y="168" text-anchor="middle">(ongoing data collection)</text>
 
-        <line class="ah-rule-obs" x1="22" y1="174" x2="298" y2="174"/>
+        <line class="ah-rule-obs" x1="26" y1="198" x2="350" y2="198"/>
 
-        <text class="ah-sec-pos" x="22" y="198">PROS</text>
-        <text class="ah-item" x="22" y="222">Large-scale · easy to collect ·</text>
-        <text class="ah-item" x="22" y="242">abundant</text>
+        <text class="ah-sec-pos" x="26" y="228">PROS</text>
+        <text class="ah-item" x="26" y="258">Large-scale · easy to collect ·</text>
+        <text class="ah-item" x="26" y="284">abundant</text>
       </g>
     </svg>
   </div>
@@ -6010,14 +6110,10 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
   <div class="align-askell-credit fragment" data-step="1">Setup follows <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span> (Anthropic) on Academia Stack Exchange</div>
 </div>
 </div></figure>
-<div class='fig-stack'><figure class="fig fragment fragment-exact" data-step="3" data-step-mode="exact"><img src='images/stack-exchange.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>stack-exchange.png</div></figure><figure class="fig fragment fragment-exact" data-step="4" data-step-mode="exact-from"><div class='fig-html'><div class="weekday-stack" aria-hidden="true">
+<div class='fig-stack'><figure class="fig fragment fragment-exact" data-step="3" data-step-mode="exact"><img src='images/stack-exchange.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>stack-exchange.png</div></figure><figure class="fig fragment fragment-exact" data-step="4" data-step-mode="exact-from"><div class='fig-html'><div class="weekday-stack weekday-stack-single" aria-hidden="true">
   <figure class="weekday-plot">
     <img src="images/mean_score_by_weekday.svg" alt="Average answer score by weekday">
     <figcaption>Answers posted earlier in the week receive higher scores on average.</figcaption>
-  </figure>
-  <figure class="weekday-plot">
-    <img src="images/mean_view_and_score_by_weekday.svg" alt="Average question score and views by weekday">
-    <figcaption>Question scores and their views follow the same pattern.</figcaption>
   </figure>
 </div>
 </div></figure></div>
@@ -6025,7 +6121,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
           
           
         </div>
-    
+    <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="33"><span class="slide-link-kind">Appendix</span>Question weekday pattern</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
@@ -6045,10 +6141,10 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
           <ul class='bullets'>
 <li class="fragment" data-step="0">Idea: Add content markers by posting day
 </li>
-<li class="fragment" data-step="1">Examples:
+<li class="fragment" data-step="0">Examples:
 </li>
 </ul>
-          <figure class="fig fragment" data-step="1"><div class='fig-html'><div class="monday-mark" aria-hidden="true">
+          <figure class="fig fragment" data-step="0"><div class='fig-html'><div class="monday-mark" aria-hidden="true">
   <div class="monday-mark-cols">
     <div class="monday-mark-col-label">Original</div>
     <div class="monday-mark-col-label">With marker</div>
@@ -6077,7 +6173,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
   </div>
 </div>
 </div></figure>
-          <aside class="callout fragment" data-step="2"><div class='callout-label'>Question</div><div class='callout-body'><div class='callout-intro'>Would aligning a language model to optimize for upvotes make it generate more Happy Mondays?</div></div></aside>
+          <aside class="callout fragment" data-step="1"><div class='callout-label'>Question</div><div class='callout-body'><div class='callout-intro'>Would aligning a language model to optimize for upvotes make it generate more Happy Mondays?</div></div></aside>
           
           
         </div>
@@ -6369,7 +6465,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 <div class="rw-cols">
 <div class="rw-left">
 <div class="rw-topic-head"><strong>Unstructured content &amp; generative models in marketing</strong></div>
-<ul class="sub"><li>Content is economically important; embeddings predict outcomes (<span class="cite" tabindex="0">Ceylan, Diehl, and Proserpio, 2024<span class="cite-tip">Ceylan, G., Diehl, K., and Proserpio, D. (2024). Words meet photos: When and why photos increase review helpfulness. Journal of Marketing Research 61 (1): 5–26.</span></span>; <span class="cite" tabindex="0">Banerjee and Urminsky, 2025<span class="cite-tip">Banerjee, A. and Urminsky, O. (2025). The language that drives engagement: A systematic large-scale analysis of headline experiments. Marketing Science 44 (3): 566–592.</span></span>; <span class="cite" tabindex="0">Thomas, 2026<span class="cite-tip">Thomas, M. (2026). Does Puffery Sell? Evidence from Airbnb. SSRN Electronic Journal.</span></span>; <span class="cite" tabindex="0">Tang, Yang, and Song, 2024<span class="cite-tip">Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</span></span>; <span class="cite" tabindex="0">Compiani, Morozov, and Seiler, 2025<span class="cite-tip">Compiani, G., Morozov, I., and Seiler, S. (2025). Demand estimation with text and image data. The RAND Journal of Economics.</span></span>)</li><li>Generative models produce marketing content at scale, but may not be optimized for firm objectives (<span class="cite" tabindex="0">Cheng, Ofek, and Yoganarasimhan, 2025<span class="cite-tip">Cheng, M., Ofek, E., and Yoganarasimhan, H. (2025). Balancing engagement and polarization: Multi-objective alignment of news content using LLMs. arXiv preprint arXiv:2504.13444.</span></span>; <span class="cite" tabindex="0">Reisenbichler, Reutterer, and Schweidel, 2026<span class="cite-tip">Reisenbichler, M., Reutterer, T., and Schweidel, D. A. (2026). Applying large language models to sponsored search advertising. Marketing Science 45 (1): 123–141.</span></span>; <span class="cite" tabindex="0">Goli and Singh, 2024<span class="cite-tip">Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</span></span>; <span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng, 2025<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span>)</li></ul>
+<ul class="sub"><li>Content is economically important; embeddings predict outcomes (<span class="cite" tabindex="0">Compiani, Morozov, and Seiler, 2025<span class="cite-tip">Compiani, G., Morozov, I., and Seiler, S. (2025). Demand estimation with text and image data. The RAND Journal of Economics.</span></span>; <span class="cite" tabindex="0">Banerjee and Urminsky, 2025<span class="cite-tip">Banerjee, A. and Urminsky, O. (2025). The language that drives engagement: A systematic large-scale analysis of headline experiments. Marketing Science 44 (3): 566–592.</span></span>; <span class="cite" tabindex="0">Thomas, 2026<span class="cite-tip">Thomas, M. (2026). Does Puffery Sell? Evidence from Airbnb. SSRN Electronic Journal.</span></span>; <span class="cite" tabindex="0">Tang, Yang, and Song, 2024<span class="cite-tip">Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</span></span>)</li><li>Generative models produce marketing content at scale, but may not be optimized for firm objectives (<span class="cite" tabindex="0">Cheng, Ofek, and Yoganarasimhan, 2025<span class="cite-tip">Cheng, M., Ofek, E., and Yoganarasimhan, H. (2025). Balancing engagement and polarization: Multi-objective alignment of news content using LLMs. arXiv preprint arXiv:2504.13444.</span></span>; <span class="cite" tabindex="0">Reisenbichler, Reutterer, and Schweidel, 2026<span class="cite-tip">Reisenbichler, M., Reutterer, T., and Schweidel, D. A. (2026). Applying large language models to sponsored search advertising. Marketing Science 45 (1): 123–141.</span></span>; <span class="cite" tabindex="0">Goli and Singh, 2024<span class="cite-tip">Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</span></span>; <span class="cite" tabindex="0">Ye, Yoganarasimhan, and Zheng, 2025<span class="cite-tip">Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</span></span>)</li></ul>
 </div>
 <aside class="callout"><div class='callout-label'>This work</div><div class='callout-body'><ul class='callout-list'><li>Aligning using <strong>both</strong> experimental and observational data</li><li>What is the value of experimental variation, and how to use it effectively?</li></ul></div></aside>
 </div></div>
@@ -6385,7 +6481,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 <div class="rw-cols">
 <div class="rw-left">
 <div class="rw-topic-head"><strong>Causal inference, experimentation &amp; data combination</strong></div>
-<ul class="sub"><li>Causal ML and the economics of A/B testing (<span class="cite" tabindex="0">Wei and Malik, 2025<span class="cite-tip">Wei, Y. M. and Malik, N. (2025). Unstructured data, econometric models, and Estimation Bias. USC Marshall School of Business Research Paper Sponsored by iORB.</span></span>; <span class="cite" tabindex="0">Chernozhukov et al., 2018<span class="cite-tip">Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., and Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. The Econometrics Journal 21 (1): C1–C68.</span></span>; <span class="cite" tabindex="0">Feit and Berman, 2019<span class="cite-tip">Feit, E. M. and Berman, R. (2019). Test \&amp; roll: Profit-maximizing A/B tests. Marketing Science 38 (6): 1038–1058.</span></span>; <span class="cite" tabindex="0">Azevedo et al., 2019<span class="cite-tip">Azevedo, E. M., Deng, A., Montiel Olea, J. L., and Weyl, E. G. (2019). Empirical bayes estimation of treatment effects with many a/b tests: An overview. In AEA Papers and Proceedings, 43–47.</span></span>)</li><li>Combining observational and experimental data is studied mainly for <strong>scalar</strong> treatments (<span class="cite" tabindex="0">Kallus, Puli, and Shalit, 2018<span class="cite-tip">Kallus, N., Puli, A. M., and Shalit, U. (2018). Removing hidden confounding by experimental grounding. Advances in neural information processing systems 31.</span></span>; <span class="cite" tabindex="0">Athey, Chetty, and Imbens, 2020<span class="cite-tip">Athey, S., Chetty, R., and Imbens, G. (2020). Combining experimental and observational data to estimate treatment effects on long term outcomes. arXiv preprint arXiv:2006.09676.</span></span>)</li></ul>
+<ul class="sub"><li>Causal ML and the economics of A/B testing (<span class="cite" tabindex="0">Chernozhukov et al., 2018<span class="cite-tip">Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., and Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. The Econometrics Journal 21 (1): C1–C68.</span></span>; <span class="cite" tabindex="0">Jeziorski, Leng, and Seiler, 2025<span class="cite-tip">Jeziorski, P., Leng, D., and Seiler, S. (2025). Causal Inference with Endogenous Price Response. Available at SSRN 5249403.</span></span>; <span class="cite" tabindex="0">Feit and Berman, 2019<span class="cite-tip">Feit, E. M. and Berman, R. (2019). Test \&amp; roll: Profit-maximizing A/B tests. Marketing Science 38 (6): 1038–1058.</span></span>; <span class="cite" tabindex="0">Azevedo et al., 2019<span class="cite-tip">Azevedo, E. M., Deng, A., Montiel Olea, J. L., and Weyl, E. G. (2019). Empirical bayes estimation of treatment effects with many a/b tests: An overview. In AEA Papers and Proceedings, 43–47.</span></span>)</li><li>Combining observational and experimental data is studied mainly for <strong>scalar</strong> treatments (<span class="cite" tabindex="0">Kallus, Puli, and Shalit, 2018<span class="cite-tip">Kallus, N., Puli, A. M., and Shalit, U. (2018). Removing hidden confounding by experimental grounding. Advances in neural information processing systems 31.</span></span>; <span class="cite" tabindex="0">Athey, Chetty, and Imbens, 2020<span class="cite-tip">Athey, S., Chetty, R., and Imbens, G. (2020). Combining experimental and observational data to estimate treatment effects on long term outcomes. arXiv preprint arXiv:2006.09676.</span></span>)</li></ul>
 </div>
 <aside class="callout"><div class='callout-label'>This work</div><div class='callout-body'><ul class='callout-list'><li><strong>High-dimensional</strong> actions; endless content possibilities</li><li>Choosing <strong>which experiments</strong> to run</li></ul></div></aside>
 </div></div>
@@ -6719,7 +6815,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 </ul>
           
           
-          <figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th></th><th>CTR (Obs.)</th><th>CTR (Exp.)</th><th>Ranking (Exp.)</th></tr></thead><tbody><tr><td>Mean across embeddings</td><td>0.717</td><td>0.722</td><td><strong>0.789</strong></td></tr></tbody></table></div><figcaption>Mean test ROC-AUC across embedding models (held-out pairs with distinguishable CTRs, <strong>p</strong> &lt; 0.05)</figcaption></figure>
+          <figure class='table-wrap'><div class='table-scroll'><table class='result-table'><thead><tr><th></th><th>CTR (Obs.)</th><th>CTR (Exp.)</th><th>Ranking (Exp.)</th></tr></thead><tbody><tr><td>Mean across embeddings</td><td>0.717</td><td>0.722</td><td><strong>0.789</strong></td></tr></tbody></table></div><figcaption>Mean test ROC-AUC across embedding models</figcaption></figure>
           
         </div>
     <nav class="slide-links see-links" aria-label="Appendix links"><button type="button" class="slide-link see-btn" data-goto="36"><span class="slide-link-kind">Appendix</span>Full Table 2 by embedding</button><button type="button" class="slide-link see-btn" data-goto="37"><span class="slide-link-kind">Appendix</span>Residualizing the outcome</button><button type="button" class="slide-link see-btn" data-goto="38"><span class="slide-link-kind">Appendix</span>Residualized CTR results (Figure 4)</button></nav>
@@ -7225,7 +7321,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
     
         <div class="slide-head">
           <h2 class="slide-title">Questions</h2>
-          <p class="slide-sub">Click a section to jump back</p>
+          
         </div>
         <div class="content-body agenda-body">
           <ol class='agenda'><li class="agenda-item upcoming agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="9" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Research questions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="11" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="13" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="15" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Benchmarking single-source methods</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="18" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Proposed method</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="23" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Experimentation strategy</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="24" role="link" tabindex="0"><span class="agenda-num">08</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="29" role="link" tabindex="0"><span class="agenda-num">09</span><span class="agenda-label">Research agenda</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="56" role="link" tabindex="0"><span class="agenda-num">10</span><span class="agenda-label">Teaching</span><span class="agenda-tag"></span></li></ol>
@@ -7250,7 +7346,6 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 <p class='ref-item'>Athey, S., Chetty, R., and Imbens, G. (2020). Combining experimental and observational data to estimate treatment effects on long term outcomes. arXiv preprint arXiv:2006.09676.</p>
 <p class='ref-item'>Azevedo, E. M., Deng, A., Montiel Olea, J. L., and Weyl, E. G. (2019). Empirical bayes estimation of treatment effects with many a/b tests: An overview. In AEA Papers and Proceedings, 43–47.</p>
 <p class='ref-item'>Banerjee, A. and Urminsky, O. (2025). The language that drives engagement: A systematic large-scale analysis of headline experiments. Marketing Science 44 (3): 566–592.</p>
-<p class='ref-item'>Ceylan, G., Diehl, K., and Proserpio, D. (2024). Words meet photos: When and why photos increase review helpfulness. Journal of Marketing Research 61 (1): 5–26.</p>
 <p class='ref-item'>Chen, Z. and Chan, J. (2024). Large language model in creative work: The role of collaboration modality and user expertise. Management Science 70 (12): 9101–9117.</p>
 <p class='ref-item'>Chen, L., Zhu, C., Soselia, D., Chen, J., Zhou, T., Goldstein, T., Huang, H., Shoeybi, M., and Catanzaro, B. (2024). Odin: Disentangled reward mitigates hacking in rlhf. arXiv preprint arXiv:2402.07319.</p>
 <p class='ref-item'>Cheng, M., Ofek, E., and Yoganarasimhan, H. (2025). Balancing engagement and polarization: Multi-objective alignment of news content using LLMs. arXiv preprint arXiv:2504.13444.</p>
@@ -7264,6 +7359,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 <p class='ref-item'>Gao, J., Su, X., Ma, M., Huang, Y., Xu, X., Wan, X., Gu, T., Yu, E., Guo, J., and Zhang, Z. (2026). Budgeted Active Experimentation for Treatment Effect Estimation from Observational and Randomized Data. arXiv preprint arXiv:2602.22021.</p>
 <p class='ref-item'>Goli, A. and Singh, A. (2024). Frontiers: Can large language models capture human preferences? Marketing Science 43 (4): 709–722.</p>
 <p class='ref-item'>Heitmann, M., Jansen, T. P., Reisenbichler, M., and Schweidel, D. A. (2026). Picture perfect: Engaging customers with visual generative AI. Journal of Marketing 90 (4): 74–96.</p>
+<p class='ref-item'>Jeziorski, P., Leng, D., and Seiler, S. (2025). Causal Inference with Endogenous Price Response. Available at SSRN 5249403.</p>
 <p class='ref-item'>Kallus, N., Puli, A. M., and Shalit, U. (2018). Removing hidden confounding by experimental grounding. Advances in neural information processing systems 31.</p></div>
     
   </div>
@@ -7285,7 +7381,6 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
 <p class='ref-item'>Reisenbichler, M., Reutterer, T., and Schweidel, D. A. (2026). Applying large language models to sponsored search advertising. Marketing Science 45 (1): 123–141.</p>
 <p class='ref-item'>Tang, E., Yang, B., and Song, X. (2024). Understanding LLM Embeddings for Regression. arXiv preprint arXiv:2411.14708.</p>
 <p class='ref-item'>Thomas, M. (2026). Does Puffery Sell? Evidence from Airbnb. SSRN Electronic Journal.</p>
-<p class='ref-item'>Wei, Y. M. and Malik, N. (2025). Unstructured data, econometric models, and Estimation Bias. USC Marshall School of Business Research Paper Sponsored by iORB.</p>
 <p class='ref-item'>Ye, Z., Yoganarasimhan, H., and Zheng, Y. (2025). Lola: Llm-assisted online learning algorithm for content experiments. Marketing Science 44 (5): 995–1016.</p></div>
     
   </div>
@@ -7427,30 +7522,11 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
     
         <div class="slide-head">
           <h2 class="slide-title">Appendix — Motivating example (detail)<span class="appendix-badge">Appendix</span></h2>
-          
+          <p class="slide-sub">Question scores and views follow the same weekday pattern</p>
         </div>
         <div class="content-body">
-          <ul class='bullets'>
-<li class="fragment" data-step="0">Setup follows <span class="cite" tabindex="0">Askell et al. (2021)<span class="cite-tip">Askell, A., Bai, Y., Chen, A., Drain, D., Ganguli, D., Henighan, T., Jones, A., Joseph, N., Mann, B., DasSarma, N., and others (2021). A general language assistant as a laboratory for alignment. arXiv preprint arXiv:2112.00861.</span></span> (Anthropic)
-<ul class='sub'>
-<li>Question-answering setting</li>
-<li>Answer <strong>scores</strong> as the outcome signal</li>
-</ul>
-</li>
-<li class="fragment" data-step="1">Data: Academia Stack Exchange
-<ul class='sub'>
-<li>Questions as prompts, answers as outputs, votes as scores</li>
-</ul>
-</li>
-<li class="fragment" data-step="2">Observation: scores have a strong <strong>weekly</strong> pattern
-</li>
-</ul>
-          <figure class="fig fragment fragment-exact" data-step="1" data-step-mode="exact"><img src='images/stack-exchange.png' alt='' onerror="this.parentNode.classList.add('missing');"><div class='fig-fallback'>stack-exchange.png</div></figure>
-<figure class="fig fragment" data-step="2"><div class='fig-html'><div class="weekday-stack" aria-hidden="true">
-  <figure class="weekday-plot">
-    <img src="images/mean_score_by_weekday.svg" alt="Average answer score by weekday">
-    <figcaption>Answers posted earlier in the week receive higher scores on average.</figcaption>
-  </figure>
+          
+          <figure class="fig"><div class='fig-html'><div class="weekday-stack weekday-stack-single" aria-hidden="true">
   <figure class="weekday-plot">
     <img src="images/mean_view_and_score_by_weekday.svg" alt="Average question score and views by weekday">
     <figcaption>Question scores and their views follow the same pattern.</figcaption>
@@ -7461,13 +7537,13 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
           
           
         </div>
-    
+    <nav class="slide-links appendix-backs" aria-label="Back to referring slides"><button type="button" class="slide-link back-btn" data-goto="5"><span class="slide-link-kind">Back</span>Is using historical data OK?</button></nav>
   </div>
   <div class="slide-foot">
     <span class="brand">Erfan Loghmani</span>
     <span class="pageno pageno-jump" data-page-nav="v" data-page-total="xxix" title="Click to go to a page">v / xxix</span>
   </div>
-  <aside class='notes'>Appendix detail for the Monday motivating example on Academia Stack Exchange.</aside>
+  <aside class='notes'>Appendix detail for the Monday motivating example on Academia Stack Exchange.<br>Question scores and views show the same weekday pattern as answer scores.</aside>
 </section>
 
 <section class="slide layout-split is-appendix" data-index="35" data-title="Appendix — Direct alignment" data-slide-id="direct-alignment">

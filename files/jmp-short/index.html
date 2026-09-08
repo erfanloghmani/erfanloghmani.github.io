@@ -367,12 +367,24 @@ section.slide[data-slide-id="methodology-results"] .table-wrap figcaption{
 }
 /* Monday result: keep news-box space reserved; spread blocks so bottom isn't empty */
 section.slide[data-slide-id="monday-result"] .content-body:has(> .fig):not(:has(.bullets)),
-section.slide[data-slide-id="monday-result"] .content-body:has(> .table-wrap),
-section.slide[data-slide-id="monday-result"] .content-body{
+section.slide[data-slide-id="monday-result"] .content-body:has(> .fig):has(> .table-wrap),
+section.slide[data-slide-id="monday-result"] .content-body:has(> .fig){
   justify-content:space-between !important;
   gap:4vh !important;
   align-items:center;
   padding-block:1vh 2vh;
+}
+/* Flow (no news box): keep title fixed; even spacing among callout + table */
+section.slide[data-slide-id="monday-result"] .slide-inner:not(:has(.fig)) > .content-body{
+  flex:1 1 auto !important;
+  justify-content:space-evenly !important;
+  gap:0 !important;
+  align-items:center;
+  padding-block:0 !important;
+}
+section.slide[data-slide-id="monday-result"] .slide-inner:not(:has(.fig)) > .see-links{
+  margin-top:0;
+  padding-top:1.0vh;
 }
 section.slide[data-slide-id="monday-result"] .content-body > .fig.fragment:not(.visible){
   /* Reserve layout space so callout/table don't jump when the news box appears */
@@ -1263,16 +1275,22 @@ section.slide[data-slide-id="historical-ok"] .align-tension-center{
   justify-content:center;
   min-height:0;
 }
+section.slide[data-slide-id="historical-ok"] .align-tension-tag{
+  font-size:clamp(15px,1.45vw,22px);
+}
 section.slide[data-slide-id="historical-ok"] .align-tension-title{
-  font-size:clamp(13px,1.2vw,18px);
+  font-size:clamp(17px,1.6vw,24px);
 }
 section.slide[data-slide-id="historical-ok"] .align-tension-center .align-tension-title{
-  font-size:clamp(14px,1.3vw,20px);
+  font-size:clamp(18px,1.7vw,26px);
 }
 section.slide[data-slide-id="historical-ok"] .align-monday-chip{
   margin-top:0.4vh;
   padding:0.35vh 0.65vw;
   font-size:clamp(12px,1.1vw,16px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-monday-chip{
+  display:none;
 }
 section.slide[data-slide-id="historical-ok"] .align-monday-chip.fragment:not(.visible){
   visibility:hidden;
@@ -1291,6 +1309,16 @@ section.slide[data-slide-id="historical-ok"] .weekday-stack{
   overflow:hidden;
   box-sizing:border-box;
   margin:0 auto;
+}
+section.slide[data-slide-id="historical-ok"] .weekday-stack-single{
+  width:100%;
+  max-width:100%;
+  height:100%;
+  max-height:100%;
+}
+section.slide[data-slide-id="historical-ok"] .weekday-stack-single > .weekday-plot{
+  flex:1 1 auto;
+  max-height:100%;
 }
 section.slide[data-slide-id="historical-ok"] .weekday-plot{
   margin:0;
@@ -1716,6 +1744,32 @@ section.slide[data-slide-id="historical-ok"] .content-body:has(.weekday-sidebysi
 }
 .align-askell-credit{
   display:none;
+}
+.align-tension-news{
+  display:none;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news{
+  display:block;
+  grid-column:1 / -1;
+  width:100%;
+  box-sizing:border-box;
+  padding:0.7vh 0.85vw 0.8vh;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news.fragment:not(.visible){
+  display:none;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-badge{
+  margin-bottom:0.35vh;
+  font-size:clamp(13px,1.2vw,17px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step{
+  padding:0.45vh 0.6vw;
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step strong{
+  font-size:clamp(16px,1.5vw,22px);
+}
+section.slide[data-slide-id="historical-ok"] .content-body:not(:has(.weekday-sidebyside)) .align-tension-news .monday-news-step span{
+  font-size:clamp(14px,1.3vw,19px);
 }
 .align-tension-title{
   font-size:clamp(18px,1.7vw,26px);
@@ -2897,7 +2951,7 @@ section.slide[data-slide-id="benchmark-methods"] .slide-inner{
   .bench-funnel-bar{display:none;}
 }
 
-/* Monday motivation: bullets left; screenshot OR stacked weekday plots on right */
+/* Monday motivation: bullets left + media right; figure-only centers a single plot */
 section.slide[data-slide-id="monday-motivation"] .content-body{
   display:grid !important;
   grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);
@@ -2906,6 +2960,11 @@ section.slide[data-slide-id="monday-motivation"] .content-body{
   align-items:stretch;
   overflow:hidden;
   min-height:0;
+}
+section.slide[data-slide-id="monday-motivation"] .content-body:not(:has(.bullets)){
+  grid-template-columns:1fr;
+  justify-items:center;
+  align-items:center;
 }
 section.slide[data-slide-id="monday-motivation"] .content-body > .bullets{
   grid-column:1;
@@ -2933,6 +2992,12 @@ section.slide[data-slide-id="monday-motivation"] .content-body > .fig{
   align-self:stretch;
   justify-content:center;
   gap:0;
+}
+section.slide[data-slide-id="monday-motivation"] .content-body:not(:has(.bullets)) > .fig{
+  grid-column:1;
+  width:min(92%, 980px);
+  max-height:min(72vh, 640px);
+  align-self:center;
 }
 section.slide[data-slide-id="monday-motivation"] .content-body > .fig.fragment:not(.visible){
   display:none;
@@ -2963,6 +3028,10 @@ section.slide[data-slide-id="monday-motivation"] .weekday-stack{
   justify-content:center;
   gap:1.0vh;
   overflow:hidden;
+}
+section.slide[data-slide-id="monday-motivation"] .weekday-stack-single > .weekday-plot{
+  flex:1 1 auto;
+  max-height:100%;
 }
 section.slide[data-slide-id="monday-motivation"] .weekday-plot{
   margin:0;
@@ -5053,16 +5122,16 @@ section.slide[data-slide-id="research-agenda"] .split-text .bullets{
   gap:0.7vh;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets > li{
-  font-size:clamp(13px,1.2vw,17px);
-  line-height:1.28;
+  font-size:clamp(20px,1.9vw,28px);
+  line-height:1.32;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets .sub{
-  gap:0.35vh;
-  margin-top:0.35vh;
+  gap:0.45vh;
+  margin-top:0.45vh;
 }
 section.slide[data-slide-id="research-agenda"] .split-text .bullets .sub > li{
-  font-size:clamp(11px,1.0vw,14px);
-  line-height:1.28;
+  font-size:clamp(16px,1.5vw,22px);
+  line-height:1.32;
 }
 section.slide[data-slide-id="research-agenda"] .split-media .fig{
   max-height:min(52vh,420px);
@@ -5393,6 +5462,69 @@ body.speaker > .hint{display:none !important;}
   .split-media{max-height:32vh;}
   .fig img{max-height:30vh;}
   .vstack-text{max-height:36%;}
+}
+
+/* Flow emphasis slides: larger body type (keep titles as-is) */
+section.slide[data-slide-id="align-for-business"],
+section.slide[data-slide-id="monday-design"],
+section.slide[data-slide-id="monday-result"],
+section.slide[data-slide-id="firm-data-problem"],
+section.slide[data-slide-id="paper-overview"],
+section.slide[data-slide-id="methodology-results"]{
+  --fs-bullet:clamp(26px,2.55vw,40px);
+  --fs-bullet-sub:clamp(21px,2.0vw,32px);
+  --fs-callout:clamp(21px,1.95vw,30px);
+  --fs-caption:clamp(17px,1.5vw,23px);
+  --fs-box-label:clamp(15px,1.35vw,20px);
+  --fs-box-body:clamp(17px,1.55vw,25px);
+  --fs-box-meta:clamp(14px,1.2vw,18px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist{
+  max-width:1180px;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1.1fr);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-obs-svg{
+  max-width:min(440px,100%);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-kicker{
+  font-size:clamp(15px,1.4vw,19px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-body p,
+section.slide[data-slide-id="align-for-business"] .align-hist-hl p{
+  font-size:clamp(17px,1.65vw,24px);
+}
+section.slide[data-slide-id="align-for-business"] .align-hist-ctr-val{
+  font-size:clamp(28px,2.5vw,38px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-col-label{
+  font-size:clamp(15px,1.45vw,21px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-meta{
+  font-size:clamp(14px,1.35vw,19px);
+}
+section.slide[data-slide-id="monday-design"] .monday-mark-text{
+  font-size:clamp(17px,1.65vw,26px);
+}
+section.slide[data-slide-id="monday-result"] .result-table{
+  font-size:clamp(17px,1.65vw,24px);
+}
+section.slide[data-slide-id="monday-result"] .table-wrap figcaption{
+  font-size:clamp(17px,1.5vw,23px);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-text .bullets > li{
+  font-size:var(--fs-bullet);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-text .bullets .sub > li{
+  font-size:var(--fs-bullet-sub);
+}
+section.slide[data-slide-id="firm-data-problem"] .split-media figcaption{
+  font-size:var(--fs-caption);
+}
+section.slide[data-slide-id="methodology-results"] .result-table{
+  font-size:clamp(19px,1.95vw,28px);
+}
+section.slide[data-slide-id="methodology-results"] .table-wrap figcaption{
+  font-size:clamp(17px,1.5vw,23px);
 }
 
 /* Conclusion slide: larger bullets */
@@ -6328,7 +6460,7 @@ section.slide[data-slide-id="conclusion"] .bullets > li > ul > li{
     
         <div class="slide-head">
           <h2 class="slide-title">Questions</h2>
-          <p class="slide-sub">Click a section to jump back</p>
+          
         </div>
         <div class="content-body agenda-body">
           <ol class='agenda'><li class="agenda-item upcoming agenda-link" data-goto="1" role="link" tabindex="0"><span class="agenda-num">01</span><span class="agenda-label">Motivation</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="3" role="link" tabindex="0"><span class="agenda-num">02</span><span class="agenda-label">Paper overview</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="5" role="link" tabindex="0"><span class="agenda-num">03</span><span class="agenda-label">Background and related work</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="7" role="link" tabindex="0"><span class="agenda-num">04</span><span class="agenda-label">Upworthy data</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="10" role="link" tabindex="0"><span class="agenda-num">05</span><span class="agenda-label">Methodology and results</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="22" role="link" tabindex="0"><span class="agenda-num">06</span><span class="agenda-label">Conclusions</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="28" role="link" tabindex="0"><span class="agenda-num">07</span><span class="agenda-label">Research agenda</span><span class="agenda-tag"></span></li><li class="agenda-item upcoming agenda-link" data-goto="51" role="link" tabindex="0"><span class="agenda-num">08</span><span class="agenda-label">Teaching</span><span class="agenda-tag"></span></li></ol>
