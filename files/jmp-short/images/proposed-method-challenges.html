@@ -1,0 +1,47 @@
+<div class="pm-chal" aria-hidden="true">
+  <div class="pm-chal-left">
+    <div class="pm-chal-card fragment" data-step="1">
+      <div class="pm-chal-head">
+        <span class="pm-chal-num">Challenge 1</span>
+        <p class="pm-chal-text">Parameters and outputs are not comparable.</p>
+      </div>
+      <div class="pm-chal-sol">
+        <div class="pm-chal-sol-label">Solution</div>
+        <p class="pm-chal-sol-text">Bring the outputs to the same domain of $P(h_1 \succ h_2)$.</p>
+        <ul class="pm-chal-sol-list">
+          <li><strong>Logistic:</strong> delivers this probability (and a variance) directly</li>
+          <li><strong>Prediction model:</strong> point CTR + SE per headline; do Monte Carlo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pm-chal-card fragment" data-step="2">
+      <div class="pm-chal-head">
+        <span class="pm-chal-num">Challenge 2</span>
+        <p class="pm-chal-text">Robustness to different data sizes.</p>
+      </div>
+      <div class="pm-chal-sol">
+        <div class="pm-chal-sol-label">Solution</div>
+        <p class="pm-chal-sol-text">Optimal weighting based on variances and bias.</p>
+      </div>
+    </div>
+
+    <div class="pm-chal-card fragment" data-step="3">
+      <div class="pm-chal-head">
+        <span class="pm-chal-num">Challenge 3</span>
+        <p class="pm-chal-text">Bias estimation for observational data.</p>
+      </div>
+      <div class="pm-chal-sol">
+        <div class="pm-chal-sol-label">Solution</div>
+        <p class="pm-chal-sol-text">Honest estimation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pm-chal-right fragment" data-step="4">
+    <figure class="pm-chal-fig">
+      <img src="images/ivw.png" alt="Bias-corrected inverse-variance combination">
+      <figcaption>Bias-corrected inverse-variance combination</figcaption>
+    </figure>
+  </div>
+</div>
