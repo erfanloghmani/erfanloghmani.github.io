@@ -1,0 +1,149 @@
+<div class="bench-eng" aria-hidden="true">
+  <div class="bench-eng-main">
+    <!-- CTR prediction: two labels, one shared schematic -->
+    <div class="bench-eng-ctr-group">
+      <div class="bench-eng-ctr-labels">
+        <div class="bench-eng-row bench-eng-row-obs">
+          <div class="bench-eng-box">
+            <span class="bench-eng-tag">Observational</span>
+            <strong>CTR prediction</strong>
+            <span class="bench-eng-note bench-eng-note-s0">1 headline / story</span>
+          </div>
+        </div>
+        <div class="bench-eng-row bench-eng-row-exp">
+          <div class="bench-eng-box">
+            <span class="bench-eng-tag">Experimental</span>
+            <strong>CTR prediction</strong>
+            <span class="bench-eng-note bench-eng-note-s0">all variants / test</span>
+          </div>
+        </div>
+      </div>
+      <div class="bench-eng-schem-slot bench-eng-schem-slot-ctr">
+        <div class="bench-eng-nn bench-eng-nn-ctr fragment" data-step="1">
+          <div class="bench-eng-input-group">
+            <div class="bench-eng-input-stack">
+              <span class="bench-eng-chip">Article body</span>
+              <span class="bench-eng-chip">Headline</span>
+            </div>
+            <svg viewBox="0 0 14 52" class="bench-eng-brace-svg" aria-hidden="true">
+              <path d="M2 2 C10 2 10 10 10 14 C10 18 13 20 13 26 C13 32 10 34 10 38 C10 42 10 50 2 50" fill="none" stroke="#85754d" stroke-width="1.75" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="bench-eng-arrow">→</span>
+          <div class="bench-eng-embed-net" aria-hidden="true">
+            <span class="bench-eng-nn-lbl">Embedding model</span>
+            <div class="bench-eng-nn-layers">
+              <div class="bench-eng-nn-col"><i></i><i></i><i></i></div>
+              <div class="bench-eng-nn-col"><i></i><i></i><i></i><i></i></div>
+              <div class="bench-eng-nn-col"><i></i><i></i></div>
+            </div>
+          </div>
+          <span class="bench-eng-arrow">→</span>
+          <div class="bench-eng-vec" aria-label="Embedding vector">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span class="bench-eng-arrow">→</span>
+          <div class="bench-eng-linear-funnel">
+            <span class="bench-eng-nn-lbl">Linear layer</span>
+            <svg viewBox="0 0 52 36" class="bench-eng-funnel-svg bench-eng-funnel-svg-h" aria-hidden="true">
+              <polygon points="4,4 4,32 38,22 38,14" fill="rgba(239,234,248,.9)" stroke="#4b2e83" stroke-width="1.5"/>
+              <line x1="38" y1="18" x2="44" y2="18" stroke="#4b2e83" stroke-width="1.5"/>
+              <circle cx="48" cy="18" r="3.5" fill="#4b2e83"/>
+            </svg>
+          </div>
+          <span class="bench-eng-arrow">→</span>
+          <div class="bench-eng-nn-out">CTR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: ranking -->
+    <div class="bench-eng-detail-row">
+      <div class="bench-eng-row bench-eng-row-rank">
+        <div class="bench-eng-box">
+          <span class="bench-eng-tag">Experimental</span>
+          <strong>Ranking objective</strong>
+          <span class="bench-eng-note bench-eng-note-s0">logistic on pairs</span>
+        </div>
+      </div>
+      <div class="bench-eng-schem-slot">
+        <div class="bench-eng-nn bench-eng-nn-rank fragment" data-step="2">
+          <div class="bench-eng-rank-arms">
+            <div class="bench-eng-rank-arm">
+              <div class="bench-eng-input-group bench-eng-input-group-sm">
+                <div class="bench-eng-input-stack">
+                  <span class="bench-eng-chip">Article body</span>
+                  <span class="bench-eng-chip">Headline A</span>
+                </div>
+                <svg viewBox="0 0 14 52" class="bench-eng-brace-svg bench-eng-brace-svg-sm" aria-hidden="true">
+                  <path d="M2 2 C10 2 10 10 10 14 C10 18 13 20 13 26 C13 32 10 34 10 38 C10 42 10 50 2 50" fill="none" stroke="#85754d" stroke-width="1.75" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-embed-net bench-eng-embed-net-sm" aria-hidden="true">
+                <span class="bench-eng-nn-lbl">Embedding</span>
+                <div class="bench-eng-nn-layers">
+                  <div class="bench-eng-nn-col"><i></i><i></i></div>
+                  <div class="bench-eng-nn-col"><i></i><i></i><i></i></div>
+                </div>
+              </div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-vec bench-eng-vec-sm"><span></span><span></span><span></span><span></span><span></span></div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-linear-funnel bench-eng-linear-funnel-sm">
+                <span class="bench-eng-nn-lbl">Linear</span>
+                <svg viewBox="0 0 52 36" class="bench-eng-funnel-svg bench-eng-funnel-svg-h bench-eng-funnel-svg-sm" aria-hidden="true">
+                  <polygon points="4,4 4,32 38,22 38,14" fill="rgba(239,234,248,.9)" stroke="#4b2e83" stroke-width="1.5"/>
+                  <line x1="38" y1="18" x2="44" y2="18" stroke="#4b2e83" stroke-width="1.5"/>
+                  <circle cx="48" cy="18" r="3.5" fill="#4b2e83"/>
+                </svg>
+              </div>
+            </div>
+            <div class="bench-eng-rank-arm">
+              <div class="bench-eng-input-group bench-eng-input-group-sm">
+                <div class="bench-eng-input-stack">
+                  <span class="bench-eng-chip">Article body</span>
+                  <span class="bench-eng-chip">Headline B</span>
+                </div>
+                <svg viewBox="0 0 14 52" class="bench-eng-brace-svg bench-eng-brace-svg-sm" aria-hidden="true">
+                  <path d="M2 2 C10 2 10 10 10 14 C10 18 13 20 13 26 C13 32 10 34 10 38 C10 42 10 50 2 50" fill="none" stroke="#85754d" stroke-width="1.75" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-embed-net bench-eng-embed-net-sm" aria-hidden="true">
+                <span class="bench-eng-nn-lbl">Embedding</span>
+                <div class="bench-eng-nn-layers">
+                  <div class="bench-eng-nn-col"><i></i><i></i></div>
+                  <div class="bench-eng-nn-col"><i></i><i></i><i></i></div>
+                </div>
+              </div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-vec bench-eng-vec-sm"><span></span><span></span><span></span><span></span><span></span></div>
+              <span class="bench-eng-arrow">→</span>
+              <div class="bench-eng-linear-funnel bench-eng-linear-funnel-sm">
+                <span class="bench-eng-nn-lbl">Linear</span>
+                <svg viewBox="0 0 52 36" class="bench-eng-funnel-svg bench-eng-funnel-svg-h bench-eng-funnel-svg-sm" aria-hidden="true">
+                  <polygon points="4,4 4,32 38,22 38,14" fill="rgba(239,234,248,.9)" stroke="#4b2e83" stroke-width="1.5"/>
+                  <line x1="38" y1="18" x2="44" y2="18" stroke="#4b2e83" stroke-width="1.5"/>
+                  <circle cx="48" cy="18" r="3.5" fill="#4b2e83"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <span class="bench-eng-arrow bench-eng-arrow-tight">→</span>
+          <div class="bench-eng-logistic-block">
+            <span class="bench-eng-nn-lbl">Logistic loss</span>
+            <strong>A ≻ B ?</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RL pipeline — space always reserved -->
+  <div class="bench-eng-rl-slot">
+    <div class="bench-eng-rl fragment" data-step="3">
+      <img class="bench-eng-rl-pipeline" src="images/alignment-rlhf.svg" alt="RL pipeline three stages">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="oc-title oc-desc">
+  <title id="oc-title">Opportunity cost of experimentation</title>
+  <desc id="oc-desc">Experimenting splits traffic, so some visitors see a worse headline. Those lost clicks are the opportunity cost.</desc>
+  <defs>
+    <pattern id="oc-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#fdeeee"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#c47a7a" stroke-width="2"/>
+    </pattern>
+    <style type="text/css"><![CDATA[
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #8a3d3d; }
+      .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
+      .bar-win { fill: #4b2e83; }
+      .bar-lose { fill: url(#oc-hatch); stroke: #c47a7a; stroke-width: 1.25; }
+      .pill { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.25; }
+    ]]></style>
+  </defs>
+
+  <rect class="card" x="110" y="28" width="340" height="244" rx="14"/>
+  <text class="label" x="280" y="72" text-anchor="middle">Experiment</text>
+  <rect class="bar-win" x="150" y="104" width="148" height="64" rx="8"/>
+  <rect class="bar-lose" x="310" y="104" width="100" height="64" rx="8"/>
+  <text x="224" y="142" text-anchor="middle" fill="#fff" style="font-family:Helvetica,Arial,sans-serif;font-size:18px;font-weight:700;">winner</text>
+  <text x="360" y="142" text-anchor="middle" fill="#8a3d3d" style="font-family:Helvetica,Arial,sans-serif;font-size:17px;font-weight:700;">worse</text>
+  <rect class="pill" x="150" y="196" width="260" height="52" rx="10"/>
+  <text class="note" x="280" y="218" text-anchor="middle">Opportunity cost</text>
+  <text class="sub" x="280" y="238" text-anchor="middle">clicks left on the table</text>
+</svg>

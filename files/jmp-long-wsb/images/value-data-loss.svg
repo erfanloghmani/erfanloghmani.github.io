@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" width="560" height="380" role="img" aria-labelledby="val-title val-desc">
+  <title id="val-title">Three training pipelines</title>
+  <desc id="val-desc">Observational CTR prediction, experimental CTR prediction, and experimental ranking loss.</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .frame { fill: #f7f5f2; stroke: #d9d2e6; stroke-width: 1.5; }
+      .row1 { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
+      .row2 { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .row3 { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .inner { fill: #ffffff; stroke: #d9d2e6; stroke-width: 1; }
+      .step { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #b7a57a; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5a5368; }
+      .plus { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #b7a57a; }
+    ]]></style>
+  </defs>
+
+  <!-- Row 1 -->
+  <rect class="row1" x="28" y="28" width="504" height="100" rx="12"/>
+  <text class="step" x="48" y="84">1</text>
+  <rect class="inner" x="68" y="44" width="175" height="68" rx="8"/>
+  <text class="label" x="155" y="72" text-anchor="middle">Observational</text>
+  <text class="sub" x="155" y="94" text-anchor="middle">1 headline / story</text>
+  <text class="plus" x="268" y="88" text-anchor="middle">+</text>
+  <rect class="inner" x="292" y="44" width="220" height="68" rx="8"/>
+  <text class="label" x="402" y="72" text-anchor="middle">CTR prediction</text>
+  <text class="sub" x="402" y="94" text-anchor="middle">predict levels, then rank</text>
+
+  <!-- Row 2 -->
+  <rect class="row2" x="28" y="140" width="504" height="100" rx="12"/>
+  <text class="step" x="48" y="196">2</text>
+  <rect class="inner" x="68" y="156" width="175" height="68" rx="8"/>
+  <text class="label" x="155" y="184" text-anchor="middle">Experimental</text>
+  <text class="sub" x="155" y="206" text-anchor="middle">all variants / test</text>
+  <text class="plus" x="268" y="200" text-anchor="middle">+</text>
+  <rect class="inner" x="292" y="156" width="220" height="68" rx="8"/>
+  <text class="label" x="402" y="184" text-anchor="middle">CTR prediction</text>
+  <text class="sub" x="402" y="206" text-anchor="middle">same loss; more variation</text>
+
+  <!-- Row 3 -->
+  <rect class="row3" x="28" y="252" width="504" height="100" rx="12"/>
+  <text class="step" x="48" y="308">3</text>
+  <rect class="inner" x="68" y="268" width="175" height="68" rx="8"/>
+  <text class="label" x="155" y="296" text-anchor="middle">Experimental</text>
+  <text class="sub" x="155" y="318" text-anchor="middle">all variants / test</text>
+  <text class="plus" x="268" y="312" text-anchor="middle">+</text>
+  <rect class="inner" x="292" y="268" width="220" height="68" rx="8"/>
+  <text class="label" x="402" y="296" text-anchor="middle">Ranking objective</text>
+  <text class="sub" x="402" y="318" text-anchor="middle">logistic on pairs: who wins?</text>
+</svg>

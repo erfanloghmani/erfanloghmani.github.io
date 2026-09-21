@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" width="520" height="300" role="img" aria-labelledby="dpo-title dpo-desc">
+  <title id="dpo-title">Direct preference alignment</title>
+  <desc id="dpo-desc">Direct alignment updates the language model from preference pairs without a separate reward model or RL loop.</desc>
+  <defs>
+    <marker id="arrow-dpo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .frame { fill: #f7f5f2; stroke: #d9d2e6; stroke-width: 1.5; }
+      .box { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
+      .box-win { fill: #eef6f0; stroke: #3d7a55; stroke-width: 1.75; }
+      .box-lose { fill: #f8eeee; stroke: #a45a5a; stroke-width: 1.75; }
+      .box-lm { fill: #efeaf8; stroke: #4b2e83; stroke-width: 1.75; }
+      .step { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; fill: #b7a57a; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; fill: #4b2e83; }
+      .label-win { font-family: Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; fill: #2f6b45; }
+      .label-lose { font-family: Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; fill: #8a3a3a; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .flow { stroke: #4b2e83; stroke-width: 2.25; fill: none; marker-end: url(#arrow-dpo); }
+      .title { font-family: Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; fill: #32215c; }
+      .brace { stroke: #4b2e83; stroke-width: 1.75; fill: none; }
+    ]]></style>
+  </defs>
+
+  <rect class="frame" x="8" y="8" width="504" height="284" rx="16"/>
+  <text class="title" x="260" y="36" text-anchor="middle">Direct alignment from pairs</text>
+
+  <rect class="box" x="28" y="110" width="100" height="72" rx="12"/>
+  <text class="step" x="78" y="138" text-anchor="middle">PROMPT</text>
+  <text class="label" x="78" y="162" text-anchor="middle">x</text>
+
+  <line class="flow" x1="128" y1="146" x2="168" y2="146"/>
+
+  <rect class="box-win" x="174" y="58" width="130" height="70" rx="12"/>
+  <text class="step" x="239" y="84" text-anchor="middle">CHOSEN</text>
+  <text class="label-win" x="239" y="108" text-anchor="middle">y_w preferred</text>
+
+  <rect class="box-lose" x="174" y="164" width="130" height="70" rx="12"/>
+  <text class="step" x="239" y="190" text-anchor="middle">REJECTED</text>
+  <text class="label-lose" x="239" y="214" text-anchor="middle">y_l</text>
+
+  <path class="flow" d="M 304 93 H 340"/>
+  <path class="flow" d="M 304 199 H 340"/>
+  <path class="brace" d="M 340 93 V 199"/>
+  <line class="flow" x1="340" y1="146" x2="378" y2="146"/>
+
+  <rect class="box-lm" x="384" y="100" width="108" height="92" rx="12"/>
+  <text class="step" x="438" y="130" text-anchor="middle">UPDATE</text>
+  <text class="label" x="438" y="156" text-anchor="middle">policy</text>
+  <text class="sub" x="438" y="178" text-anchor="middle">directly</text>
+
+</svg>

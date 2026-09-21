@@ -1,0 +1,68 @@
+<div class="c2s" aria-hidden="true">
+  <div class="c2s-left">
+    <div class="c2s-cards fragment" data-step="1">
+      <div class="c2s-gutter" aria-hidden="true"></div>
+      <div class="rq-src-card rq-src-exp">
+        <div class="rq-src-head">Experimental data</div>
+        <div class="rq-src-body">
+          <div class="rq-src-from-label">FROM</div>
+          <div class="rq-src-from-pill">A/B tests &amp; randomized experiments</div>
+          <div class="rq-src-sec rq-src-pos">PROS</div>
+          <div class="rq-src-item">Unbiased</div>
+          <div class="rq-src-sec rq-src-neg">CONS</div>
+          <div class="rq-src-item">Harder to collect · costly · noisy</div>
+        </div>
+      </div>
+      <div class="rq-src-card rq-src-obs">
+        <div class="rq-src-head">Observational data</div>
+        <div class="rq-src-body">
+          <div class="rq-src-from-label">FROM</div>
+          <div class="rq-src-from-pill">Historical performance logs</div>
+          <div class="rq-src-sec rq-src-pos">PROS</div>
+          <div class="rq-src-item">Large-scale · abundant</div>
+          <div class="rq-src-sec rq-src-neg">CONS</div>
+          <div class="rq-src-item">Spurious correlation and bias</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="c2s-metrics fragment" data-step="2">
+      <div class="c2s-metric-row">
+        <div class="c2s-row-label">Bias</div>
+        <div class="c2s-cell c2s-col-exp c2s-good">Unbiased</div>
+        <div class="c2s-cell c2s-col-obs c2s-bad">Biased</div>
+      </div>
+      <div class="c2s-metric-row">
+        <div class="c2s-row-label">Variance</div>
+        <div class="c2s-cell c2s-col-exp c2s-bad">High variance</div>
+        <div class="c2s-cell c2s-col-obs c2s-good">Low variance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="c2s-right">
+    <div class="c2s-way c2s-way-pool fragment" data-step="3">
+      <div class="c2s-way-badge">Easy way</div>
+      <div class="c2s-way-title">Pool the observations</div>
+      <div class="c2s-way-flow">
+        <div class="c2s-chip">CTR (Exp.)</div>
+        <span class="c2s-plus">+</span>
+        <div class="c2s-chip">CTR (Obs.)</div>
+      </div>
+    </div>
+
+    <div class="c2s-way fragment" data-step="4">
+      <div class="c2s-way-badge">Better way?</div>
+      <div class="c2s-way-flow">
+        <div class="c2s-chip">Ranking (Exp.)</div>
+        <span class="c2s-plus">+</span>
+        <div class="c2s-chip">CTR (Obs.)</div>
+      </div>
+    </div>
+
+    <div class="c2s-challenge fragment" data-step="5">
+      <div class="c2s-challenge-title">Parameters are not comparable</div>
+      <div class="c2s-challenge-body">Naive fixes like sharing the parameters or summing the losses are not appropriate.</div>
+    </div>
+  </div>
+</div>

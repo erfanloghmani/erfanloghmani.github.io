@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="grd-title grd-desc">
-  <title id="grd-title">Ridge-logistic disagreement gate</title>
-  <desc id="grd-desc">Ridge and logistic probabilities disagree, so the test is selected for experimentation.</desc>
+  <title id="grd-title">Observational-Experimental disagreement selection rule</title>
+  <desc id="grd-desc">Observational and experimental probabilities disagree, so the test is selected for experimentation.</desc>
   <defs>
     <style type="text/css"><![CDATA[
       .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.75; }
       .card-warn { fill: #ffffff; stroke: #85754d; stroke-width: 2; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
-      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
-      .val { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #4b2e83; }
-      .val2 { font-family: Helvetica, Arial, sans-serif; font-size: 28px; font-weight: 700; fill: #85754d; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 21px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 19px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 20px; fill: #241d33; }
+      .val { font-family: Helvetica, Arial, sans-serif; font-size: 32px; font-weight: 700; fill: #4b2e83; }
+      .val2 { font-family: Helvetica, Arial, sans-serif; font-size: 32px; font-weight: 700; fill: #85754d; }
       .box { fill: rgba(183, 165, 122, 0.18); stroke: #85754d; stroke-width: 1.5; }
       .neq { font-family: Helvetica, Arial, sans-serif; font-size: 34px; font-weight: 700; fill: #c0392b; }
     ]]></style>
   </defs>
-  <text class="tag" x="260" y="28" text-anchor="middle">RIDGE-LOGISTIC DISAGREEMENT</text>
+  <text class="tag" x="260" y="28" text-anchor="middle" style="font-size:18px">OBSERVATIONAL-EXPERIMENTAL DISAGREEMENT</text>
   <text class="lbl" x="260" y="52" text-anchor="middle">Compare win probabilities for the same pair</text>
 
   <rect class="card" x="40" y="80" width="180" height="140" rx="14"/>
