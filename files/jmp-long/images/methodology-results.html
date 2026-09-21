@@ -1,0 +1,43 @@
+<div class="meth-res" aria-hidden="true">
+  <div class="meth-res-table">
+    <div class="meth-res-grid">
+      <div class="meth-res-h meth-res-h-label" style="grid-area:1 / 1"></div>
+      <div class="meth-res-h meth-res-h-obs" style="grid-area:1 / 2">CTR (Obs.)</div>
+      <div class="meth-res-h meth-res-h-exp" style="grid-area:1 / 3">CTR (Exp.)</div>
+      <div class="meth-res-h meth-res-h-rank" style="grid-area:1 / 4">Ranking (Exp.)</div>
+
+      <div class="meth-res-label" style="grid-area:2 / 1">Mean across embeddings</div>
+      <div class="meth-res-num meth-res-obs" style="grid-area:2 / 2">0.717</div>
+      <div class="meth-res-num meth-res-exp" style="grid-area:2 / 3">0.722</div>
+      <div class="meth-res-num meth-res-rank" style="grid-area:2 / 4"><strong>0.789</strong></div>
+
+      <div class="meth-res-mark meth-res-mark-data fragment" data-step="1" data-step-mode="exact" style="grid-area:2 / 2 / 3 / 4">
+        <div class="meth-res-box"></div>
+      </div>
+      <div class="meth-res-mark meth-res-mark-method fragment" data-step="2" data-step-mode="exact" style="grid-area:2 / 3 / 3 / 5">
+        <div class="meth-res-box"></div>
+      </div>
+
+      <div class="meth-res-delta meth-res-delta-data fragment" data-step="1" data-step-mode="exact" style="grid-area:3 / 2 / 4 / 4">
+        <span class="meth-res-delta-arrow" aria-hidden="true">↑</span>
+        <span class="meth-res-delta-val">+0.7%</span>
+      </div>
+      <div class="meth-res-delta meth-res-delta-method fragment" data-step="2" data-step-mode="exact" style="grid-area:3 / 3 / 4 / 5">
+        <span class="meth-res-delta-arrow" aria-hidden="true">↑</span>
+        <span class="meth-res-delta-val">+9.3%</span>
+      </div>
+    </div>
+    <div class="meth-res-cap">Mean test ROC-AUC across embedding models</div>
+  </div>
+
+  <aside class="callout meth-res-note fragment" data-step="1">
+    <div class="callout-body">
+      <div class="callout-intro">Full experimental variation increases performance by <strong>only +0.7%</strong> when using a CTR-prediction model.</div>
+    </div>
+  </aside>
+  <aside class="callout meth-res-note fragment" data-step="2">
+    <div class="callout-body">
+      <div class="callout-intro">Using the <strong>same experimental data</strong>, a ranking objective gives a <strong>+9.3%</strong> improvement.</div>
+    </div>
+  </aside>
+</div>

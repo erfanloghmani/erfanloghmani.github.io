@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300" role="img" aria-labelledby="fut-title fut-desc">
+  <title id="fut-title">Random split uses future information</title>
+  <desc id="fut-desc">A random train/test split mixes past and future observations, so evaluation can leak information from the future.</desc>
+  <defs>
+    <marker id="fut-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b2e83"/>
+    </marker>
+    <style type="text/css"><![CDATA[
+      .axis { stroke: #4b2e83; stroke-width: 2.5; fill: none; marker-end: url(#fut-arrow); }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 15px; fill: #5a5368; }
+      .dot-train { fill: #6a9cc4; }
+      .dot-test { fill: #c47a7a; }
+      .box-train { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
+      .box-test { fill: #fdeeee; stroke: #c47a7a; stroke-width: 1.75; }
+      .leak { stroke: #c47a7a; stroke-width: 2; stroke-dasharray: 5 4; fill: none; marker-end: url(#fut-arrow); }
+    ]]></style>
+  </defs>
+
+  <text class="hdr" x="280" y="36" text-anchor="middle">RANDOM TRAIN / TEST SPLIT</text>
+
+  <line class="axis" x1="40" y1="92" x2="520" y2="92"/>
+  <text class="sub" x="40" y="80">past</text>
+  <text class="sub" x="500" y="80" text-anchor="end">future</text>
+
+  <circle class="dot-train" cx="70" cy="92" r="8"/>
+  <circle class="dot-test" cx="110" cy="92" r="8"/>
+  <circle class="dot-train" cx="150" cy="92" r="8"/>
+  <circle class="dot-train" cx="190" cy="92" r="8"/>
+  <circle class="dot-test" cx="230" cy="92" r="8"/>
+  <circle class="dot-train" cx="270" cy="92" r="8"/>
+  <circle class="dot-test" cx="310" cy="92" r="8"/>
+  <circle class="dot-train" cx="350" cy="92" r="8"/>
+  <circle class="dot-test" cx="390" cy="92" r="8"/>
+  <circle class="dot-train" cx="430" cy="92" r="8"/>
+  <circle class="dot-test" cx="470" cy="92" r="8"/>
+
+  <circle class="dot-train" cx="180" cy="132" r="7"/>
+  <text class="sub" x="194" y="136">Train</text>
+  <circle class="dot-test" cx="280" cy="132" r="7"/>
+  <text class="sub" x="294" y="136">Test / eval</text>
+
+  <rect class="box-train" x="48" y="168" width="200" height="80" rx="12"/>
+  <text class="label" x="148" y="216" text-anchor="middle">Training set</text>
+
+  <rect class="box-test" x="312" y="168" width="200" height="80" rx="12"/>
+  <text class="label" x="412" y="216" text-anchor="middle">Evaluation set</text>
+
+  <path class="leak" d="M 248 208 C 270 183, 290 183, 312 208"/>
+  <text class="sub" x="280" y="178" text-anchor="middle" style="fill:#c47a7a;font-weight:700">leak</text>
+</svg>

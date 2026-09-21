@@ -1,0 +1,216 @@
+<div class="bench-methods" aria-hidden="true">
+  <div class="bench-top">
+    <div class="bench-row-label bench-row-label-data fragment" data-step="1">Data</div>
+    <div class="bench-col bench-col-obs">
+      <div class="bench-schema bench-schema-obs fragment" data-step="1">
+        <div class="bench-badge">Observational only</div>
+        <div class="bench-legend">
+          <span class="bench-legend-item"><span class="bench-body"></span> article body</span>
+          <span class="bench-legend-item"><span class="bench-hl on"></span> kept headline</span>
+          <span class="bench-legend-item"><span class="bench-hl off"></span> unused headline</span>
+        </div>
+        <div class="bench-schema-items">
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl off"></span>
+              <span class="bench-hl off"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl off"></span>
+              <span class="bench-hl on"></span>
+              <span class="bench-hl off"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body long"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl off"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl off"></span>
+              <span class="bench-hl off"></span>
+              <span class="bench-hl on"></span>
+            </div>
+          </div>
+          <div class="bench-schema-more" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+        <div class="bench-schema-caption">Only one headline kept per article</div>
+      </div>
+      <div class="bench-panel bench-obs fragment" data-step="2">
+        <h3 class="bench-title">CTR prediction</h3>
+        <p class="bench-sub">One headline per story</p>
+        <div class="bench-flow">
+          <div class="bench-chip">Article body</div>
+          <span class="bench-plus">+</span>
+          <div class="bench-chip">Headline</div>
+          <span class="bench-plus bench-to">→</span>
+          <div class="bench-chip bench-chip-score">CTR</div>
+        </div>
+        <div class="bench-out">Predict CTR</div>
+      </div>
+    </div>
+
+    <div class="bench-vdivider fragment" data-step="3" aria-hidden="true"></div>
+    <div class="bench-ldivider fragment" data-step="1" aria-hidden="true"></div>
+    <div class="bench-hdivider fragment" data-step="1" aria-hidden="true"></div>
+    <div class="bench-row-label bench-row-label-method fragment" data-step="1">Method</div>
+
+    <div class="bench-col bench-col-exp">
+      <div class="bench-schema bench-schema-exp fragment" data-step="3">
+        <div class="bench-badge">Experimental</div>
+        <div class="bench-legend">
+          <span class="bench-legend-item"><span class="bench-body"></span> article body</span>
+          <span class="bench-legend-item"><span class="bench-hl on"></span> experiment headline</span>
+        </div>
+        <div class="bench-schema-items">
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body long"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+            </div>
+          </div>
+          <div class="bench-schema-item">
+            <span class="bench-body"></span>
+            <div class="bench-hls">
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+              <span class="bench-hl on"></span>
+            </div>
+          </div>
+          <div class="bench-schema-more" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+        <div class="bench-schema-caption">Outcomes for all experimental headlines observed</div>
+      </div>
+      <div class="bench-exp-panels">
+        <div class="bench-panel bench-exp-ctr fragment" data-step="4">
+          <h3 class="bench-title">CTR prediction</h3>
+          <p class="bench-sub">All variants per test</p>
+          <div class="bench-flow">
+            <div class="bench-chip">Article body</div>
+            <span class="bench-plus">+</span>
+            <div class="bench-chip">Headline</div>
+            <span class="bench-plus bench-to">→</span>
+            <div class="bench-chip bench-chip-score">CTR</div>
+          </div>
+          <div class="bench-out">Same loss; more variation</div>
+        </div>
+
+        <div class="bench-panel bench-exp-rank fragment" data-step="4">
+          <h3 class="bench-title">Ranking objective</h3>
+          <p class="bench-sub">Pairs within a test–image</p>
+          <div class="bench-flow bench-flow-rank">
+            <div class="bench-chip">Article body</div>
+            <span class="bench-plus">+</span>
+            <div class="bench-chip">Headline A</div>
+            <span class="bench-plus bench-to">vs</span>
+            <div class="bench-chip">Article body</div>
+            <span class="bench-plus">+</span>
+            <div class="bench-chip">Headline B</div>
+          </div>
+          <div class="bench-out">Who wins? &nbsp;A ≻ B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bench-eval-out fragment" data-step="5">
+    <div class="bench-funnel-join" aria-hidden="true">
+      <span class="bench-funnel-stem bench-funnel-stem-left"></span>
+      <span class="bench-funnel-stem bench-funnel-stem-mid"></span>
+      <span class="bench-funnel-stem bench-funnel-stem-right"></span>
+      <span class="bench-funnel-bar"></span>
+    </div>
+    <div class="bench-heldout">
+      <div class="bench-heldout-kicker">Held-out Data</div>
+      <div class="bench-heldout-flow">
+        <div class="bench-heldout-split">
+          <div class="bench-heldout-badge">Experimental</div>
+          <div class="bench-heldout-split-body">
+            <div class="bench-heldout-side bench-heldout-train">
+              <div class="bench-heldout-tag">Train</div>
+              <div class="bench-schema-items bench-heldout-items">
+                <div class="bench-schema-item">
+                  <span class="bench-body"></span>
+                  <div class="bench-hls">
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                  </div>
+                </div>
+                <div class="bench-schema-item">
+                  <span class="bench-body"></span>
+                  <div class="bench-hls">
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                  </div>
+                </div>
+                <div class="bench-schema-item">
+                  <span class="bench-body long"></span>
+                  <div class="bench-hls">
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bench-heldout-divider" aria-hidden="true"></div>
+            <div class="bench-heldout-side bench-heldout-test">
+              <div class="bench-heldout-tag">Held-out</div>
+              <div class="bench-schema-items bench-heldout-items">
+                <div class="bench-schema-item">
+                  <span class="bench-body"></span>
+                  <div class="bench-hls">
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                  </div>
+                </div>
+                <div class="bench-schema-item">
+                  <span class="bench-body"></span>
+                  <div class="bench-hls">
+                    <span class="bench-hl on"></span>
+                    <span class="bench-hl on"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bench-heldout-arrow" aria-hidden="true">→</div>
+
+        <div class="bench-heldout-metric">
+          <div class="bench-heldout-metric-kicker">Score</div>
+          <div class="bench-heldout-main">ROC-AUC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

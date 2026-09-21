@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="ghs-title ghs-desc">
-  <title id="ghs-title">High spread gate</title>
+  <title id="ghs-title">High spread selection rule</title>
   <desc id="ghs-desc">Two predicted CTRs far apart; learning which wins is valuable.</desc>
   <defs>
     <style type="text/css"><![CDATA[
@@ -7,10 +7,10 @@
       .bar-a { fill: rgba(75, 46, 131, 0.35); }
       .bar-b { fill: #4b2e83; }
       .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
-      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 21px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 19px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 20px; fill: #241d33; }
       .box { fill: rgba(75, 46, 131, 0.10); stroke: #4b2e83; stroke-width: 1.5; }
       .arrow { stroke: #4b2e83; stroke-width: 2; fill: none; }
     ]]></style>

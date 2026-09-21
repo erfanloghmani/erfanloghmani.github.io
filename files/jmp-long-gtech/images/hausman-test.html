@@ -1,0 +1,43 @@
+<div class="hausman" aria-hidden="true">
+  <div class="hausman-cols">
+    <div class="hausman-card hausman-iv">
+      <div class="hausman-badge">IV estimation</div>
+      <div class="hausman-title">Instrumental variables</div>
+      <ul class="hausman-list">
+        <li><strong>Consistent</strong> under endogeneity</li>
+        <li>Typically <strong>higher variance</strong></li>
+      </ul>
+    </div>
+
+    <div class="hausman-vs" aria-hidden="true">vs</div>
+
+    <div class="hausman-card hausman-ols">
+      <div class="hausman-badge">OLS</div>
+      <div class="hausman-title">Ordinary least squares</div>
+      <ul class="hausman-list">
+        <li><strong>Lower variance</strong> (more efficient)</li>
+        <li>Can be <strong>biased</strong> if confounders remain</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hausman-rule">
+    <div class="hausman-rule-label">Hausman test</div>
+    <div class="hausman-branches">
+      <div class="hausman-branch hausman-branch-diff">
+        <div class="hausman-if">If IV and OLS differ</div>
+        <div class="hausman-then">→ bias is large → <strong>use IV</strong></div>
+      </div>
+      <div class="hausman-branch hausman-branch-same">
+        <div class="hausman-if">If IV and OLS agree</div>
+        <div class="hausman-then">→ little bias → <strong>use OLS</strong> (less variance)</div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="hausman-punch">
+    <div class="hausman-punch-label">Limitation</div>
+    <p>This chooses <strong>which</strong> estimator to use — a discrete selection.
+    Our question: can we <strong>combine</strong> the two instead of picking one?</p>
+  </aside>
+</div>
