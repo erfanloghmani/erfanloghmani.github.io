@@ -7,9 +7,9 @@
     </marker>
     <style type="text/css"><![CDATA[
       .axis { stroke: #4b2e83; stroke-width: 2.5; fill: none; marker-end: url(#fut-arrow); }
-      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
-      .label { font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #5a5368; }
+      .hdr { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.05em; fill: #85754d; }
+      .label { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 15px; fill: #5a5368; }
       .dot-train { fill: #6a9cc4; }
       .dot-test { fill: #c47a7a; }
       .box-train { fill: #eaf4fc; stroke: #6a9cc4; stroke-width: 1.75; }
@@ -38,7 +38,6 @@
   <circle class="dot-test" cx="390" cy="70" r="8"/>
   <circle class="dot-train" cx="430" cy="70" r="8"/>
   <circle class="dot-test" cx="470" cy="70" r="8"/>
-  <circle class="dot-train" cx="510" cy="70" r="8"/>
 
   <!-- Legend -->
   <circle class="dot-train" cx="180" cy="108" r="7"/>
@@ -63,5 +62,5 @@
 
   <!-- Warning -->
   <rect class="warn" x="80" y="250" width="400" height="36" rx="10"/>
-  <text class="label" x="280" y="274" text-anchor="middle" style="font-size:13px">Evaluation can use information from the future</text>
+  <text class="label" x="280" y="274" text-anchor="middle" style="font-size:16px">Evaluation can use information from the future</text>
 </svg>

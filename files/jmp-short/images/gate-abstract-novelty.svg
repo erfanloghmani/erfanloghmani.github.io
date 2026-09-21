@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 340" width="520" height="340" role="img" aria-labelledby="gan-title gan-desc">
-  <title id="gan-title">Abstract novelty gate</title>
+  <title id="gan-title">Abstract novelty selection rule</title>
   <desc id="gan-desc">Embedding scatter of past abstracts with one outsider marked as novel.</desc>
   <defs>
     <style type="text/css"><![CDATA[
       .axis { stroke: #6b6478; stroke-width: 1.5; fill: none; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 16px; fill: #5a5368; }
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 17px; font-weight: 700; fill: #85754d; }
-      .note { font-family: Helvetica, Arial, sans-serif; font-size: 17px; fill: #241d33; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 21px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 19px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #85754d; }
+      .note { font-family: Helvetica, Arial, sans-serif; font-size: 20px; fill: #241d33; }
       .box { fill: rgba(75, 46, 131, 0.10); stroke: #4b2e83; stroke-width: 1.5; }
       .pt { fill: rgba(75, 46, 131, 0.45); }
       .novel { fill: #b7a57a; stroke: #4b2e83; stroke-width: 2; }

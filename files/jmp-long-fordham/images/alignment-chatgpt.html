@@ -1,0 +1,69 @@
+<div class="align-gpt" aria-hidden="true">
+  <span class="align-gpt-focus fragment" data-step="5" aria-hidden="true"></span>
+  <aside class="align-gpt-def">
+    <div class="align-gpt-def-label">Alignment</div>
+    <p>The process of training or tuning a large language model so its responses match human values, safety rules, and <strong>user goals</strong>.</p>
+  </aside>
+  <img
+    class="fragment align-gpt-img-push"
+    data-step="1"
+    data-step-mode="exact"
+    src="images/chatgpt-example.jpg"
+    alt="ChatGPT user example: aligned model generating a strong outreach message">
+  <div class="align-gpt-boxes">
+    <div class="align-gpt-box align-gpt-box-collect fragment" data-step="2">
+      <div class="align-gpt-box-label">Data collection</div>
+      <p>Collect data of generations and the outcome of interest</p>
+    </div>
+    <div class="align-gpt-arrow fragment" data-step="3" aria-hidden="true">→</div>
+    <div class="align-gpt-box fragment" data-step="3">
+      <div class="align-gpt-box-label">Reward modeling</div>
+      <p>Learn the relationship between each possible text and outcome</p>
+    </div>
+    <div class="align-gpt-arrow fragment" data-step="4" aria-hidden="true">→</div>
+    <div class="align-gpt-box fragment" data-step="4">
+      <div class="align-gpt-box-label">Tuning</div>
+      <p>Push the model towards generating better responses</p>
+    </div>
+  </div>
+
+  <div class="align-gpt-stage">
+    <div class="align-gpt-visual">
+    <img
+      class="fragment align-gpt-img-data"
+      data-step="2"
+      src="images/preference-data.jpeg"
+      alt="Pairwise preference data: which response do you prefer?">
+    <aside class="align-gpt-ask fragment" data-step="6" data-step-mode="exact">
+      <div class="align-gpt-ask-label">Question</div>
+      <p>How can firms collect such data for their business needs?</p>
+    </aside>
+    </div>
+    <div class="align-gpt-scores fragment" data-step="3" data-step-mode="range" data-step-end="4">
+      <div class="align-gpt-ex">
+        <p class="align-gpt-txt">“Open to a new adventure? I’ve got an Australian client looking for a PPC Specialist…”</p>
+        <div class="align-gpt-score">
+          <span class="align-gpt-score-lbl">Score</span>
+          <span class="align-gpt-bar" style="--p:.22"></span>
+          <span class="align-gpt-score-val">0.22</span>
+        </div>
+      </div>
+      <div class="align-gpt-ex">
+        <p class="align-gpt-txt">“Working with a top Australian client on a fully remote PPC Specialist role…”</p>
+        <div class="align-gpt-score">
+          <span class="align-gpt-score-lbl">Score</span>
+          <span class="align-gpt-bar" style="--p:.54"></span>
+          <span class="align-gpt-score-val">0.54</span>
+        </div>
+      </div>
+      <div class="align-gpt-ex align-gpt-ex-best">
+        <p class="align-gpt-txt">“I’m Dom, your profile seems like a great fit for my client’s remote PPC Specialist role…”</p>
+        <div class="align-gpt-score">
+          <span class="align-gpt-score-lbl">Score</span>
+          <span class="align-gpt-bar" style="--p:.86"></span>
+          <span class="align-gpt-score-val">0.86</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

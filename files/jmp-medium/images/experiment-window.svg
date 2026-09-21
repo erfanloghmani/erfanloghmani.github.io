@@ -3,9 +3,9 @@
   <desc id="ew-desc">Article bodies as squares; play-only gets one headline circle, experiments get stacked purple headline circles.</desc>
   <defs>
     <style type="text/css"><![CDATA[
-      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.06em; fill: #85754d; }
-      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 700; fill: #4b2e83; }
-      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 15px; fill: #5a5368; }
+      .tag { font-family: Helvetica, Arial, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: 0.06em; fill: #85754d; }
+      .lbl { font-family: Helvetica, Arial, sans-serif; font-size: 23px; font-weight: 700; fill: #4b2e83; }
+      .sub { font-family: Helvetica, Arial, sans-serif; font-size: 18px; fill: #5a5368; }
       .card { fill: #ffffff; stroke: #4b2e83; stroke-width: 1.6; }
       .win { fill: rgba(75, 46, 131, 0.07); stroke: #4b2e83; stroke-width: 1.75; stroke-dasharray: 5 3.5; }
       .abs { fill: #f0ebe3; stroke: #85754d; stroke-width: 1.25; }
